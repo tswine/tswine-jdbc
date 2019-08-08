@@ -4,6 +4,7 @@ import cn.tswine.jdbc.common.annotation.DbType;
 import cn.tswine.jdbc.generator.CodeGenerator;
 import cn.tswine.jdbc.generator.builder.ConfigBuilder;
 import cn.tswine.jdbc.generator.config.DataSourceConfig;
+import cn.tswine.jdbc.generator.config.StrategyConfig;
 import cn.tswine.jdbc.generator.config.pojo.Table;
 import org.junit.Before;
 import org.junit.Test;
@@ -36,12 +37,17 @@ public class CodeGeneratorMySQLTest extends BaseCodeGeneratorTest {
         codeGenerator.setDataSourceConfig(dsConfig);
     }
 
+    private StrategyConfig strategyConfig() {
+        StrategyConfig strategyConfig = new StrategyConfig();
+        return strategyConfig;
+    }
+
 
     @Test
     public void execute() {
+        codeGenerator.setStrategyConfig(strategyConfig());
         ConfigBuilder configBuilder = codeGenerator.execute();
         List<Table> tableList = configBuilder.getTableList();
-
         printTable(tableList);
     }
 

@@ -31,5 +31,12 @@ public class TableField {
      * 列类型
      */
     private String columnType;
+    /**
+     * 字段类型
+     */
     private IColumnType fieldType;
+    /**
+     * 字段名称
+     */
+    private String fieldName;
 }

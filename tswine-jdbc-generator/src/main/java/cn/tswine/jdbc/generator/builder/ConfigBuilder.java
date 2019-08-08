@@ -6,6 +6,8 @@ import cn.tswine.jdbc.common.utils.StringUtils;
 import cn.tswine.jdbc.generator.config.DataSourceConfig;
 import cn.tswine.jdbc.generator.config.GlobalConfig;
 import cn.tswine.jdbc.generator.config.IDbQuery;
+import cn.tswine.jdbc.generator.config.StrategyConfig;
+import cn.tswine.jdbc.generator.config.pojo.EntityInfo;
 import cn.tswine.jdbc.generator.config.pojo.Table;
 import cn.tswine.jdbc.generator.config.pojo.TableField;
 import lombok.Data;
@@ -42,6 +44,11 @@ public class ConfigBuilder {
      * 全局配置
      */
     GlobalConfig globalConfig;
+
+    /**
+     * 生成代码策略配置
+     */
+    StrategyConfig strategyConfig;
     /**
      * SQL连接
      */
@@ -51,12 +58,37 @@ public class ConfigBuilder {
      */
     private IDbQuery dbQuery;
 
+    /**
+     * 实体信息
+     */
+    private List<EntityInfo> entityInfoList;
 
-    public ConfigBuilder(DataSourceConfig dataSourceConfig, GlobalConfig globalConfig) {
+
+    public ConfigBuilder(DataSourceConfig dataSourceConfig, GlobalConfig globalConfig, StrategyConfig strategyConfig) {
         this.dataSourceConfig = dataSourceConfig;
         this.globalConfig = globalConfig;
+        this.strategyConfig = strategyConfig;
         handleDataSource();
         tableList = getTables();
+        handleStrategy();
+        System.out.println(entityInfoList.toString());
+    }
+
+    /**
+     * 处理策略
+     */
+    private void handleStrategy() {
+        //不需要生成实体对象
+        if (!strategyConfig.isEntityIsGenerator()) {
+            entityInfoList = null;
+            return;
+        } else {
+            entityInfoList = new ArrayList<>();
+            for (Table table : tableList) {
+                EntityInfo entityInfo = new EntityInfo(table, strategyConfig);
+                entityInfoList.add(entityInfo);
+            }
+        }
     }
 
     /**

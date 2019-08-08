@@ -2,8 +2,6 @@ package cn.tswine.jdbc.generator.config.rules;
 
 import cn.tswine.jdbc.common.utils.StringUtils;
 
-import java.util.Arrays;
-
 /**
  * 命名策略
  *
@@ -21,32 +19,32 @@ public enum NameStrategy {
     /**
      * 下划线转驼峰命名
      */
-    UNDERLINE_TO_CAMEL;
-
+    UNDERLINE_TO_CAMEL,
+    /**
+     * 大驼峰:相比UNDERLINE_TO_CAMEL，首字母也大写，用于类命令
+     */
+    BIG_CAMEL_CASE;
 
     /**
-     * 下划线驼峰命令转换
+     * 命名转换
      *
-     * @param name
+     * @param str          需要转换的字符串
+     * @param nameStrategy 命名策略
      * @return
      */
-    public static String underlineToCamel(String name) {
-        if (StringUtils.isEmpty(name)) {
-            return "";
+    public static String changeNameStrategy(String str, NameStrategy nameStrategy) {
+        switch (nameStrategy) {
+            case UNDERLINE_TO_CAMEL:
+                str = StringUtils.underlineToCamelCase(str);
+                break;
+            case BIG_CAMEL_CASE:
+                str = StringUtils.bigCamelCase(str);
+                break;
+            default:
+                break;
         }
-        //将所有字母转为小写
-        String tmpName = name.toLowerCase();
-        StringBuilder sb = new StringBuilder();
-        String[] camels = tmpName.split("_");
-        Arrays.stream(camels).filter(camel -> !StringUtils.isEmpty(camel)).forEach(camel -> {
-            if (sb.length() == 0) {
-                //第一个片段，首字母小写
-                sb.append(camel);
-            } else {
-                //首字母大写
-                sb.append(StringUtils.capitalFirst(camel));
-            }
-        });
-        return sb.toString();
+        return str;
     }
+
+
 }

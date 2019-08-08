@@ -3,8 +3,8 @@ package cn.tswine.jdbc.generator;
 import cn.tswine.jdbc.common.exception.TswineJdbcException;
 import cn.tswine.jdbc.generator.builder.ConfigBuilder;
 import cn.tswine.jdbc.generator.config.DataSourceConfig;
-import cn.tswine.jdbc.generator.config.EntityConfig;
 import cn.tswine.jdbc.generator.config.GlobalConfig;
+import cn.tswine.jdbc.generator.config.StrategyConfig;
 import cn.tswine.jdbc.generator.engine.AbstractTemplateEngine;
 import lombok.Data;
 import lombok.experimental.Accessors;
@@ -32,15 +32,12 @@ public class CodeGenerator {
     GlobalConfig globalConfig;
 
     /**
-     * 实体配置
-     */
-    EntityConfig entityConfig;
-
-    /**
      * 模板引擎
      */
     AbstractTemplateEngine templateEngine;
 
+
+    StrategyConfig strategyConfig;
 
     /**
      * 生成代码
@@ -53,7 +50,7 @@ public class CodeGenerator {
         if (globalConfig == null) {
             globalConfig = new GlobalConfig();
         }
-        ConfigBuilder configBuilder = new ConfigBuilder(dataSourceConfig, globalConfig);
+        ConfigBuilder configBuilder = new ConfigBuilder(dataSourceConfig, globalConfig,strategyConfig);
         return configBuilder;
     }
 

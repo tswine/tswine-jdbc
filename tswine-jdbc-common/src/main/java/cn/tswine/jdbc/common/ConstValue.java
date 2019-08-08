@@ -30,4 +30,18 @@ public class ConstValue {
          */
         public final static String POSTGRE_SQL = "PostgreSQL";
     }
+
+    /**
+     * 自动生成:占位符
+     */
+    public class GenerqatorPlaceholder {
+        /**
+         * 表名
+         */
+        public final static String TABLE_NAME = "<TABLE_NAME>";
+        /**
+         * 表字段
+         */
+        public final static String TABLE_FIELD = "<TABLE_FIELD>";
+    }
 }
