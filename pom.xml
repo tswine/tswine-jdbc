@@ -17,7 +17,6 @@
     <modules>
         <module>tswine-jdbc-generator</module>
         <module>tswine-jdbc-common</module>
-        <module>tswine-jdbc-test</module>
     </modules>
 
     <dependencies>
@@ -47,6 +46,12 @@
                 <groupId>com.ibeetl</groupId>
                 <artifactId>beetl</artifactId>
                 <version>3.0.10.RELEASE</version>
+            </dependency>
+            <dependency>
+                <groupId>junit</groupId>
+                <artifactId>junit</artifactId>
+                <version>4.12</version>
+                <scope>test</scope>
             </dependency>
         </dependencies>
 

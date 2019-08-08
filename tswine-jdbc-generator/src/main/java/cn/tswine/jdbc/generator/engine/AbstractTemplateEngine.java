@@ -2,6 +2,8 @@ package cn.tswine.jdbc.generator.engine;
 
 import cn.tswine.jdbc.generator.builder.ConfigBuilder;
 
+import java.util.Map;
+
 /**
  * 模板引擎抽象类
  *
@@ -10,7 +12,7 @@ import cn.tswine.jdbc.generator.builder.ConfigBuilder;
  * @Version 1.0
  * @Desc
  */
-public class AbstractTemplateEngine {
+public abstract class AbstractTemplateEngine {
 
     private ConfigBuilder configBuilder;
 
@@ -21,4 +23,14 @@ public class AbstractTemplateEngine {
         this.configBuilder = configBuilder;
         return this;
     }
+
+    /**
+     * 将模板渲染后写出到指定文件
+     *
+     * @param templatePath 模板路径
+     * @param outputFile   输出文件路径
+     * @param params       模板参数
+     */
+    public abstract void writer(String templatePath, String outputFile, Map<String, Object> params);
+
 }

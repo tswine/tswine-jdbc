@@ -1,15 +1,15 @@
-package cn.tswine.jdbc.test.generator;
+package cn.tswine.jdbc.generator.engine;
 
 import cn.tswine.jdbc.common.annotation.DbType;
 import cn.tswine.jdbc.generator.CodeGenerator;
-import cn.tswine.jdbc.generator.builder.ConfigBuilder;
 import cn.tswine.jdbc.generator.config.DataSourceConfig;
 import cn.tswine.jdbc.generator.config.StrategyConfig;
-import cn.tswine.jdbc.generator.config.pojo.Table;
+import cn.tswine.jdbc.generator.engine.BeetlTemplateEngine;
 import org.junit.Before;
 import org.junit.Test;
 
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * @Author: silly
@@ -46,9 +46,13 @@ public class CodeGeneratorMySQLTest extends BaseCodeGeneratorTest {
     @Test
     public void execute() {
         codeGenerator.setStrategyConfig(strategyConfig());
-        ConfigBuilder configBuilder = codeGenerator.execute();
-        List<Table> tableList = configBuilder.getTableList();
-        printTable(tableList);
+        codeGenerator.execute();
+    }
+
+
+    @Test
+    public void beetlTemplateEngine() {
+
     }
 
 

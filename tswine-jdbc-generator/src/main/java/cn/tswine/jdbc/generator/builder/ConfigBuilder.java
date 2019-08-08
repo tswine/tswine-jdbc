@@ -71,7 +71,6 @@ public class ConfigBuilder {
         handleDataSource();
         tableList = getTables();
         handleStrategy();
-        System.out.println(entityInfoList.toString());
     }
 
     /**

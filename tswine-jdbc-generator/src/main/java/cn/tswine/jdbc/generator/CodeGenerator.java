@@ -6,6 +6,7 @@ import cn.tswine.jdbc.generator.config.DataSourceConfig;
 import cn.tswine.jdbc.generator.config.GlobalConfig;
 import cn.tswine.jdbc.generator.config.StrategyConfig;
 import cn.tswine.jdbc.generator.engine.AbstractTemplateEngine;
+import cn.tswine.jdbc.generator.engine.BeetlTemplateEngine;
 import lombok.Data;
 import lombok.experimental.Accessors;
 
@@ -40,9 +41,9 @@ public class CodeGenerator {
     StrategyConfig strategyConfig;
 
     /**
-     * 生成代码
+     * 执行生成
      */
-    public ConfigBuilder execute() {
+    public void execute() {
         if (dataSourceConfig == null) {
             throw new TswineJdbcException("数据源配置不能为空:DataSourceConfig");
         }
@@ -50,8 +51,6 @@ public class CodeGenerator {
         if (globalConfig == null) {
             globalConfig = new GlobalConfig();
         }
-        ConfigBuilder configBuilder = new ConfigBuilder(dataSourceConfig, globalConfig,strategyConfig);
-        return configBuilder;
     }
 
 }
