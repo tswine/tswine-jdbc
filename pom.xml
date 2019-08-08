@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>cn.tswine</groupId>
+    <artifactId>tswine-jdbc</artifactId>
+    <packaging>pom</packaging>
+    <version>1.0-SNAPSHOT</version>
+    <properties>
+        <java.version>1.8</java.version>
+        <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <tswine.jdbc.version>1.0-SNAPSHOT</tswine.jdbc.version>
+    </properties>
+    <modules>
+        <module>tswine-jdbc-generator</module>
+        <module>tswine-jdbc-common</module>
+        <module>tswine-jdbc-test</module>
+    </modules>
+
+    <dependencies>
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <version>1.18.8</version>
+            <scope>compile</scope>
+        </dependency>
+    </dependencies>
+
+
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>cn.tswine</groupId>
+                <artifactId>tswine-jdbc-common</artifactId>
+                <version>${tswine.jdbc.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>cn.tswine</groupId>
+                <artifactId>tswine-jdbc-generator</artifactId>
+                <version>${tswine.jdbc.version}</version>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <configuration>
+                    <source>7</source>
+                    <target>7</target>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+</project>
