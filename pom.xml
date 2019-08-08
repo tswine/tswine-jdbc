@@ -4,7 +4,7 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>cn.tswine</groupId>
+    <groupId>cn.tswine.jdbc</groupId>
     <artifactId>tswine-jdbc</artifactId>
     <packaging>pom</packaging>
     <version>1.0-SNAPSHOT</version>
@@ -17,6 +17,7 @@
     <modules>
         <module>tswine-jdbc-generator</module>
         <module>tswine-jdbc-common</module>
+        <module>tswine-jdbc-test</module>
     </modules>
 
     <dependencies>
@@ -32,12 +33,12 @@
     <dependencyManagement>
         <dependencies>
             <dependency>
-                <groupId>cn.tswine</groupId>
+                <groupId>cn.tswine.jdbc</groupId>
                 <artifactId>tswine-jdbc-common</artifactId>
                 <version>${tswine.jdbc.version}</version>
             </dependency>
             <dependency>
-                <groupId>cn.tswine</groupId>
+                <groupId>cn.tswine.jdbc</groupId>
                 <artifactId>tswine-jdbc-generator</artifactId>
                 <version>${tswine.jdbc.version}</version>
             </dependency>
@@ -46,12 +47,6 @@
                 <groupId>com.ibeetl</groupId>
                 <artifactId>beetl</artifactId>
                 <version>3.0.10.RELEASE</version>
-            </dependency>
-            <dependency>
-                <groupId>junit</groupId>
-                <artifactId>junit</artifactId>
-                <version>4.12</version>
-                <scope>test</scope>
             </dependency>
         </dependencies>
 

@@ -1,4 +1,4 @@
-package cn.tswine.jdbc.generator.engine;
+package cn.tswine.jdbc.test.generator;
 
 import cn.tswine.jdbc.generator.config.pojo.Table;
 

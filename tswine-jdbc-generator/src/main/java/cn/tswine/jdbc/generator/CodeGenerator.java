@@ -51,6 +51,9 @@ public class CodeGenerator {
         if (globalConfig == null) {
             globalConfig = new GlobalConfig();
         }
+        ConfigBuilder configBuilder = new ConfigBuilder(dataSourceConfig, globalConfig, strategyConfig);
+        templateEngine = new BeetlTemplateEngine();
+        templateEngine.init(configBuilder).mkdirs().batchGenerator();
     }
 
 }

@@ -1,6 +1,7 @@
-package cn.tswine.jdbc.generator.test;
+package cn.tswine.jdbc.test.generator;
 
 import cn.tswine.jdbc.generator.engine.BeetlTemplateEngine;
+import org.junit.Test;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -14,7 +15,8 @@ import java.util.Map;
 public class BeetlTemplateEngineTest {
 
 
-    public static void main(String[] args) {
+    @Test
+    public void engint() {
         BeetlTemplateEngine beetlTemplateEngine = new BeetlTemplateEngine();
         Map<String, Object> params = new HashMap();
         params.put("name", "tswine");

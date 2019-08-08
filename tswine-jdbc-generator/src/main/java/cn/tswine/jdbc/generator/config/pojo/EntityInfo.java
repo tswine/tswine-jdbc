@@ -1,5 +1,6 @@
 package cn.tswine.jdbc.generator.config.pojo;
 
+
 import cn.tswine.jdbc.common.vo.KV;
 import cn.tswine.jdbc.generator.config.StrategyConfig;
 import cn.tswine.jdbc.generator.config.rules.NameStrategy;

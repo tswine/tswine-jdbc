@@ -1,15 +1,11 @@
-package cn.tswine.jdbc.generator.engine;
+package cn.tswine.jdbc.test.generator;
 
 import cn.tswine.jdbc.common.annotation.DbType;
 import cn.tswine.jdbc.generator.CodeGenerator;
 import cn.tswine.jdbc.generator.config.DataSourceConfig;
 import cn.tswine.jdbc.generator.config.StrategyConfig;
-import cn.tswine.jdbc.generator.engine.BeetlTemplateEngine;
 import org.junit.Before;
 import org.junit.Test;
-
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * @Author: silly
