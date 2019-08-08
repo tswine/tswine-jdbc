@@ -10,6 +10,27 @@
     <modelVersion>4.0.0</modelVersion>
 
     <artifactId>tswine-jdbc-test</artifactId>
+
+
+    <dependencies>
+        <dependency>
+            <groupId>cn.tswine</groupId>
+            <artifactId>tswine-jdbc-generator</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>mysql</groupId>
+            <artifactId>mysql-connector-java</artifactId>
+            <version>5.1.47</version>
+        </dependency>
+
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>4.12</version>
+        </dependency>
+    </dependencies>
+
+
     <build>
         <plugins>
             <plugin>
@@ -22,17 +43,5 @@
             </plugin>
         </plugins>
     </build>
-
-
-    <dependencies>
-        <dependency>
-            <groupId>cn.tswine</groupId>
-            <artifactId>tswine-jdbc-generator</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>cn.tswine</groupId>
-            <artifactId>tswine-jdbc-generator</artifactId>
-        </dependency>
-    </dependencies>
 
 </project>

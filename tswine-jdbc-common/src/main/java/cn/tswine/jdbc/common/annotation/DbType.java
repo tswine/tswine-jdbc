@@ -1,5 +1,7 @@
 package cn.tswine.jdbc.common.annotation;
 
+import cn.tswine.jdbc.common.ConstValue;
+
 /**
  * 数据库类型枚举
  *
@@ -12,15 +14,15 @@ public enum DbType {
     /**
      * MYSQL
      */
-    MYSQL("mysql", "%s LIKE CONCAT('%%',#{%s},'%%')", "MySql数据库"),
+    MYSQL(ConstValue.DB.MYSQL, "%s LIKE CONCAT('%%',#{%s},'%%')", "MySQL数据库"),
     /**
      * MARIADB
      */
-    MARIADB("mariadb", "%s LIKE CONCAT('%%',#{%s},'%%')", "MariaDB数据库"),
+    MARIADB(ConstValue.DB.MARIADB, "%s LIKE CONCAT('%%',#{%s},'%%')", "MariaDB数据库"),
     /**
      * POSTGRE
      */
-    POSTGRE_SQL("postgresql", "%s LIKE CONCAT('%%',#{%s},'%%')", "Postgre数据库");
+    POSTGRE_SQL(ConstValue.DB.POSTGRE_SQL, "%s LIKE CONCAT('%%',#{%s},'%%')", "PostgreSQL数据库");
 
 
     /**
@@ -60,5 +62,13 @@ public enum DbType {
 
     public String getDb() {
         return db;
+    }
+
+    public String getLike() {
+        return like;
+    }
+
+    public String getDesc() {
+        return desc;
     }
 }

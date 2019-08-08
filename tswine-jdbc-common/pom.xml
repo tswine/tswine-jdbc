@@ -10,14 +10,5 @@
     <modelVersion>4.0.0</modelVersion>
 
     <artifactId>tswine-jdbc-common</artifactId>
-    <dependencies>
-        <dependency>
-            <groupId>org.projectlombok</groupId>
-            <artifactId>lombok</artifactId>
-            <version>1.18.8</version>
-            <scope>compile</scope>
-        </dependency>
-    </dependencies>
-
-
+    
 </project>

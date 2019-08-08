@@ -28,6 +28,25 @@ public class StringUtils {
         return true;
     }
 
+    /**
+     * 字符串包含
+     *
+     * @param sourceStr    源字符串
+     * @param subStr       子字符串
+     * @param isIgnoreCase 是否忽略
+     * @return
+     */
+    public static boolean contains(String sourceStr, String subStr, boolean isIgnoreCase) {
+        if (isEmpty(sourceStr) || isEmpty(subStr)) {
+            return false;
+        }
+        if (isIgnoreCase) {
+            return sourceStr.contains(subStr);
+        } else {
+            return sourceStr.toLowerCase().contains(subStr.toLowerCase());
+        }
+    }
+
 
     /**
      * 首字母大写

@@ -1,7 +1,9 @@
 package cn.tswine.jdbc.generator.config;
 
+import cn.tswine.jdbc.common.ConstValue;
 import cn.tswine.jdbc.common.annotation.DbType;
 import cn.tswine.jdbc.common.exception.TswineJdbcException;
+import cn.tswine.jdbc.common.utils.StringUtils;
 import cn.tswine.jdbc.generator.config.converts.MySqlTypeConvert;
 import cn.tswine.jdbc.generator.config.converts.PostgreSqlTypeConvert;
 import cn.tswine.jdbc.generator.config.query.MariadbQuery;
@@ -61,8 +63,7 @@ public class DataSourceConfig {
      * 密码
      */
     private String password;
-
-
+    
     /**
      * 获取数据库类型
      *
@@ -78,7 +79,7 @@ public class DataSourceConfig {
             }
         }
         if (null == dbType) {
-            throw new TswineJdbcException("Unknown database type");
+            throw new TswineJdbcException("未知数据库类型");
 
         }
         return dbType;
@@ -103,11 +104,10 @@ public class DataSourceConfig {
                 case POSTGRE_SQL:
                     dbQuery = new PostgreSqlQuery();
                     break;
-                //TODO 其他数据库
-                default:
-                    //默认mysql数据库
-                    dbQuery = new MySqlQuery();
             }
+        }
+        if (null == dbQuery) {
+            throw new TswineJdbcException("数据库表结构查询执行器未找到:AbstractDbQuery");
         }
         return dbQuery;
     }
@@ -126,10 +126,10 @@ public class DataSourceConfig {
                 case POSTGRE_SQL:
                     typeConvert = new PostgreSqlTypeConvert();
                     break;
-                //TODO　其他数据库
-                default:
-                    typeConvert = new MySqlTypeConvert();
             }
+        }
+        if (null == typeConvert) {
+            throw new TswineJdbcException("数据库字段类型转换器实现类未找到:ITypeConvert");
         }
         return typeConvert;
     }
@@ -140,15 +140,13 @@ public class DataSourceConfig {
      * @return
      */
     public Connection getConn() {
-        Connection conn = null;
+        Connection conn;
         try {
             Class.forName(driverName);
-            //由于只是做简单的代码生成，对性能要求不高，采用sql自带的工具创建Connection
+            //由于只是做简单的代码生成，对性能要求不高，采用sql自带的连接池创建Connection
             conn = DriverManager.getConnection(url, username, password);
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
-        } catch (SQLException e) {
-            e.printStackTrace();
+        } catch (ClassNotFoundException | SQLException ex) {
+            throw new TswineJdbcException("获取数据库连接异常", ex);
         }
         return conn;
     }
@@ -161,24 +159,15 @@ public class DataSourceConfig {
      * @return 数据库类型枚举值，如果没找到，则返回 null
      */
     private DbType getDbType(String str) {
-        if (str.contains("mysql")) {
+        if (StringUtils.contains(str, ConstValue.DB.MYSQL, true)) {
             return DbType.MYSQL;
-        } else if (str.contains("oracle")) {
-            return DbType.ORACLE;
-        } else if (str.contains("postgresql")) {
-            return DbType.POSTGRE_SQL;
-        } else if (str.contains("sqlserver")) {
-            return DbType.SQL_SERVER;
-        } else if (str.contains("db2")) {
-            return DbType.DB2;
-        } else if (str.contains("mariadb")) {
-            return DbType.MARIADB;
-        } else if (str.contains("sqlite")) {
-            return DbType.MARIADB;
-        } else if (str.contains("h2")) {
-            return DbType.H2;
-        } else {
-            return null;
         }
+        if (StringUtils.contains(str, ConstValue.DB.MARIADB, true)) {
+            return DbType.MARIADB;
+        }
+        if (StringUtils.contains(str, ConstValue.DB.POSTGRE_SQL, true)) {
+            return DbType.POSTGRE_SQL;
+        }
+        return null;
     }
 }

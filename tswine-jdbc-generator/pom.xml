@@ -29,7 +29,6 @@
         <dependency>
             <groupId>com.ibeetl</groupId>
             <artifactId>beetl</artifactId>
-            <version>3.0.10.RELEASE</version>
         </dependency>
 
         <dependency>

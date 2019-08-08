@@ -62,7 +62,7 @@ public class EntityInfo {
             this.tableFields = tableFields;
             //设置字段需要导入的包信息
             for (TableField field : tableFields) {
-                IColumnType columnType = field.getColumnType();
+                IColumnType columnType = field.getFieldType();
                 if (null != columnType && null != columnType.getPackageName()) {
                     importPackages.add(columnType.getPackageName());
                     //TODO 自定义注解方式

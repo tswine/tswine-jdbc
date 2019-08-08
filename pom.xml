@@ -42,7 +42,14 @@
                 <artifactId>tswine-jdbc-generator</artifactId>
                 <version>${tswine.jdbc.version}</version>
             </dependency>
+            <!--beetl3模板引擎-->
+            <dependency>
+                <groupId>com.ibeetl</groupId>
+                <artifactId>beetl</artifactId>
+                <version>3.0.10.RELEASE</version>
+            </dependency>
         </dependencies>
+
     </dependencyManagement>
 
 
@@ -52,10 +59,11 @@
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
                 <configuration>
-                    <source>7</source>
-                    <target>7</target>
+                    <source>8</source>
+                    <target>8</target>
                 </configuration>
             </plugin>
         </plugins>
     </build>
+
 </project>

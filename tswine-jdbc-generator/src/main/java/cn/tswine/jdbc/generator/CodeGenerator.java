@@ -1,5 +1,6 @@
 package cn.tswine.jdbc.generator;
 
+import cn.tswine.jdbc.common.exception.TswineJdbcException;
 import cn.tswine.jdbc.generator.builder.ConfigBuilder;
 import cn.tswine.jdbc.generator.config.DataSourceConfig;
 import cn.tswine.jdbc.generator.config.EntityConfig;
@@ -45,6 +46,13 @@ public class CodeGenerator {
      * 生成代码
      */
     public ConfigBuilder execute() {
+        if (dataSourceConfig == null) {
+            throw new TswineJdbcException("数据源配置不能为空:DataSourceConfig");
+        }
+        //校验数据
+        if (globalConfig == null) {
+            globalConfig = new GlobalConfig();
+        }
         ConfigBuilder configBuilder = new ConfigBuilder(dataSourceConfig, globalConfig);
         return configBuilder;
     }

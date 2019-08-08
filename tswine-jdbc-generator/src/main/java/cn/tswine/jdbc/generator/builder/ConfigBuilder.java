@@ -1,11 +1,13 @@
 package cn.tswine.jdbc.generator.builder;
 
 import cn.tswine.jdbc.common.annotation.DbType;
+import cn.tswine.jdbc.common.exception.TswineJdbcException;
 import cn.tswine.jdbc.common.utils.StringUtils;
 import cn.tswine.jdbc.generator.config.DataSourceConfig;
 import cn.tswine.jdbc.generator.config.GlobalConfig;
 import cn.tswine.jdbc.generator.config.IDbQuery;
 import cn.tswine.jdbc.generator.config.pojo.Table;
+import cn.tswine.jdbc.generator.config.pojo.TableField;
 import lombok.Data;
 
 import java.sql.Connection;
@@ -97,11 +99,11 @@ public class ConfigBuilder {
                     table.setComment(tableComment);
                     tableList.add(table);
                 } else {
-                    System.err.println("数据库为空");
+                    throw new TswineJdbcException("数据库表结构为空");
                 }
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+            throw new TswineJdbcException("getTables执行异常", e);
         }
         List<Table> goalTables = null;
         if (globalConfig.getIncludeTables() != null && globalConfig.getIncludeTables().length > 0) {
@@ -137,6 +139,7 @@ public class ConfigBuilder {
         if (goalTables == null) {
             goalTables = tableList;
         }
+        //获取表字段
         goalTables.forEach(table -> getTableField(table));
         return goalTables;
     }
@@ -148,6 +151,31 @@ public class ConfigBuilder {
      * @return
      */
     private Table getTableField(Table table) {
+//        ITypeConvert typeConvert = dataSourceConfig.getTypeConvert();
+        //查询表字段
+        List<TableField> tableFields = new ArrayList<>();
+        String tableName = table.getName().toUpperCase();
+        String tableFiledSql = dbQuery.tableFiledSql();
+        if (StringUtils.isEmpty(dataSourceConfig.getSchemaName())) {
+            tableFiledSql = String.format(tableFiledSql, tableName);
+        } else {
+            tableFiledSql = String.format(tableFiledSql, dataSourceConfig.getSchemaName(), tableName);
+        }
+        System.out.println(tableFiledSql);
+        try (PreparedStatement ps = connection.prepareStatement(tableFiledSql)) {
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                TableField tableField = new TableField();
+                tableField.setColumnName(rs.getString(dbQuery.fieldName()));
+                tableField.setColumnComment(rs.getString(dbQuery.fieldComment()));
+                tableField.setColumnType(rs.getString(dbQuery.fieldType()));
+                //TODO 转换字段
+                tableFields.add(tableField);
+            }
+        } catch (SQLException e) {
+            throw new TswineJdbcException("getTableField执行异常", e);
+        }
+        table.setTableFields(tableFields);
         return table;
     }
 }
