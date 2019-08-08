@@ -60,4 +60,9 @@ public class PostgreSqlQuery extends AbstractDbQuery {
     public String fieldKey() {
         return "key";
     }
+
+    @Override
+    public boolean isFieldKey(String keyValue) {
+        return false;
+    }
 }

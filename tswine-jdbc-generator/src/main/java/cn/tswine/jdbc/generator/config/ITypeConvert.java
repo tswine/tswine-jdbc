@@ -16,9 +16,9 @@ public interface ITypeConvert {
      * 执行类型转换
      *
      * @param globalConfig 全局配置
-     * @param filedType    字段类型
+     * @param columnType   列类型
      * @return
      */
-    IColumnType execute(GlobalConfig globalConfig, String filedType);
+    IColumnType execute(GlobalConfig globalConfig, String columnType);
 
 }

@@ -8,7 +8,6 @@ import cn.tswine.jdbc.generator.config.pojo.Table;
 import org.junit.Before;
 import org.junit.Test;
 
-import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -17,7 +16,7 @@ import java.util.List;
  * @Version 1.0
  * @Desc
  */
-public class CodeGeneratorTest {
+public class CodeGeneratorMySQLTest extends BaseCodeGeneratorTest {
 
     DataSourceConfig dsConfig = null;
 
@@ -42,8 +41,9 @@ public class CodeGeneratorTest {
     public void execute() {
         ConfigBuilder configBuilder = codeGenerator.execute();
         List<Table> tableList = configBuilder.getTableList();
-        Arrays.stream(tableList.toArray()).forEach(t -> {
-            System.out.println(t.toString());
-        });
+
+        printTable(tableList);
     }
+
+
 }

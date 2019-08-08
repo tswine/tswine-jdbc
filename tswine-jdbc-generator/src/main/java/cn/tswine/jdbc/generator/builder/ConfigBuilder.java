@@ -154,14 +154,13 @@ public class ConfigBuilder {
 //        ITypeConvert typeConvert = dataSourceConfig.getTypeConvert();
         //查询表字段
         List<TableField> tableFields = new ArrayList<>();
-        String tableName = table.getName().toUpperCase();
+        String tableName = table.getName();
         String tableFiledSql = dbQuery.tableFiledSql();
         if (StringUtils.isEmpty(dataSourceConfig.getSchemaName())) {
             tableFiledSql = String.format(tableFiledSql, tableName);
         } else {
             tableFiledSql = String.format(tableFiledSql, dataSourceConfig.getSchemaName(), tableName);
         }
-        System.out.println(tableFiledSql);
         try (PreparedStatement ps = connection.prepareStatement(tableFiledSql)) {
             ResultSet rs = ps.executeQuery();
             while (rs.next()) {
@@ -169,7 +168,8 @@ public class ConfigBuilder {
                 tableField.setColumnName(rs.getString(dbQuery.fieldName()));
                 tableField.setColumnComment(rs.getString(dbQuery.fieldComment()));
                 tableField.setColumnType(rs.getString(dbQuery.fieldType()));
-                //TODO 转换字段
+                tableField.setKey(dbQuery.isFieldKey(rs.getString(dbQuery.fieldKey())));
+                tableField.setFieldType(dataSourceConfig.getTypeConvert().execute(globalConfig, tableField.getColumnType()));
                 tableFields.add(tableField);
             }
         } catch (SQLException e) {

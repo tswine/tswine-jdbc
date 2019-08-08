@@ -53,4 +53,9 @@ public class MariadbQuery extends AbstractDbQuery {
     public String fieldKey() {
         return "KEY";
     }
+
+    @Override
+    public boolean isFieldKey(String keyValue) {
+        return false;
+    }
 }

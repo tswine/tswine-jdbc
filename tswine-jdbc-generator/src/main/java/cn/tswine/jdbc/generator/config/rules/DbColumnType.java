@@ -69,11 +69,11 @@ public enum DbColumnType implements IColumnType {
 
     @Override
     public String getType() {
-        return null;
+        return type;
     }
 
     @Override
     public String getPackageName() {
-        return null;
+        return packageName;
     }
 }

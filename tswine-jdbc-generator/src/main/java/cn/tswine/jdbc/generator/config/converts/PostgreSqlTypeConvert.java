@@ -17,42 +17,19 @@ public class PostgreSqlTypeConvert implements ITypeConvert {
 
     @Override
     public IColumnType execute(GlobalConfig globalConfig, String fieldType) {
-        String ft = fieldType.toLowerCase();
-        switch (ft) {
-            case "char":
-                return DbColumnType.STRING;
-            case "bigint":
-                return DbColumnType.LONG;
-            case "int":
-                return DbColumnType.INTEGER;
-            case "text":
-                return DbColumnType.STRING;
-            case "bit":
-                return DbColumnType.BOOLEAN;
-            case "decimal":
-                return DbColumnType.BIG_DECIMAL;
-            case "clob":
-                return DbColumnType.CLOB;
-            case "blob":
-                return DbColumnType.BYTE_ARRAY;
-            case "float":
-                return DbColumnType.FLOAT;
-            case "double":
-                return DbColumnType.DOUBLE;
-            case "json":
-                return DbColumnType.STRING;
-            case "enum":
-                return DbColumnType.STRING;
-            case "boolean":
-                return DbColumnType.BOOLEAN;
-        }
-        //处理时间日期格式转换
-        if (ft.contains("date") || ft.contains("time")) {
+        String t = fieldType.toLowerCase();
+        if (t.contains("char")) {
+            return DbColumnType.STRING;
+        } else if (t.contains("bigint")) {
+            return DbColumnType.LONG;
+        } else if (t.contains("int")) {
+            return DbColumnType.INTEGER;
+        } else if (t.contains("date") || t.contains("time")) {
             switch (globalConfig.getDateConvertType()) {
                 case UTIL_DATE:
                     return DbColumnType.DATE;
                 case SQL_DATE:
-                    switch (ft) {
+                    switch (t) {
                         case "date":
                             return DbColumnType.DATE_SQL;
                         case "time":
@@ -61,7 +38,7 @@ public class PostgreSqlTypeConvert implements ITypeConvert {
                             return DbColumnType.TIMESTAMP;
                     }
                 case TIME_DATE:
-                    switch (ft) {
+                    switch (t) {
                         case "date":
                             return DbColumnType.LOCAL_DATE;
                         case "time":
@@ -72,6 +49,24 @@ public class PostgreSqlTypeConvert implements ITypeConvert {
                 default:
                     return DbColumnType.DATE;
             }
+        } else if (t.contains("text")) {
+            return DbColumnType.STRING;
+        } else if (t.contains("bit")) {
+            return DbColumnType.BOOLEAN;
+        } else if (t.contains("decimal")) {
+            return DbColumnType.BIG_DECIMAL;
+        } else if (t.contains("clob")) {
+            return DbColumnType.CLOB;
+        } else if (t.contains("blob")) {
+            return DbColumnType.BYTE_ARRAY;
+        } else if (t.contains("float")) {
+            return DbColumnType.FLOAT;
+        } else if (t.contains("double")) {
+            return DbColumnType.DOUBLE;
+        } else if (t.contains("json") || t.contains("enum")) {
+            return DbColumnType.STRING;
+        } else if (t.contains("boolean")) {
+            return DbColumnType.BOOLEAN;
         }
         return DbColumnType.STRING;
     }

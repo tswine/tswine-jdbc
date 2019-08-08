@@ -65,6 +65,14 @@ public interface IDbQuery {
     String fieldKey();
 
     /**
+     * 是否主键可以
+     *
+     * @param keyValue key字段对应的值
+     * @return
+     */
+    boolean isFieldKey(String keyValue);
+
+    /**
      * 自定义字段名称
      */
     String[] fieldCustom();

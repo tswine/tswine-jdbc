@@ -53,4 +53,9 @@ public class MySqlQuery extends AbstractDbQuery {
     public String fieldKey() {
         return "KEY";
     }
+
+    @Override
+    public boolean isFieldKey(String keyValue) {
+        return keyValue.equalsIgnoreCase("PRI");
+    }
 }
