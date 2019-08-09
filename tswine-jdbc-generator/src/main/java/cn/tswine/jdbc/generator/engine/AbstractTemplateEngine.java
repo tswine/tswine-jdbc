@@ -4,6 +4,7 @@ import cn.tswine.jdbc.common.exception.TswineJdbcException;
 import cn.tswine.jdbc.generator.builder.ConfigBuilder;
 import cn.tswine.jdbc.generator.config.pojo.Table;
 import lombok.Getter;
+import org.apache.log4j.Logger;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -20,6 +21,7 @@ import java.util.Map;
  * @Desc
  */
 public abstract class AbstractTemplateEngine {
+    protected static final Logger logger = Logger.getLogger(AbstractTemplateEngine.class);
 
     @Getter
     private ConfigBuilder configBuilder;
@@ -77,13 +79,22 @@ public abstract class AbstractTemplateEngine {
         try {
             for (Table table : configBuilder.getTableList()) {
                 Map<String, Object> paramsMap = getParamsMap(configBuilder, table);
-
                 //生成实体
-                String entityName = table.getName();
-                String entityOutputFile = configBuilder.getGlobalConfig().getOutputDir()
-                        + File.separator + configBuilder.getStrategyConfig().configEntity().getPackageName()
-                        + File.separator + entityName + ".java";
-                writer(configBuilder.getTemplateConfig().getEntity() + templateSuffix(), entityOutputFile, paramsMap);
+                if (configBuilder.getStrategyConfig().configEntity().isGenerator()) {
+                    String entityName = table.getName();
+                    String entityOutputFile = configBuilder.getGlobalConfig().getOutputDir()
+                            + File.separator + configBuilder.getStrategyConfig().configEntity().getPackageName()
+                            + File.separator + entityName + ".java";
+                    logger.info("生成实体:" + entityOutputFile);
+                    if (isExists(entityOutputFile)) {
+                        if (!configBuilder.getGlobalConfig().isOverrideExistFile()) {
+                            throw new TswineJdbcException(String.format("文件已经存在,全局配置不允许覆盖存在文件,%s", entityOutputFile));
+                        }
+                    }
+                    writer(configBuilder.getTemplateConfig().getEntity() + templateSuffix(), entityOutputFile, paramsMap);
+                } else {
+                    logger.info("配置不需要生成实体文件");
+                }
 
             }
         } catch (Exception e) {
@@ -116,6 +127,17 @@ public abstract class AbstractTemplateEngine {
         paramMap.put("columnConstant", configBuilder.getStrategyConfig().configEntity().isColumnConstant());
 
         return paramMap;
+    }
+
+    /**
+     * 文件是否存在
+     *
+     * @param filePath
+     * @return
+     */
+    public boolean isExists(String filePath) {
+        File file = new File(filePath);
+        return file.exists();
     }
 
 }

@@ -49,6 +49,7 @@ public class CodeGeneratorMySQLTest extends BaseCodeGeneratorTest {
         globalConfig.setOutputDir("E:\\workspace\\tswine\\tswine-jdbc\\tswine-jdbc-test\\src\\main\\java\\cn\\tswine\\jdbc\\test\\generator");
         globalConfig.setParentPackage("cn.tswine.jdbc.test.generator");
         globalConfig.setLombok(false);
+        globalConfig.setOverrideExistFile(false);
         return globalConfig;
     }
 

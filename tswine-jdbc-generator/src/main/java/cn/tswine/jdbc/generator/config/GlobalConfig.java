@@ -29,7 +29,7 @@ public class GlobalConfig {
     /**
      * 是否覆盖已存在的文件
      */
-    private boolean isOverrideExistFile = false;
+    private boolean overrideExistFile = true;
 
     /**
      * 开发人员

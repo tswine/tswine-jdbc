@@ -34,7 +34,7 @@ public class StrategyConfig {
         }
         return this.entityConfig;
     }
-    
+
     /**
      * 实体相关配置
      */
@@ -45,7 +45,7 @@ public class StrategyConfig {
         /**
          * 是否生成实体文件
          */
-        private boolean generator;
+        private boolean generator = true;
         /**
          * 实体包名
          */
