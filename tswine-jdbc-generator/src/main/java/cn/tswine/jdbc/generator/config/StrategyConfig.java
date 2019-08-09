@@ -3,6 +3,7 @@ package cn.tswine.jdbc.generator.config;
 import cn.tswine.jdbc.common.vo.KV;
 import cn.tswine.jdbc.generator.config.rules.NameStrategy;
 import lombok.Data;
+import lombok.experimental.Accessors;
 
 import java.util.List;
 
@@ -14,45 +15,70 @@ import java.util.List;
  * @Version 1.0
  * @Desc
  */
-@Data
 public class StrategyConfig {
 
-    /**********************实体对象相关配置************************/
-    /**
-     * 是否生成实体
-     */
-    private boolean entityIsGenerator = true;
-    /**
-     * 实体包名
-     */
-    private String entityPackageName = "entity";
 
     /**
-     * 实体类名命名策略
+     * 实体配置
      */
-    private NameStrategy entityClassNameStrategy = NameStrategy.BIG_CAMEL_CASE;
+    private EntityConfig entityConfig;
 
     /**
-     * 字段命名策略
+     * 配置实体
+     *
+     * @return
      */
-    private NameStrategy entityFieldNameStrategy = NameStrategy.UNDERLINE_TO_CAMEL;
+    public EntityConfig configEntity() {
+        if (entityConfig == null) {
+            this.entityConfig = new EntityConfig();
+        }
+        return this.entityConfig;
+    }
+    
+    /**
+     * 实体相关配置
+     */
+    @Data
+    @Accessors(chain = true)
+    public class EntityConfig {
 
-    /**
-     * 是否为生成字段常量
-     */
-    private boolean entityColumnConstant = true;
-    /**
-     * 是否为表名生成字段常量
-     */
-    private boolean entityTableConstant = true;
+        /**
+         * 是否生成实体文件
+         */
+        private boolean generator;
+        /**
+         * 实体包名
+         */
+        private String packageName = "entity";
 
-    /**
-     * 头部注解
-     */
-    private List<KV<String, String>> entityClassAnnotations;
-    /**
-     * 字段注解：针对所有字段生效
-     */
-    private List<KV<String, String>> entityFieldAnnotations;
-    /**********************实体对象相关配置************************/
+        /**
+         * 实体类名命名策略
+         */
+        private NameStrategy classNameStrategy = NameStrategy.BIG_CAMEL_CASE;
+
+        /**
+         * 字段命名策略
+         */
+        private NameStrategy fieldNameStrategy = NameStrategy.UNDERLINE_TO_CAMEL;
+
+        /**
+         * 是否为生成字段常量
+         */
+        private boolean columnConstant = true;
+        /**
+         * 是否为表名生成字段常量
+         */
+        private boolean tableConstant = true;
+
+        /**
+         * 头部注解
+         */
+        private List<KV<String, String>> classAnnotations;
+        /**
+         * 字段注解：针对所有字段生效
+         */
+        private List<KV<String, String>> fieldAnnotations;
+    }
+
+
 }

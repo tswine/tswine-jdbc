@@ -3,13 +3,10 @@ package cn.tswine.jdbc.generator.builder;
 import cn.tswine.jdbc.common.annotation.DbType;
 import cn.tswine.jdbc.common.exception.TswineJdbcException;
 import cn.tswine.jdbc.common.utils.StringUtils;
-import cn.tswine.jdbc.generator.config.DataSourceConfig;
-import cn.tswine.jdbc.generator.config.GlobalConfig;
-import cn.tswine.jdbc.generator.config.IDbQuery;
-import cn.tswine.jdbc.generator.config.StrategyConfig;
-import cn.tswine.jdbc.generator.config.pojo.EntityInfo;
+import cn.tswine.jdbc.generator.config.*;
 import cn.tswine.jdbc.generator.config.pojo.Table;
 import cn.tswine.jdbc.generator.config.pojo.TableField;
+import cn.tswine.jdbc.generator.config.rules.NameStrategy;
 import lombok.Data;
 
 import java.sql.Connection;
@@ -37,18 +34,22 @@ public class ConfigBuilder {
     /**
      * 数据源配置
      */
-    DataSourceConfig dataSourceConfig;
+    private DataSourceConfig dataSourceConfig;
 
 
     /**
      * 全局配置
      */
-    GlobalConfig globalConfig;
+    private GlobalConfig globalConfig;
 
     /**
      * 生成代码策略配置
      */
-    StrategyConfig strategyConfig;
+    private StrategyConfig strategyConfig;
+    /**
+     * 模板文件配置
+     */
+    private TemplateConfig templateConfig;
     /**
      * SQL连接
      */
@@ -58,36 +59,14 @@ public class ConfigBuilder {
      */
     private IDbQuery dbQuery;
 
-    /**
-     * 实体信息
-     */
-    private List<EntityInfo> entityInfoList;
 
-
-    public ConfigBuilder(DataSourceConfig dataSourceConfig, GlobalConfig globalConfig, StrategyConfig strategyConfig) {
+    public ConfigBuilder(DataSourceConfig dataSourceConfig, GlobalConfig globalConfig, StrategyConfig strategyConfig, TemplateConfig templateConfig) {
         this.dataSourceConfig = dataSourceConfig;
         this.globalConfig = globalConfig;
         this.strategyConfig = strategyConfig;
+        this.templateConfig = templateConfig;
         handleDataSource();
         tableList = getTables();
-        handleStrategy();
-    }
-
-    /**
-     * 处理策略
-     */
-    private void handleStrategy() {
-        //不需要生成实体对象
-        if (!strategyConfig.isEntityIsGenerator()) {
-            entityInfoList = null;
-            return;
-        } else {
-            entityInfoList = new ArrayList<>();
-            for (Table table : tableList) {
-                EntityInfo entityInfo = new EntityInfo(table, strategyConfig);
-                entityInfoList.add(entityInfo);
-            }
-        }
     }
 
     /**
@@ -120,13 +99,14 @@ public class ConfigBuilder {
                 String tableName = rs.getString(dbQuery.tableName());
                 if (!StringUtils.isEmpty(tableName)) {
                     Table table = new Table();
-                    table.setName(tableName);
+                    table.setTableName(tableName);
                     //表注解
                     String tableComment = rs.getString(dbQuery.tableComment());
                     if (globalConfig.isSkipView() && "VIEW".equals(tableComment)) {
                         //跳过视图
                         continue;
                     }
+                    table.setName(NameStrategy.changeNameStrategy(tableName, strategyConfig.configEntity().getClassNameStrategy()));
                     table.setComment(tableComment);
                     tableList.add(table);
                 } else {
@@ -182,10 +162,11 @@ public class ConfigBuilder {
      * @return
      */
     private Table getTableField(Table table) {
+        //TODO 排除字段
 //        ITypeConvert typeConvert = dataSourceConfig.getTypeConvert();
         //查询表字段
         List<TableField> tableFields = new ArrayList<>();
-        String tableName = table.getName();
+        String tableName = table.getTableName();
         String tableFiledSql = dbQuery.tableFiledSql();
         if (StringUtils.isEmpty(dataSourceConfig.getSchemaName())) {
             tableFiledSql = String.format(tableFiledSql, tableName);
@@ -201,6 +182,7 @@ public class ConfigBuilder {
                 tableField.setColumnType(rs.getString(dbQuery.fieldType()));
                 tableField.setKey(dbQuery.isFieldKey(rs.getString(dbQuery.fieldKey())));
                 tableField.setFieldType(dataSourceConfig.getTypeConvert().execute(globalConfig, tableField.getColumnType()));
+                tableField.setFieldName(NameStrategy.changeNameStrategy(tableField.getColumnName(), strategyConfig.configEntity().getFieldNameStrategy()));
                 tableFields.add(tableField);
             }
         } catch (SQLException e) {

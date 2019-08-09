@@ -17,9 +17,17 @@ import java.util.Set;
 @Data
 public class Table {
 
+    /**
+     * 导入的包名
+     */
     private final Set<String> importPackages = new HashSet<>();
+
     /**
      * 表名
+     */
+    private String tableName;
+    /**
+     * 名称
      */
     private String name;
     /**

@@ -2,7 +2,7 @@ package cn.tswine.jdbc.generator.engine;
 
 import cn.tswine.jdbc.common.exception.TswineJdbcException;
 import cn.tswine.jdbc.generator.builder.ConfigBuilder;
-import cn.tswine.jdbc.generator.config.pojo.EntityInfo;
+import cn.tswine.jdbc.generator.config.pojo.Table;
 import lombok.Getter;
 
 import java.io.File;
@@ -41,6 +41,12 @@ public abstract class AbstractTemplateEngine {
      */
     public abstract void writer(String templatePath, String outputFile, Map<String, Object> params);
 
+    /**
+     * 模板后缀
+     *
+     * @return
+     */
+    public abstract String templateSuffix();
 
     /**
      * 创建目录
@@ -51,7 +57,7 @@ public abstract class AbstractTemplateEngine {
         String outputDir = getConfigBuilder().getGlobalConfig().getOutputDir();
         List<String> outputDirs = new ArrayList<>();
         outputDirs.add(outputDir);
-        outputDirs.add(outputDir + File.separator + getConfigBuilder().getStrategyConfig().getEntityPackageName());
+        outputDirs.add(outputDir + File.separator + getConfigBuilder().getStrategyConfig().configEntity().getPackageName());
         for (String strDir : outputDirs) {
             File dir = new File(strDir);
             if (!dir.exists()) {
@@ -69,18 +75,15 @@ public abstract class AbstractTemplateEngine {
      */
     public AbstractTemplateEngine batchGenerator() {
         try {
-            //批量生成文件
-            //entity
-            List<EntityInfo> entityInfoList = configBuilder.getEntityInfoList();
-            for (EntityInfo entityInfo : entityInfoList) {
-                Map<String, Object> paramsMap = getParamsMap(configBuilder);
-                String entityName = entityInfo.getName();
-                String outputFile = configBuilder.getGlobalConfig().getOutputDir()
-                        + File.separator + configBuilder.getStrategyConfig().getEntityPackageName()
+            for (Table table : configBuilder.getTableList()) {
+                Map<String, Object> paramsMap = getParamsMap(configBuilder, table);
+
+                //生成实体
+                String entityName = table.getName();
+                String entityOutputFile = configBuilder.getGlobalConfig().getOutputDir()
+                        + File.separator + configBuilder.getStrategyConfig().configEntity().getPackageName()
                         + File.separator + entityName + ".java";
-                System.out.println(outputFile);
-                paramsMap.put("entity", entityInfo);
-                writer("/templates/entity.java.btl", outputFile, paramsMap);
+                writer(configBuilder.getTemplateConfig().getEntity() + templateSuffix(), entityOutputFile, paramsMap);
 
             }
         } catch (Exception e) {
@@ -89,15 +92,28 @@ public abstract class AbstractTemplateEngine {
         return this;
     }
 
-    public Map<String, Object> getParamsMap(ConfigBuilder configBuilder) {
+    /**
+     * 设置生成模板需要的参数
+     *
+     * @param configBuilder
+     * @param table
+     * @return
+     */
+    public Map<String, Object> getParamsMap(ConfigBuilder configBuilder, Table table) {
         Map<String, Object> paramMap = new HashMap<>();
         //设置作者
         paramMap.put("author", configBuilder.getGlobalConfig().getAuthor());
         paramMap.put("parentPackage", configBuilder.getGlobalConfig().getParentPackage());
-        paramMap.put("entityPackage", configBuilder.getStrategyConfig().getEntityPackageName());
+
         //设置日期
         paramMap.put("swagger", configBuilder.getGlobalConfig().isSwagger());
         paramMap.put("lombok", configBuilder.getGlobalConfig().isLombok());
+        paramMap.put("table", table);
+
+        //实体参数
+        paramMap.put("entityPackage", configBuilder.getStrategyConfig().configEntity().getPackageName());
+        paramMap.put("tableConstant", configBuilder.getStrategyConfig().configEntity().isTableConstant());
+        paramMap.put("columnConstant", configBuilder.getStrategyConfig().configEntity().isColumnConstant());
 
         return paramMap;
     }

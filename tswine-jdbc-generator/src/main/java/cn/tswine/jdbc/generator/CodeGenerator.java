@@ -5,10 +5,13 @@ import cn.tswine.jdbc.generator.builder.ConfigBuilder;
 import cn.tswine.jdbc.generator.config.DataSourceConfig;
 import cn.tswine.jdbc.generator.config.GlobalConfig;
 import cn.tswine.jdbc.generator.config.StrategyConfig;
+import cn.tswine.jdbc.generator.config.TemplateConfig;
 import cn.tswine.jdbc.generator.engine.AbstractTemplateEngine;
 import cn.tswine.jdbc.generator.engine.BeetlTemplateEngine;
 import lombok.Data;
 import lombok.experimental.Accessors;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 
 /**
@@ -22,36 +25,51 @@ import lombok.experimental.Accessors;
 @Data
 @Accessors(chain = true)
 public class CodeGenerator {
+    protected static final Logger logger = LoggerFactory.getLogger(CodeGenerator.class);
+
 
     /**
      * 数据库配置
      */
-    DataSourceConfig dataSourceConfig;
+    private DataSourceConfig dataSourceConfig;
     /**
      * 全局配置
      */
-    GlobalConfig globalConfig;
+    private GlobalConfig globalConfig;
 
     /**
      * 模板引擎
      */
-    AbstractTemplateEngine templateEngine;
+    private AbstractTemplateEngine templateEngine;
+    /**
+     * 模板配置
+     */
+    private TemplateConfig templateConfig;
 
+    /**
+     * 策略配置
+     */
+    private StrategyConfig strategyConfig;
 
-    StrategyConfig strategyConfig;
 
     /**
      * 执行生成
      */
     public void execute() {
+        logger.debug("开始生成代码");
         if (dataSourceConfig == null) {
             throw new TswineJdbcException("数据源配置不能为空:DataSourceConfig");
         }
-        //校验数据
         if (globalConfig == null) {
             globalConfig = new GlobalConfig();
         }
-        ConfigBuilder configBuilder = new ConfigBuilder(dataSourceConfig, globalConfig, strategyConfig);
+        if (strategyConfig == null) {
+            strategyConfig = new StrategyConfig();
+        }
+        if (templateConfig == null) {
+            templateConfig = new TemplateConfig();
+        }
+        ConfigBuilder configBuilder = new ConfigBuilder(dataSourceConfig, globalConfig, strategyConfig, templateConfig);
         templateEngine = new BeetlTemplateEngine();
         templateEngine.init(configBuilder).mkdirs().batchGenerator();
     }

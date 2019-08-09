@@ -36,9 +36,10 @@ public class CodeGeneratorMySQLTest extends BaseCodeGeneratorTest {
 
     private StrategyConfig strategyConfig() {
         StrategyConfig strategyConfig = new StrategyConfig();
-        strategyConfig.setEntityPackageName("entity");
-        strategyConfig.setEntityTableConstant(true);
-        strategyConfig.setEntityColumnConstant(true);
+        strategyConfig.configEntity()
+                .setTableConstant(true)
+                .setColumnConstant(true)
+                .setPackageName("model");
         return strategyConfig;
     }
 

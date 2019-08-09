@@ -49,5 +49,10 @@ public class BeetlTemplateEngine extends AbstractTemplateEngine {
 
     }
 
+    @Override
+    public String templateSuffix() {
+        return ".btl";
+    }
+
 
 }

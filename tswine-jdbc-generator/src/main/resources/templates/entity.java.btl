@@ -1,6 +1,6 @@
 package ${parentPackage}.${entityPackage};
 
-<% for(packageName in entity.importPackages ) {%>
+<% for(packageName in table.importPackages ) {%>
 import ${packageName};
 <%}%>
 <% if(lombok) {%>
@@ -10,7 +10,7 @@ import lombok.experimental.Accessors;
 
 /**
  * <p>
- * ${entity.comment!}
+ * ${table.comment!}
  * </p>
  *
  * @Author ${author}
@@ -21,19 +21,19 @@ import lombok.experimental.Accessors;
  @Data
  @Accessors(chain = true)
  <%}%>
-public class ${entity.name} {
+public class ${table.name} {
 
-    <% if(entity.tableConstant) {%>
-    public static final String TABLE_NAME = "${entity.tableName}";
+    <% if(tableConstant) {%>
+    public static final String TABLE_NAME = "${table.tableName}";
     <%}%>
 
-    <% if(entity.columnConstant) {%>
-    <% for(field in entity.tableFields){%>
+    <% if(columnConstant) {%>
+    <% for(field in table.tableFields){%>
     public static final String FIELD_${toUpperCase(field.columnName)} = "${field.columnName}";
     <%}%>
     <%}%>
 
-    <% for(field in entity.tableFields) {%>
+    <% for(field in table.tableFields) {%>
     /**
      * ${field.columnComment}
      */
@@ -41,7 +41,7 @@ public class ${entity.name} {
     <%}%>
 
     <% if(!lombok) {%>
-    <% for(field in entity.tableFields) {%>
+    <% for(field in table.tableFields) {%>
     /**
      * 设置${field.columnComment}
      */
