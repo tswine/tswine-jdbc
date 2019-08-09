@@ -25,7 +25,7 @@ public class StrategyConfig {
     /**
      * 实体包名
      */
-    private String entity = "entity";
+    private String entityPackageName = "entity";
 
     /**
      * 实体类名命名策略
@@ -46,10 +46,6 @@ public class StrategyConfig {
      */
     private boolean entityTableConstant = true;
 
-    /**
-     * 是否采用lombok注解
-     */
-    private boolean entityLombok = false;
     /**
      * 头部注解
      */

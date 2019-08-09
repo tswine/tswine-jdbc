@@ -17,7 +17,7 @@ import java.util.Map;
  * @Author: silly
  * @Date: 2019/8/7 15:43
  * @Version 1.0
- * @Desc 文档地址：http://ibeetl.com/guide/#beetl
+ * @Desc http://ibeetl.com/guide/#beetl
  */
 public class BeetlTemplateEngine extends AbstractTemplateEngine {
 

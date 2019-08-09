@@ -3,6 +3,7 @@ package cn.tswine.jdbc.test.generator;
 import cn.tswine.jdbc.common.annotation.DbType;
 import cn.tswine.jdbc.generator.CodeGenerator;
 import cn.tswine.jdbc.generator.config.DataSourceConfig;
+import cn.tswine.jdbc.generator.config.GlobalConfig;
 import cn.tswine.jdbc.generator.config.StrategyConfig;
 import org.junit.Before;
 import org.junit.Test;
@@ -35,13 +36,26 @@ public class CodeGeneratorMySQLTest extends BaseCodeGeneratorTest {
 
     private StrategyConfig strategyConfig() {
         StrategyConfig strategyConfig = new StrategyConfig();
+        strategyConfig.setEntityPackageName("entity");
+        strategyConfig.setEntityTableConstant(true);
+        strategyConfig.setEntityColumnConstant(true);
         return strategyConfig;
+    }
+
+    private GlobalConfig globalConfig() {
+        GlobalConfig globalConfig = new GlobalConfig();
+        globalConfig.setAuthor("silly");
+        globalConfig.setOutputDir("E:\\workspace\\tswine\\tswine-jdbc\\tswine-jdbc-test\\src\\main\\java\\cn\\tswine\\jdbc\\test\\generator");
+        globalConfig.setParentPackage("cn.tswine.jdbc.test.generator");
+        globalConfig.setLombok(false);
+        return globalConfig;
     }
 
 
     @Test
     public void execute() {
         codeGenerator.setStrategyConfig(strategyConfig());
+        codeGenerator.setGlobalConfig(globalConfig());
         codeGenerator.execute();
     }
 

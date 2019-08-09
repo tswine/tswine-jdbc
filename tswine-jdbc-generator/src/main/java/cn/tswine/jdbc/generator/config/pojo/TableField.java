@@ -39,4 +39,6 @@ public class TableField {
      * 字段名称
      */
     private String fieldName;
+
+
 }

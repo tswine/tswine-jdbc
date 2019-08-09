@@ -34,6 +34,7 @@
             <groupId>cn.tswine.jdbc</groupId>
             <artifactId>tswine-jdbc-common</artifactId>
         </dependency>
+
     </dependencies>
 
 </project>

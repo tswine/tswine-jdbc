@@ -6,6 +6,8 @@ import cn.tswine.jdbc.generator.config.pojo.EntityInfo;
 import lombok.Getter;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -47,12 +49,14 @@ public abstract class AbstractTemplateEngine {
      */
     public AbstractTemplateEngine mkdirs() {
         String outputDir = getConfigBuilder().getGlobalConfig().getOutputDir();
-        File dir = new File(outputDir);
-        if (!dir.exists()) {
-            //递归创建文件目录
-            boolean flag = dir.mkdirs();
-            if (!flag) {
-                throw new TswineJdbcException(String.format("AbstractTemplateEngine->batchGenerator创建目录失败,dir:%s", outputDir));
+        List<String> outputDirs = new ArrayList<>();
+        outputDirs.add(outputDir);
+        outputDirs.add(outputDir + File.separator + getConfigBuilder().getStrategyConfig().getEntityPackageName());
+        for (String strDir : outputDirs) {
+            File dir = new File(strDir);
+            if (!dir.exists()) {
+                //递归创建文件目录
+                dir.mkdirs();
             }
         }
         return this;
@@ -69,12 +73,33 @@ public abstract class AbstractTemplateEngine {
             //entity
             List<EntityInfo> entityInfoList = configBuilder.getEntityInfoList();
             for (EntityInfo entityInfo : entityInfoList) {
+                Map<String, Object> paramsMap = getParamsMap(configBuilder);
+                String entityName = entityInfo.getName();
+                String outputFile = configBuilder.getGlobalConfig().getOutputDir()
+                        + File.separator + configBuilder.getStrategyConfig().getEntityPackageName()
+                        + File.separator + entityName + ".java";
+                System.out.println(outputFile);
+                paramsMap.put("entity", entityInfo);
+                writer("/templates/entity.java.btl", outputFile, paramsMap);
 
             }
         } catch (Exception e) {
             throw new TswineJdbcException("AbstractTemplateEngine->batchGenerator", e);
         }
         return this;
+    }
+
+    public Map<String, Object> getParamsMap(ConfigBuilder configBuilder) {
+        Map<String, Object> paramMap = new HashMap<>();
+        //设置作者
+        paramMap.put("author", configBuilder.getGlobalConfig().getAuthor());
+        paramMap.put("parentPackage", configBuilder.getGlobalConfig().getParentPackage());
+        paramMap.put("entityPackage", configBuilder.getStrategyConfig().getEntityPackageName());
+        //设置日期
+        paramMap.put("swagger", configBuilder.getGlobalConfig().isSwagger());
+        paramMap.put("lombok", configBuilder.getGlobalConfig().isLombok());
+
+        return paramMap;
     }
 
 }

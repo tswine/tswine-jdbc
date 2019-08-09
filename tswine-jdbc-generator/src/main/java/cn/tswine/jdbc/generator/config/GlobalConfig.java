@@ -37,9 +37,18 @@ public class GlobalConfig {
     private String author;
 
     /**
+     * 是否采用swagger注解
+     */
+    private boolean swagger = true;
+    /**
+     * 是否采用lombok注解
+     */
+    private boolean lombok = true;
+
+    /**
      * 父包名
      */
-    private String parent = "default";
+    private String parentPackage = "default";
 
     /**
      * 包含的表

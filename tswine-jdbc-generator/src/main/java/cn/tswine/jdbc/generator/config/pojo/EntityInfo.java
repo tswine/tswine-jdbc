@@ -48,11 +48,6 @@ public class EntityInfo {
     private boolean tableConstant;
 
     /**
-     * 是否采用lombok注解
-     */
-    private boolean lombok;
-
-    /**
      * 列字段
      */
     //TODO 不让lombok生成set方法
@@ -76,7 +71,6 @@ public class EntityInfo {
     public EntityInfo(Table table, StrategyConfig strategyConfig) {
         this.columnConstant = strategyConfig.isEntityColumnConstant();
         this.tableConstant = strategyConfig.isEntityTableConstant();
-        this.lombok = strategyConfig.isEntityLombok();
         this.comment = table.getComment();
         tableName = table.getName();
         name = NameStrategy.changeNameStrategy(tableName, strategyConfig.getEntityClassNameStrategy());
@@ -119,4 +113,6 @@ public class EntityInfo {
             }
         }
     }
+
+
 }
