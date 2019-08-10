@@ -21,4 +21,13 @@ public class KV<K, V> {
      * 值
      */
     V value;
+
+    public KV() {
+
+    }
+
+    public KV(K key, V value) {
+        this.key = key;
+        this.value = value;
+    }
 }

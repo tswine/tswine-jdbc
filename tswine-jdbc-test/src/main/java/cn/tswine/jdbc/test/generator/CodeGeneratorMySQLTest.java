@@ -1,6 +1,9 @@
 package cn.tswine.jdbc.test.generator;
 
+import cn.tswine.jdbc.common.ConstValue;
 import cn.tswine.jdbc.common.annotation.DbType;
+import cn.tswine.jdbc.common.annotation.TableName;
+import cn.tswine.jdbc.common.vo.KV;
 import cn.tswine.jdbc.generator.CodeGenerator;
 import cn.tswine.jdbc.generator.config.DataSourceConfig;
 import cn.tswine.jdbc.generator.config.GlobalConfig;
@@ -39,32 +42,29 @@ public class CodeGeneratorMySQLTest extends BaseCodeGeneratorTest {
         strategyConfig.configEntity()
                 .setTableConstant(true)
                 .setColumnConstant(true)
-                .setPackageName("model");
+                .setPackageName("model")
+                .setAnnotationClass(new KV<>("@TableName(\""+ ConstValue.GenerqatorPlaceholder.TABLE_NAME +"\")", TableName.class.getName()));
         return strategyConfig;
     }
 
     private GlobalConfig globalConfig() {
         GlobalConfig globalConfig = new GlobalConfig();
-        globalConfig.setAuthor("silly");
-        globalConfig.setOutputDir("E:\\workspace\\tswine\\tswine-jdbc\\tswine-jdbc-test\\src\\main\\java\\cn\\tswine\\jdbc\\test\\generator");
-        globalConfig.setParentPackage("cn.tswine.jdbc.test.generator");
-        globalConfig.setLombok(false);
-        globalConfig.setOverrideExistFile(false);
+        globalConfig.setAuthor("silly")
+                .setOutputDir("E:\\workspace\\tswine\\tswine-jdbc\\tswine-jdbc-test\\src\\main\\java\\cn\\tswine\\jdbc\\test\\generator")
+                .setParentPackage("cn.tswine.jdbc.test.generator")
+                .setLombok(false)
+                .setOverrideExistFile(true);
+//        globalConfig.setExcludeFields(new String[]{"delete_time","create_time"});
+//        globalConfig.setIncludeTables(new String[]{"sys_menu"});
+//        globalConfig.setExcludeTables(new String[]{"sys_menu"});
         return globalConfig;
     }
-
 
     @Test
     public void execute() {
         codeGenerator.setStrategyConfig(strategyConfig());
         codeGenerator.setGlobalConfig(globalConfig());
         codeGenerator.execute();
-    }
-
-
-    @Test
-    public void beetlTemplateEngine() {
-
     }
 
 

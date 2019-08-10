@@ -56,12 +56,16 @@ public class GlobalConfig {
     private String[] includeTables = null;
 
     /**
-     * 排出的表
+     * 排除的表
      */
     private String[] excludeTables = null;
+    /**
+     * 排除的字段
+     */
+    private String[] excludeFields = null;
 
     /**
      * 是否跳过视图
      */
-    private boolean skipView = false;
+    private boolean skipView = true;
 }

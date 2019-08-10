@@ -1,6 +1,6 @@
 package cn.tswine.jdbc.test.generator;
 
-import cn.tswine.jdbc.generator.config.pojo.Table;
+import cn.tswine.jdbc.generator.config.pojo.TableInfo;
 
 import java.util.List;
 
@@ -12,7 +12,7 @@ import java.util.List;
  */
 public class BaseCodeGeneratorTest {
 
-    protected void printTable(List<Table> tableList) {
+    protected void printTable(List<TableInfo> tableList) {
         tableList.forEach(t -> {
             System.out.println(t.toString());
             t.getTableFields().forEach(f -> {

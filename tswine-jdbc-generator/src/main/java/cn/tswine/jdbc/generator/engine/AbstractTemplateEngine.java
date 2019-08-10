@@ -1,16 +1,14 @@
 package cn.tswine.jdbc.generator.engine;
 
 import cn.tswine.jdbc.common.exception.TswineJdbcException;
+import cn.tswine.jdbc.common.vo.KV;
 import cn.tswine.jdbc.generator.builder.ConfigBuilder;
-import cn.tswine.jdbc.generator.config.pojo.Table;
+import cn.tswine.jdbc.generator.config.pojo.TableInfo;
 import lombok.Getter;
 import org.apache.log4j.Logger;
 
 import java.io.File;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * 模板引擎抽象类
@@ -77,30 +75,54 @@ public abstract class AbstractTemplateEngine {
      */
     public AbstractTemplateEngine batchGenerator() {
         try {
-            for (Table table : configBuilder.getTableList()) {
-                Map<String, Object> paramsMap = getParamsMap(configBuilder, table);
-                //生成实体
-                if (configBuilder.getStrategyConfig().configEntity().isGenerator()) {
-                    String entityName = table.getName();
-                    String entityOutputFile = configBuilder.getGlobalConfig().getOutputDir()
-                            + File.separator + configBuilder.getStrategyConfig().configEntity().getPackageName()
-                            + File.separator + entityName + ".java";
-                    logger.info("生成实体:" + entityOutputFile);
-                    if (isExists(entityOutputFile)) {
-                        if (!configBuilder.getGlobalConfig().isOverrideExistFile()) {
-                            throw new TswineJdbcException(String.format("文件已经存在,全局配置不允许覆盖存在文件,%s", entityOutputFile));
-                        }
-                    }
-                    writer(configBuilder.getTemplateConfig().getEntity() + templateSuffix(), entityOutputFile, paramsMap);
-                } else {
-                    logger.info("配置不需要生成实体文件");
-                }
-
+            for (TableInfo tableInfo : configBuilder.getTableList()) {
+                Map<String, Object> paramsMap = getParamsMap(configBuilder, tableInfo);
+                generatorEntity(tableInfo, paramsMap);
             }
         } catch (Exception e) {
             throw new TswineJdbcException("AbstractTemplateEngine->batchGenerator", e);
         }
         return this;
+    }
+
+    /**
+     * 生成实体
+     */
+    private AbstractTemplateEngine generatorEntity(TableInfo tableInfo, Map<String, Object> paramsMap) {
+        //生成实体
+        if (configBuilder.getStrategyConfig().configEntity().isGenerator()) {
+            String entityName = tableInfo.getName();
+            String entityOutputFile = configBuilder.getGlobalConfig().getOutputDir()
+                    + File.separator + configBuilder.getStrategyConfig().configEntity().getPackageName()
+                    + File.separator + entityName + ".java";
+            logger.info("生成实体:" + entityOutputFile);
+            if (isExists(entityOutputFile)) {
+                if (!configBuilder.getGlobalConfig().isOverrideExistFile()) {
+                    throw new TswineJdbcException(String.format("文件已经存在,全局配置不允许覆盖存在文件,%s", entityOutputFile));
+                }
+            }
+            //收集实体对象额外需要导入的包
+            Set<String> entityImportPackages = new HashSet<>();
+            KV<String, String> entityAnnotationClass = configBuilder.getStrategyConfig().configEntity().getAnnotationClass();
+            if (entityAnnotationClass != null) {
+                paramsMap.put("entityAnnotationClass", true);
+                paramsMap.put("entityAnnotationClassValue", entityAnnotationClass.getKey());
+                if (entityAnnotationClass.getValue() != null) {
+                    entityImportPackages.add(entityAnnotationClass.getValue());
+                }
+            } else {
+                paramsMap.put("entityAnnotationClass", false);
+            }
+
+//                    put("entityAnnotationField", configBuilder.getStrategyConfig().configEntity().getAnnotationField());
+//                    paramMap.put("entityAnnotationFieldKey", configBuilder.getStrategyConfig().configEntity().getAnnotationFieldKey());
+            paramsMap.put("entityImportPackages", entityImportPackages);
+            writer(configBuilder.getTemplateConfig().getEntity() + templateSuffix(), entityOutputFile, paramsMap);
+        } else {
+            logger.info("配置不需要生成实体文件");
+        }
+        return this;
+
     }
 
     /**
@@ -110,23 +132,23 @@ public abstract class AbstractTemplateEngine {
      * @param table
      * @return
      */
-    public Map<String, Object> getParamsMap(ConfigBuilder configBuilder, Table table) {
-        Map<String, Object> paramMap = new HashMap<>();
+    public Map<String, Object> getParamsMap(ConfigBuilder configBuilder, TableInfo table) {
+        Map<String, Object> paramsMap = new HashMap<>();
         //设置作者
-        paramMap.put("author", configBuilder.getGlobalConfig().getAuthor());
-        paramMap.put("parentPackage", configBuilder.getGlobalConfig().getParentPackage());
+        paramsMap.put("author", configBuilder.getGlobalConfig().getAuthor());
+        paramsMap.put("parentPackage", configBuilder.getGlobalConfig().getParentPackage());
 
         //设置日期
-        paramMap.put("swagger", configBuilder.getGlobalConfig().isSwagger());
-        paramMap.put("lombok", configBuilder.getGlobalConfig().isLombok());
-        paramMap.put("table", table);
+        paramsMap.put("swagger", configBuilder.getGlobalConfig().isSwagger());
+        paramsMap.put("lombok", configBuilder.getGlobalConfig().isLombok());
+        paramsMap.put("table", table);
 
         //实体参数
-        paramMap.put("entityPackage", configBuilder.getStrategyConfig().configEntity().getPackageName());
-        paramMap.put("tableConstant", configBuilder.getStrategyConfig().configEntity().isTableConstant());
-        paramMap.put("columnConstant", configBuilder.getStrategyConfig().configEntity().isColumnConstant());
+        paramsMap.put("entityPackage", configBuilder.getStrategyConfig().configEntity().getPackageName());
+        paramsMap.put("tableConstant", configBuilder.getStrategyConfig().configEntity().isTableConstant());
+        paramsMap.put("columnConstant", configBuilder.getStrategyConfig().configEntity().isColumnConstant());
 
-        return paramMap;
+        return paramsMap;
     }
 
     /**

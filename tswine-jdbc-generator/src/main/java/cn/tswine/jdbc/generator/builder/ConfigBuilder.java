@@ -4,7 +4,7 @@ import cn.tswine.jdbc.common.annotation.DbType;
 import cn.tswine.jdbc.common.exception.TswineJdbcException;
 import cn.tswine.jdbc.common.utils.StringUtils;
 import cn.tswine.jdbc.generator.config.*;
-import cn.tswine.jdbc.generator.config.pojo.Table;
+import cn.tswine.jdbc.generator.config.pojo.TableInfo;
 import cn.tswine.jdbc.generator.config.pojo.TableField;
 import cn.tswine.jdbc.generator.config.rules.NameStrategy;
 import lombok.Data;
@@ -31,7 +31,7 @@ public class ConfigBuilder {
     /**
      * 数据库表信息
      */
-    private List<Table> tableList;
+    private List<TableInfo> tableList;
 
     /**
      * 数据源配置
@@ -84,9 +84,9 @@ public class ConfigBuilder {
      *
      * @return
      */
-    private List<Table> getTables() {
+    private List<TableInfo> getTables() {
 
-        List<Table> tableList = new ArrayList<>();
+        List<TableInfo> tableList = new ArrayList<>();
         String tablesSql = dbQuery.tableSql();
         if (DbType.POSTGRE_SQL == dbQuery.dbType()) {
             String schema = dataSourceConfig.getSchemaName();
@@ -102,7 +102,7 @@ public class ConfigBuilder {
             while (rs.next()) {
                 String tableName = rs.getString(dbQuery.tableName());
                 if (!StringUtils.isEmpty(tableName)) {
-                    Table table = new Table();
+                    TableInfo table = new TableInfo();
                     table.setTableName(tableName);
                     //表注解
                     String tableComment = rs.getString(dbQuery.tableComment());
@@ -120,7 +120,7 @@ public class ConfigBuilder {
         } catch (SQLException e) {
             throw new TswineJdbcException("getTables执行异常", e);
         }
-        List<Table> goalTables = null;
+        List<TableInfo> goalTables = null;
         if (globalConfig.getIncludeTables() != null && globalConfig.getIncludeTables().length > 0) {
             //只要包含的表
             String[] includeTables = globalConfig.getIncludeTables();
@@ -129,8 +129,8 @@ public class ConfigBuilder {
                 if (StringUtils.isEmpty(str)) {
                     continue;
                 }
-                for (Table table : tableList) {
-                    if (table.getName().equalsIgnoreCase(str)) {
+                for (TableInfo table : tableList) {
+                    if (table.getTableName().equalsIgnoreCase(str)) {
                         goalTables.add(table);
                     }
                 }
@@ -138,14 +138,14 @@ public class ConfigBuilder {
         } else if (globalConfig.getExcludeTables() != null && globalConfig.getExcludeTables().length > 0) {
             String[] excludeTables = globalConfig.getExcludeTables();
             //排除指定的表
-            Iterator<Table> iterator = tableList.iterator();
+            Iterator<TableInfo> iterator = tableList.iterator();
             while (iterator.hasNext()) {
-                Table table = iterator.next();
+                TableInfo table = iterator.next();
                 for (String str : excludeTables) {
                     if (StringUtils.isEmpty(str)) {
                         continue;
                     }
-                    if (table.getName().equalsIgnoreCase(str)) {
+                    if (table.getTableName().equalsIgnoreCase(str)) {
                         iterator.remove();
                     }
                 }
@@ -165,9 +165,7 @@ public class ConfigBuilder {
      * @param table
      * @return
      */
-    private Table getTableField(Table table) {
-        //TODO 排除字段
-//        ITypeConvert typeConvert = dataSourceConfig.getTypeConvert();
+    private TableInfo getTableField(TableInfo table) {
         //查询表字段
         List<TableField> tableFields = new ArrayList<>();
         String tableName = table.getTableName();
@@ -181,8 +179,22 @@ public class ConfigBuilder {
         try (PreparedStatement ps = connection.prepareStatement(tableFiledSql)) {
             ResultSet rs = ps.executeQuery();
             while (rs.next()) {
+                String fieldName = rs.getString(dbQuery.fieldName());
+                boolean isExclude = false;
+                //排除字段
+                if (globalConfig.getExcludeFields() != null) {
+                    for (String str : globalConfig.getExcludeFields()) {
+                        if (!StringUtils.isEmpty(str) && str.equalsIgnoreCase(fieldName)) {
+                            isExclude = true;
+                            break;
+                        }
+                    }
+                }
+                if (isExclude) {
+                    continue;
+                }
                 TableField tableField = new TableField();
-                tableField.setColumnName(rs.getString(dbQuery.fieldName()));
+                tableField.setColumnName(fieldName);
                 tableField.setColumnComment(rs.getString(dbQuery.fieldComment()));
                 tableField.setColumnType(rs.getString(dbQuery.fieldType()));
                 tableField.setKey(dbQuery.isFieldKey(rs.getString(dbQuery.fieldKey())));

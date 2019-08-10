@@ -7,6 +7,9 @@ import ${packageName};
 import lombok.Data;
 import lombok.experimental.Accessors;
 <%}%>
+<% for(packageName in entityImportPackages) {%>
+import ${packageName};
+<%}%>
 
 /**
  * <p>
@@ -18,9 +21,12 @@ import lombok.experimental.Accessors;
  * @Desc
  */
  <% if(lombok) {%>
- @Data
- @Accessors(chain = true)
+@Data
+@Accessors(chain = true)
  <%}%>
+<% if(entityAnnotationClass) {%>
+${entityAnnotationClassValue}
+<%}%>
 public class ${table.name} {
 
     <% if(tableConstant) {%>

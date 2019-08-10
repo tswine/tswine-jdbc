@@ -43,5 +43,9 @@ public class ConstValue {
          * 表字段
          */
         public final static String TABLE_FIELD = "<TABLE_FIELD>";
+        /**
+         * 表字段主键
+         */
+        public final static String TABLE_FIELD_KEY = "<TABLE_FIELD_KEY>";
     }
 }

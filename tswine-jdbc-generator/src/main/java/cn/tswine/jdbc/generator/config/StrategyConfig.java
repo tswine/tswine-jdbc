@@ -5,8 +5,6 @@ import cn.tswine.jdbc.generator.config.rules.NameStrategy;
 import lombok.Data;
 import lombok.experimental.Accessors;
 
-import java.util.List;
-
 /**
  * 策略配置
  *
@@ -16,7 +14,6 @@ import java.util.List;
  * @Desc
  */
 public class StrategyConfig {
-
 
     /**
      * 实体配置
@@ -69,15 +66,18 @@ public class StrategyConfig {
          * 是否为表名生成字段常量
          */
         private boolean tableConstant = true;
-
         /**
-         * 头部注解
+         * 类注解
          */
-        private List<KV<String, String>> classAnnotations;
+        private KV<String, String> annotationClass = null;
         /**
-         * 字段注解：针对所有字段生效
+         * 字段注解
          */
-        private List<KV<String, String>> fieldAnnotations;
+        private KV<String, String> annotationField = null;
+        /**
+         * 字段注解注解
+         */
+        private KV<String, String> annotationFieldKey = null;
     }
 
 

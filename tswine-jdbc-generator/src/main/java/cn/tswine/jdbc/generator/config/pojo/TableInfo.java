@@ -15,7 +15,7 @@ import java.util.Set;
  * @Desc
  */
 @Data
-public class Table {
+public class TableInfo {
 
     /**
      * 导入的包名
@@ -41,7 +41,7 @@ public class Table {
     private List<TableField> tableFields;
 
 
-    public Table setTableFields(List<TableField> tableFields) {
+    public TableInfo setTableFields(List<TableField> tableFields) {
         //收集需要导入的包
         if (tableFields != null && tableFields.size() > 0) {
             tableFields.forEach(k -> {
