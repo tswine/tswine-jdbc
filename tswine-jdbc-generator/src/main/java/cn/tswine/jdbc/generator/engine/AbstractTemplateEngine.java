@@ -105,17 +105,25 @@ public abstract class AbstractTemplateEngine {
             Set<String> entityImportPackages = new HashSet<>();
             KV<String, String> entityAnnotationClass = configBuilder.getStrategyConfig().configEntity().getAnnotationClass();
             if (entityAnnotationClass != null) {
-                paramsMap.put("entityAnnotationClass", true);
-                paramsMap.put("entityAnnotationClassValue", entityAnnotationClass.getKey());
+                paramsMap.put("entityAnnotationClass", entityAnnotationClass.getKey());
                 if (entityAnnotationClass.getValue() != null) {
                     entityImportPackages.add(entityAnnotationClass.getValue());
                 }
-            } else {
-                paramsMap.put("entityAnnotationClass", false);
             }
-
-//                    put("entityAnnotationField", configBuilder.getStrategyConfig().configEntity().getAnnotationField());
-//                    paramMap.put("entityAnnotationFieldKey", configBuilder.getStrategyConfig().configEntity().getAnnotationFieldKey());
+            KV<String, String> entityAnnotationField = configBuilder.getStrategyConfig().configEntity().getAnnotationField();
+            if (entityAnnotationField != null) {
+                paramsMap.put("entityAnnotationField", entityAnnotationField.getKey());
+                if (entityAnnotationField.getValue() != null) {
+                    entityImportPackages.add(entityAnnotationField.getValue());
+                }
+            }
+            KV<String, String> entityAnnotationFieldKey = configBuilder.getStrategyConfig().configEntity().getAnnotationFieldKey();
+            if (entityAnnotationFieldKey != null) {
+                paramsMap.put("entityAnnotationFieldKey", entityAnnotationFieldKey.getKey());
+                if (entityAnnotationFieldKey.getValue() != null) {
+                    entityImportPackages.add(entityAnnotationFieldKey.getValue());
+                }
+            }
             paramsMap.put("entityImportPackages", entityImportPackages);
             writer(configBuilder.getTemplateConfig().getEntity() + templateSuffix(), entityOutputFile, paramsMap);
         } else {

@@ -2,6 +2,8 @@ package cn.tswine.jdbc.test.generator;
 
 import cn.tswine.jdbc.common.ConstValue;
 import cn.tswine.jdbc.common.annotation.DbType;
+import cn.tswine.jdbc.common.annotation.TableField;
+import cn.tswine.jdbc.common.annotation.TableId;
 import cn.tswine.jdbc.common.annotation.TableName;
 import cn.tswine.jdbc.common.vo.KV;
 import cn.tswine.jdbc.generator.CodeGenerator;
@@ -43,7 +45,9 @@ public class CodeGeneratorMySQLTest extends BaseCodeGeneratorTest {
                 .setTableConstant(true)
                 .setColumnConstant(true)
                 .setPackageName("model")
-                .setAnnotationClass(new KV<>("@TableName(\""+ ConstValue.GenerqatorPlaceholder.TABLE_NAME +"\")", TableName.class.getName()));
+                .setAnnotationClass(new KV<>("@TableName(value=\"" + ConstValue.GenerqatorPlaceholder.TABLE_NAME + "\")", TableName.class.getName()))
+                .setAnnotationField(new KV<>("@TableField(value=\"" + ConstValue.GenerqatorPlaceholder.TABLE_FIELD + "\")", TableField.class.getName()))
+                .setAnnotationFieldKey(new KV<>("@TableId(value=\"" + ConstValue.GenerqatorPlaceholder.TABLE_FIELD + "\")", TableId.class.getName()));
         return strategyConfig;
     }
 
@@ -52,11 +56,13 @@ public class CodeGeneratorMySQLTest extends BaseCodeGeneratorTest {
         globalConfig.setAuthor("silly")
                 .setOutputDir("E:\\workspace\\tswine\\tswine-jdbc\\tswine-jdbc-test\\src\\main\\java\\cn\\tswine\\jdbc\\test\\generator")
                 .setParentPackage("cn.tswine.jdbc.test.generator")
-                .setLombok(false)
+                .setLombok(true)
                 .setOverrideExistFile(true);
 //        globalConfig.setExcludeFields(new String[]{"delete_time","create_time"});
 //        globalConfig.setIncludeTables(new String[]{"sys_menu"});
 //        globalConfig.setExcludeTables(new String[]{"sys_menu"});
+        //TODO 表名替换
+        //TODO swagger
         return globalConfig;
     }
 

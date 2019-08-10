@@ -24,8 +24,8 @@ import ${packageName};
 @Data
 @Accessors(chain = true)
  <%}%>
-<% if(entityAnnotationClass) {%>
-${entityAnnotationClassValue}
+<% if(isNotEmpty(entityAnnotationClass)) {%>
+${strutil.replace(entityAnnotationClass,"<TABLE_NAME>",table.tableName)}
 <%}%>
 public class ${table.name} {
 
@@ -35,7 +35,7 @@ public class ${table.name} {
 
     <% if(columnConstant) {%>
     <% for(field in table.tableFields){%>
-    public static final String FIELD_${toUpperCase(field.columnName)} = "${field.columnName}";
+    public static final String FIELD_${strutil.toUpperCase(field.columnName)} = "${field.columnName}";
     <%}%>
     <%}%>
 
@@ -43,6 +43,15 @@ public class ${table.name} {
     /**
      * ${field.columnComment}
      */
+     <% if(field.key) {%>
+        <% if(isNotEmpty(entityAnnotationFieldKey)) {%>
+    ${strutil.replace(entityAnnotationFieldKey,"<TABLE_FIELD>",field.columnName)}
+         <%}%>
+    <%}else{%>
+         <% if(isNotEmpty(entityAnnotationField)) {%>
+    ${strutil.replace(entityAnnotationField,"<TABLE_FIELD>",field.columnName)}
+        <%}%>
+    <%}%>
     private ${field.fieldType.type} ${field.fieldName};
     <%}%>
 
