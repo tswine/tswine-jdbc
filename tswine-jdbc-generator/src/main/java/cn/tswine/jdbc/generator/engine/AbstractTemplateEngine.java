@@ -147,7 +147,7 @@ public abstract class AbstractTemplateEngine {
         paramsMap.put("parentPackage", configBuilder.getGlobalConfig().getParentPackage());
 
         //设置日期
-        paramsMap.put("swagger", configBuilder.getGlobalConfig().isSwagger());
+        paramsMap.put("swagger2", configBuilder.getGlobalConfig().isSwagger2());
         paramsMap.put("lombok", configBuilder.getGlobalConfig().isLombok());
         paramsMap.put("table", table);
 

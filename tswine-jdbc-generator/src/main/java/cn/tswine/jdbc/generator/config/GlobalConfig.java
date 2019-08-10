@@ -37,13 +37,13 @@ public class GlobalConfig {
     private String author;
 
     /**
-     * 是否采用swagger注解
+     * 是否采用swagger2注解
      */
-    private boolean swagger = true;
+    private boolean swagger2 = false;
     /**
      * 是否采用lombok注解
      */
-    private boolean lombok = true;
+    private boolean lombok = false;
 
     /**
      * 父包名

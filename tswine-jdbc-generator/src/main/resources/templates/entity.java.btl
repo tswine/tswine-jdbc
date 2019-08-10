@@ -10,16 +10,23 @@ import lombok.experimental.Accessors;
 <% for(packageName in entityImportPackages) {%>
 import ${packageName};
 <%}%>
+<% if(swagger2) {%>
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
+<%}%>
 
 /**
  * <p>
- * ${table.comment!}
+ * ${table.comment}
  * </p>
  *
  * @Author ${author}
  * @Date ${date(),dateFormat="yyyy-MM-dd"}
  * @Desc
  */
+ <% if(swagger2) {%>
+@ApiModel(value = "${table.name}对象", description = "${table.comment}")
+ <% } %>
  <% if(lombok) {%>
 @Data
 @Accessors(chain = true)
@@ -39,10 +46,16 @@ public class ${table.name} {
     <%}%>
     <%}%>
 
+    <%/** ----------遍历表字段----------  **/%>
     <% for(field in table.tableFields) {%>
     /**
      * ${field.columnComment}
      */
+     <%/** ----------swagger2注解----------  **/%>
+     <% if(swagger2) {%>
+    @ApiModelProperty(value = "${field.columnComment}")
+     <%}%>
+     <%/** ----------自定义字段注解----------  **/%>
      <% if(field.key) {%>
         <% if(isNotEmpty(entityAnnotationFieldKey)) {%>
     ${strutil.replace(entityAnnotationFieldKey,"<TABLE_FIELD>",field.columnName)}

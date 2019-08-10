@@ -45,12 +45,12 @@ public class CodeGeneratorMySQLTest extends BaseCodeGeneratorTest {
                 .setTableConstant(true)
                 .setColumnConstant(true)
                 .setPackageName("model")
-                .setRemovePrefix(new String[]{"tdms","sys"})
-                .setAddPrefix("Test")
-                .setAddSuffix("Suffix")
-                .setAnnotationClass(new KV<>("@TableName(value=\"" + ConstValue.GenerqatorPlaceholder.TABLE_NAME + "\")", TableName.class.getName()))
-                .setAnnotationField(new KV<>("@TableField(value=\"" + ConstValue.GenerqatorPlaceholder.TABLE_FIELD + "\")", TableField.class.getName()))
-                .setAnnotationFieldKey(new KV<>("@TableId(value=\"" + ConstValue.GenerqatorPlaceholder.TABLE_FIELD + "\")", TableId.class.getName()));
+//                .setRemovePrefix(new String[]{"tdms", "sys"})
+//                .setAddPrefix("Test")
+//                .setAddSuffix("Suffix")
+                .setAnnotationClass(new KV<>("@TableName(value = \"" + ConstValue.GenerqatorPlaceholder.TABLE_NAME + "\")", TableName.class.getName()))
+                .setAnnotationField(new KV<>("@TableField(value = \"" + ConstValue.GenerqatorPlaceholder.TABLE_FIELD + "\")", TableField.class.getName()))
+                .setAnnotationFieldKey(new KV<>("@TableId(value = \"" + ConstValue.GenerqatorPlaceholder.TABLE_FIELD + "\")", TableId.class.getName()));
         return strategyConfig;
     }
 
@@ -60,11 +60,11 @@ public class CodeGeneratorMySQLTest extends BaseCodeGeneratorTest {
                 .setOutputDir("E:\\workspace\\tswine\\tswine-jdbc\\tswine-jdbc-test\\src\\main\\java\\cn\\tswine\\jdbc\\test\\generator")
                 .setParentPackage("cn.tswine.jdbc.test.generator")
                 .setLombok(true)
+                .setSwagger2(true)
                 .setOverrideExistFile(true);
 //        globalConfig.setExcludeFields(new String[]{"delete_time","create_time"});
 //        globalConfig.setIncludeTables(new String[]{"sys_menu"});
 //        globalConfig.setExcludeTables(new String[]{"sys_menu"});
-        //TODO swagger
         return globalConfig;
     }
 
