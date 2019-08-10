@@ -4,8 +4,8 @@ import cn.tswine.jdbc.common.annotation.DbType;
 import cn.tswine.jdbc.common.exception.TswineJdbcException;
 import cn.tswine.jdbc.common.utils.StringUtils;
 import cn.tswine.jdbc.generator.config.*;
-import cn.tswine.jdbc.generator.config.pojo.TableInfo;
 import cn.tswine.jdbc.generator.config.pojo.TableField;
+import cn.tswine.jdbc.generator.config.pojo.TableInfo;
 import cn.tswine.jdbc.generator.config.rules.NameStrategy;
 import lombok.Data;
 import org.apache.log4j.Logger;
@@ -85,7 +85,6 @@ public class ConfigBuilder {
      * @return
      */
     private List<TableInfo> getTables() {
-
         List<TableInfo> tableList = new ArrayList<>();
         String tablesSql = dbQuery.tableSql();
         if (DbType.POSTGRE_SQL == dbQuery.dbType()) {
@@ -110,7 +109,7 @@ public class ConfigBuilder {
                         //跳过视图
                         continue;
                     }
-                    table.setName(NameStrategy.changeNameStrategy(tableName, strategyConfig.configEntity().getClassNameStrategy()));
+                    table.setName(handleStrategyEntityName(tableName));
                     table.setComment(tableComment);
                     tableList.add(table);
                 } else {
@@ -157,6 +156,37 @@ public class ConfigBuilder {
         //获取表字段
         goalTables.forEach(table -> getTableField(table));
         return goalTables;
+    }
+
+    /**
+     * 实体名生成策略
+     *
+     * @param tableName
+     * @return
+     */
+    private String handleStrategyEntityName(String tableName) {
+        //去除前缀
+        String[] removePrefix = strategyConfig.configEntity().getRemovePrefix();
+        if (removePrefix != null) {
+            for (String prefix : removePrefix) {
+                if (tableName.startsWith(prefix)) {
+                    tableName = tableName.replaceFirst(prefix, "");
+                }
+            }
+        }
+        if (tableName.startsWith("_")) {
+            tableName = tableName.substring(1);
+        }
+        tableName = NameStrategy.changeNameStrategy(tableName, strategyConfig.configEntity().getClassNameStrategy());
+        //添加前缀
+        if (!StringUtils.isEmpty(strategyConfig.configEntity().getAddPrefix())) {
+            tableName = String.format("%s%s", strategyConfig.configEntity().getAddPrefix(), tableName);
+        }
+        //添加后缀
+        if (!StringUtils.isEmpty(strategyConfig.configEntity().getAddSuffix())) {
+            tableName = String.format("%s%s", tableName, strategyConfig.configEntity().getAddSuffix());
+        }
+        return tableName;
     }
 
     /**

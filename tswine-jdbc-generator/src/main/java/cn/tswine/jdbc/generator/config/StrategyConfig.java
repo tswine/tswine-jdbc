@@ -78,6 +78,18 @@ public class StrategyConfig {
          * 字段注解注解
          */
         private KV<String, String> annotationFieldKey = null;
+        /**
+         * 去除前缀
+         */
+        private String[] removePrefix = null;
+        /**
+         * 添加前缀
+         */
+        private String addPrefix = null;
+        /**
+         * 添加后缀
+         */
+        private String addSuffix = null;
     }
 
 

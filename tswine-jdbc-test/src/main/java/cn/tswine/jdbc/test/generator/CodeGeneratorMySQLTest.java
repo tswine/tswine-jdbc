@@ -45,6 +45,9 @@ public class CodeGeneratorMySQLTest extends BaseCodeGeneratorTest {
                 .setTableConstant(true)
                 .setColumnConstant(true)
                 .setPackageName("model")
+                .setRemovePrefix(new String[]{"tdms","sys"})
+                .setAddPrefix("Test")
+                .setAddSuffix("Suffix")
                 .setAnnotationClass(new KV<>("@TableName(value=\"" + ConstValue.GenerqatorPlaceholder.TABLE_NAME + "\")", TableName.class.getName()))
                 .setAnnotationField(new KV<>("@TableField(value=\"" + ConstValue.GenerqatorPlaceholder.TABLE_FIELD + "\")", TableField.class.getName()))
                 .setAnnotationFieldKey(new KV<>("@TableId(value=\"" + ConstValue.GenerqatorPlaceholder.TABLE_FIELD + "\")", TableId.class.getName()));
@@ -61,7 +64,6 @@ public class CodeGeneratorMySQLTest extends BaseCodeGeneratorTest {
 //        globalConfig.setExcludeFields(new String[]{"delete_time","create_time"});
 //        globalConfig.setIncludeTables(new String[]{"sys_menu"});
 //        globalConfig.setExcludeTables(new String[]{"sys_menu"});
-        //TODO 表名替换
         //TODO swagger
         return globalConfig;
     }
