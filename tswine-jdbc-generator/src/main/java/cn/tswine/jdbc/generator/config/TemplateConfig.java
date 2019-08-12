@@ -16,4 +16,6 @@ import lombok.experimental.Accessors;
 public class TemplateConfig {
 
     private String entity = "/templates/entity.java";
+    private String mapper = "/templates/mapper.xml";
+    private String mapperInterface = "/templates/mapper.interface.java";
 }

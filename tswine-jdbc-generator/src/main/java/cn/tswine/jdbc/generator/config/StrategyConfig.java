@@ -20,6 +20,8 @@ public class StrategyConfig {
      */
     private EntityConfig entityConfig;
 
+    private MapperConfig mapperConfig;
+
     /**
      * 配置实体
      *
@@ -31,6 +33,19 @@ public class StrategyConfig {
         }
         return this.entityConfig;
     }
+
+    /**
+     * 配置实体
+     *
+     * @return
+     */
+    public MapperConfig configMapper() {
+        if (mapperConfig == null) {
+            this.mapperConfig = new MapperConfig();
+        }
+        return this.mapperConfig;
+    }
+
 
     /**
      * 实体相关配置
@@ -75,7 +90,7 @@ public class StrategyConfig {
          */
         private KV<String, String> annotationField = null;
         /**
-         * 字段注解注解
+         * 主键字段注解
          */
         private KV<String, String> annotationFieldKey = null;
         /**
@@ -90,6 +105,37 @@ public class StrategyConfig {
          * 添加后缀
          */
         private String addSuffix = null;
+    }
+
+
+    /**
+     * mapper相关配置
+     */
+    @Data
+    @Accessors(chain = true)
+    public class MapperConfig {
+        /**
+         * 是否生成文件
+         */
+        private boolean generator = true;
+        /**
+         * mapper接口包名
+         */
+        private String packageName = "mapper";
+
+        /**
+         * xml存放的路径
+         */
+        private String xmlPath = "xml";
+        /**
+         * 接口后缀
+         */
+        private String interfaceSuffix = "Mapper";
+        /**
+         * 类注解
+         */
+        private KV<String, String> annotationClass = null;
+
     }
 
 

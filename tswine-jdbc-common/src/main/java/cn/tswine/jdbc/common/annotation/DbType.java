@@ -14,35 +14,37 @@ public enum DbType {
     /**
      * MYSQL
      */
-    MYSQL(ConstValue.DB.MYSQL, "%s LIKE CONCAT('%%',#{%s},'%%')", "MySQL数据库"),
+    MYSQL(ConstValue.DB.MYSQL, "MySQL数据库", "`%s`"),
     /**
      * MARIADB
      */
-    MARIADB(ConstValue.DB.MARIADB, "%s LIKE CONCAT('%%',#{%s},'%%')", "MariaDB数据库"),
+    MARIADB(ConstValue.DB.MARIADB, "MariaDB数据库", "`%s`"),
     /**
      * POSTGRE
      */
-    POSTGRE_SQL(ConstValue.DB.POSTGRE_SQL, "%s LIKE CONCAT('%%',#{%s},'%%')", "PostgreSQL数据库");
+    POSTGRE_SQL(ConstValue.DB.POSTGRE_SQL, "PostgreSQL数据库", "%s");
 
 
     /**
      * 数据库名称
      */
     private String db;
+
     /**
-     * LIKE 拼接模式
+     * 字段占位符
      */
-    private String like;
+    private String placeholder;
+
     /**
      * 描述
      */
     private String desc;
 
 
-    DbType(String db, String like, String desc) {
+    DbType(String db, String desc, String placeholder) {
         this.db = db;
-        this.like = like;
         this.desc = desc;
+        this.placeholder = placeholder;
     }
 
     /**
@@ -64,8 +66,8 @@ public enum DbType {
         return db;
     }
 
-    public String getLike() {
-        return like;
+    public String getPlaceholder() {
+        return placeholder;
     }
 
     public String getDesc() {

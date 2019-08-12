@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="${parentPackage}.${mapperPackage}.${mapperInterfaceName}">
+   <% /*生成BaseResultMap*/ %>
+    <resultMap id="BaseResultMap" type="${parentPackage}.${entityPackage}.${table.name}">
+    <% for(field in table.tableFields) {%>
+        <% if(field.key) {%>
+        <id column="${field.columnName}" property="${field.fieldName}"/>
+        <% }else{ %>
+        <result column="${field.columnName}" property="${field.fieldName}"/>
+        <% } %>
+    <% }%>
+    </resultMap>
+    <% /*生成所有的列*/ %>
+    <% var filedAll;
+      for(field in table.tableFields){
+        filedAll=filedAll+","+strutil.replace(placeholder,"%s",field.columnName);
+      }
+      if(strutil.length(filedAll) >=1){
+        filedAll = strutil.subString(filedAll,1);
+      }
+    %>
+    <sql id="columns">${filedAll}</sql>
+
+    <% var entityFirstCharToLower=firstCharToLower(table.name);%>
+    <%/*插入:insert*/%>
+     <insert id="insert" parameterType="${parentPackage}.${entityPackage}.${table.name}">
+            insert into ${table.tableName}
+            <trim prefix="(" suffix=")" suffixOverrides=",">
+                <% for(field in table.tableFields) {%>
+                <if test="${entityFirstCharToLower}.${field.fieldName} != null">
+                 strutil.replace(placeholder,"%s",field.columnName),
+                 </if>
+                <%  }%>
+            </trim>
+            <trim prefix="values (" suffix=")" suffixOverrides=",">
+                <% for(field in table.tableFields) {%>
+                <if test="${entityFirstCharToLower}.${field.fieldName} != null">
+                #{${entityFirstCharToLower}.${field.fieldName}},
+                </if>
+                <%  }%>
+            </trim>
+        </insert>
+</mapper>

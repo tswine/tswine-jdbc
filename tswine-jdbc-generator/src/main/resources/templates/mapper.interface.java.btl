@@ -1,0 +1,24 @@
+package ${parentPackage}.${mapperPackage};
+
+import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
+import ${parentPackage}.${entityPackage}.${entityName};
+
+@Mapper
+public interface ${mapperInterfaceName} {
+
+   <% var entityFirstCharToLower=firstCharToLower(entityName);%>
+    /**
+     * 插入
+     *
+     * @param ${entityFirstCharToLower}
+     * @return
+     */
+    Integer insert(@Param("${entityFirstCharToLower}") ${table.name} ${entityFirstCharToLower});
+
+    selectByPrimaryKey
+
+    deleteByPrimaryKey
+
+    updateByPrimaryKey
+}
