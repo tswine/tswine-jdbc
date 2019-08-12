@@ -4,6 +4,15 @@ import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 import ${parentPackage}.${entityPackage}.${entityName};
 
+/**
+ * <p>
+ * ${table.comment} mapper接口
+ * </p>
+ *
+ * @Author ${author}
+ * @Date ${date(),dateFormat="yyyy-MM-dd"}
+ * @Desc
+ */
 @Mapper
 public interface ${mapperInterfaceName} {
 
@@ -11,14 +20,49 @@ public interface ${mapperInterfaceName} {
     /**
      * 插入
      *
-     * @param ${entityFirstCharToLower}
+     * @param ${entityFirstCharToLower} ${table.comment}
      * @return
      */
-    Integer insert(@Param("${entityFirstCharToLower}") ${table.name} ${entityFirstCharToLower});
+    int insert(@Param("${entityFirstCharToLower}") ${table.name} ${entityFirstCharToLower});
 
-    selectByPrimaryKey
+    <% /*获取所有的主键key参数*/ %>
+    <% var primaryKeyParam;
+        for(field in table.primaryKeys){
+            primaryKeyParam += ",@Param(\""+field.fieldName+"\") "+ field.fieldType.type +" "+field.fieldName;
+        }
+        if(strutil.length(primaryKeyParam) >=1 ){
+           primaryKeyParam = strutil.subString(primaryKeyParam,1);
+        }
+    %>
+    <% if(strutil.length(primaryKeyParam) > 0) {%>
+    /**
+     * 通过主键查找
+     *
+     <% for(field in table.primaryKeys){ %>
+     * @param ${field.fieldName} ${field.fieldName} ${field.columnComment}
+     <% } %>
+     * @return
+     */
+    ${entityName} selectByPrimaryKey(${primaryKeyParam});
 
-    deleteByPrimaryKey
+    /**
+     * 通过主键删除
+     *
+     <% for(field in table.primaryKeys){ %>
+     * @param ${field.fieldName} ${field.fieldName} ${field.columnComment}
+     <% } %>
+     * @return
+     */
+    int deleteByPrimaryKey(${primaryKeyParam});
 
-    updateByPrimaryKey
+    /**
+     * 通过主键更新
+     *
+     * @param
+     * @return
+     */
+    int updateByPrimaryKey(${table.name} ${entityFirstCharToLower});
+    <% }%>
+
+
 }

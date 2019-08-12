@@ -25,20 +25,55 @@
     <% var entityFirstCharToLower=firstCharToLower(table.name);%>
     <%/*插入:insert*/%>
      <insert id="insert" parameterType="${parentPackage}.${entityPackage}.${table.name}">
-            insert into ${table.tableName}
-            <trim prefix="(" suffix=")" suffixOverrides=",">
-                <% for(field in table.tableFields) {%>
-                <if test="${entityFirstCharToLower}.${field.fieldName} != null">
-                 strutil.replace(placeholder,"%s",field.columnName),
-                 </if>
-                <%  }%>
-            </trim>
-            <trim prefix="values (" suffix=")" suffixOverrides=",">
-                <% for(field in table.tableFields) {%>
-                <if test="${entityFirstCharToLower}.${field.fieldName} != null">
+        insert into ${table.tableName}
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <% for(field in table.tableFields) {%>
+            <if test="${entityFirstCharToLower}.${field.fieldName} != null">
+                strutil.replace(placeholder,"%s",field.columnName),
+            </if>
+             <%  }%>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <% for(field in table.tableFields) {%>
+            <if test="${entityFirstCharToLower}.${field.fieldName} != null">
                 #{${entityFirstCharToLower}.${field.fieldName}},
-                </if>
-                <%  }%>
-            </trim>
-        </insert>
+            </if>
+             <%  }%>
+        </trim>
+     </insert>
+
+     <% /*获取所有的主键key参数*/ %>
+     <% var primaryKeyParam;
+        for(field in table.primaryKeys){
+            primaryKeyParam += "and " + field.columnName +" = #{"+ field.fieldName+"} ";
+        }
+        if(strutil.length(primaryKeyParam) >= 3){
+            primaryKeyParam = strutil.subString(primaryKeyParam,3);
+        }
+     %>
+     <% if(strutil.length(primaryKeyParam) > 0) {%>
+     <select id="selectByPrimaryKey" parameterType="map" resultMap="BaseResultMap">
+        select
+        <include refid="columns" />
+        from ${table.tableName}
+        where ${primaryKeyParam}
+     </select>
+
+     <delete id="deleteByPrimaryKey" parameterType="map">
+        delete from ${table.tableName}
+        where ${primaryKeyParam}
+     </delete>
+     <% } %>
+
+     <update id="updateByPrimaryKey" parameterType="${parentPackage}.${entityPackage}.${table.name}">
+        update ${table.tableName}
+        <set>
+            <% for(field in table.tableFields) {%>
+            <if test="${field.fieldName} != null">
+                ${field.columnName} = #{${field.fieldName}},
+            </if>
+            <% } %>
+        </set>
+        where ${primaryKeyParam}
+     </update>
 </mapper>

@@ -41,6 +41,18 @@ public class TableInfo {
     private List<TableField> tableFields;
 
 
+    private final Set<TableField> primaryKeys = new HashSet<>();
+
+
+    /**
+     * 添加主键字段
+     *
+     * @param tableField
+     */
+    public void addPrimaryKey(TableField tableField) {
+        primaryKeys.add(tableField);
+    }
+
     public TableInfo setTableFields(List<TableField> tableFields) {
         //收集需要导入的包
         if (tableFields != null && tableFields.size() > 0) {

@@ -18,7 +18,7 @@ public class TableField {
     /**
      * 是否为主键
      */
-    private boolean key;
+    private boolean key = false;
     /**
      * 列名
      */

@@ -227,9 +227,13 @@ public class ConfigBuilder {
                 tableField.setColumnName(fieldName);
                 tableField.setColumnComment(rs.getString(dbQuery.fieldComment()));
                 tableField.setColumnType(rs.getString(dbQuery.fieldType()));
-                tableField.setKey(dbQuery.isFieldKey(rs.getString(dbQuery.fieldKey())));
                 tableField.setFieldType(dataSourceConfig.getTypeConvert().execute(globalConfig, tableField.getColumnType()));
                 tableField.setFieldName(NameStrategy.changeNameStrategy(tableField.getColumnName(), strategyConfig.configEntity().getFieldNameStrategy()));
+                boolean isFieldKey = dbQuery.isFieldKey(rs.getString(dbQuery.fieldKey()));
+                if (isFieldKey) {
+                    tableField.setKey(true);
+                    table.addPrimaryKey(tableField);
+                }
                 tableFields.add(tableField);
             }
         } catch (SQLException e) {
