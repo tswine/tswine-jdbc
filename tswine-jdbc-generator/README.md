@@ -1,5 +1,5 @@
 添加maven依赖
---
+--------
 ```xml
   <dependency>
     <groupId>cn.tswine.jdbc</groupId>
@@ -9,8 +9,8 @@
 ```
 
 配置参数
---
-####全局配置 GlobalConfig
+--------
+#### 全局配置 GlobalConfig
 | 参数|类型 |描述 |默认值|  
 | :---:|:---:|:---:|:----:|
 |outputDir|  String  | 生成文件存放路径| |
@@ -25,7 +25,7 @@
 |excludeFields|String[]|排除的字段|null|
 |skipView|boolean|是否跳过视图|true|
 
-####数据源配置 DataSourceConfig
+#### 数据源配置 DataSourceConfig
 | 参数|类型 |描述 |默认值|  
 | :---:|:---:|:---:|:----:|
 |dbQuery|IDbQuery |数据库查询语句 |null|
@@ -37,14 +37,14 @@
 |username|String|用户名|null|
 |password|String|密码|null|
 
-####模板配置 TemplateConfig
+#### 模板配置 TemplateConfig
 | 参数|类型 |描述 |默认值|  
 | :---:|:---:|:---:|:----:|
 |entity|  String  |实体模板路径|/templates/entity.java |
 |mapper|  String  |mappeer模板路径 |/templates/mapper.xml |
 |mapperInterface|  String|mapper接口模板路径 |/templates/mapper.interface.java |
 
-####生成策略配置 StrategyConfig
+#### 生成策略配置 StrategyConfig
 | 参数|类型 |描述 |默认值|  
 | :---:|:---:|:---:|:----:|
 |entityConfig|EntityConfig|实体配置| |
@@ -138,7 +138,7 @@ public class CodeGeneratorMySQLTest  {
 ```
 
 
-文件样例
+生成文件样例
 --
 - 表结构
 ```sql
