@@ -19,7 +19,9 @@ public class StrategyConfig {
      * 实体配置
      */
     private EntityConfig entityConfig;
-
+    /**
+     * mapper配置
+     */
     private MapperConfig mapperConfig;
 
     /**
@@ -74,11 +76,11 @@ public class StrategyConfig {
         private NameStrategy fieldNameStrategy = NameStrategy.UNDERLINE_TO_CAMEL;
 
         /**
-         * 是否为生成字段常量
+         * 是否生成字段常量
          */
         private boolean columnConstant = true;
         /**
-         * 是否为表名生成字段常量
+         * 是否表名生成常量
          */
         private boolean tableConstant = true;
         /**
