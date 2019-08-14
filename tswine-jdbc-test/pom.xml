@@ -22,6 +22,10 @@
             <artifactId>tswine-jdbc-generator</artifactId>
         </dependency>
         <dependency>
+            <groupId>cn.tswine.jdbc</groupId>
+            <artifactId>tswine-jdbc-plus</artifactId>
+        </dependency>
+        <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
             <version>4.12</version>

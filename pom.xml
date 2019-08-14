@@ -18,6 +18,7 @@
         <module>tswine-jdbc-generator</module>
         <module>tswine-jdbc-common</module>
         <module>tswine-jdbc-test</module>
+        <module>tswine-jdbc-plus</module>
     </modules>
 
     <dependencies>
@@ -47,12 +48,18 @@
                 <artifactId>tswine-jdbc-generator</artifactId>
                 <version>${tswine.jdbc.version}</version>
             </dependency>
+            <dependency>
+                <groupId>cn.tswine.jdbc</groupId>
+                <artifactId>tswine-jdbc-plus</artifactId>
+                <version>${tswine.jdbc.version}</version>
+            </dependency>
             <!--beetl3模板引擎-->
             <dependency>
                 <groupId>com.ibeetl</groupId>
                 <artifactId>beetl</artifactId>
                 <version>3.0.10.RELEASE</version>
             </dependency>
+
         </dependencies>
 
     </dependencyManagement>
