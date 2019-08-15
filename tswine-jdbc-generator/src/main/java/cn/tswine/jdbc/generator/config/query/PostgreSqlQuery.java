@@ -63,6 +63,6 @@ public class PostgreSqlQuery extends AbstractDbQuery {
 
     @Override
     public boolean isFieldKey(String keyValue) {
-        return false;
+        return keyValue.equalsIgnoreCase("PRI");
     }
 }
