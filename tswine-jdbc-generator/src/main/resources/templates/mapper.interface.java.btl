@@ -26,7 +26,7 @@ public interface ${mapperInterfaceName} {
     int insert(@Param("${entityFirstCharToLower}") ${table.name} ${entityFirstCharToLower});
 
     <% /*获取所有的主键key参数*/ %>
-    <% var primaryKeyParam;
+    <% var primaryKeyParam="";
         for(field in table.primaryKeys){
             primaryKeyParam += ",@Param(\""+field.fieldName+"\") "+ field.fieldType.type +" "+field.fieldName;
         }

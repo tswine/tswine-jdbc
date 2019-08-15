@@ -12,7 +12,7 @@
     <% }%>
     </resultMap>
     <% /*生成所有的列*/ %>
-    <% var filedAll;
+    <% var filedAll="";
       for(field in table.tableFields){
         filedAll=filedAll+","+strutil.replace(placeholder,"%s",field.columnName);
       }
@@ -43,7 +43,7 @@
      </insert>
 
      <% /*获取所有的主键key参数*/ %>
-     <% var primaryKeyParam;
+     <% var primaryKeyParam="";
         for(field in table.primaryKeys){
             primaryKeyParam += "and " + field.columnName +" = #{"+ field.fieldName+"} ";
         }
