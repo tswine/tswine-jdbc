@@ -14,11 +14,12 @@ import cn.tswine.jdbc.plus.core.metadata.DaoInfo;
  * @Desc
  */
 public class JdbcPlusFactory {
-    private final DaoInfo daoInfo = new DaoInfo();
+    private DaoInfo daoInfo = null;
     private GlobalConfig globalConfig;
 
     public JdbcPlusFactory(GlobalConfig globalConfig) {
         this.globalConfig = globalConfig;
+        daoInfo = new DaoInfo(globalConfig.getDataSourceStore());
     }
 
     /**

@@ -5,6 +5,8 @@ import cn.tswine.jdbc.plus.core.metadata.IPage;
 import cn.tswine.jdbc.plus.core.rules.IDBLabel;
 
 import java.io.Serializable;
+import java.sql.Connection;
+import java.sql.SQLException;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
@@ -18,7 +20,7 @@ import java.util.Map;
  * @Desc
  */
 public interface Dao<T> {
-    
+
     /**
      * 获取数据库标签
      *

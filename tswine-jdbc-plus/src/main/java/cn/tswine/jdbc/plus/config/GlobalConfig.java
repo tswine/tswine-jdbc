@@ -16,7 +16,7 @@ import java.util.Map;
  */
 public class GlobalConfig {
     //数据源
-    private final Map<IDBLabel, DataSource> dataSource = new HashMap<>();
+    private final Map<IDBLabel, DataSource> dataSourceStore = new HashMap<>();
 
     /**
      * 添加数据源
@@ -25,7 +25,16 @@ public class GlobalConfig {
      * @param ds    数据源
      */
     public void addDataSource(IDBLabel label, DataSource ds) {
-        this.dataSource.put(label, ds);
+        this.dataSourceStore.put(label, ds);
+    }
+
+    /**
+     * 获取数据源操作
+     *
+     * @return
+     */
+    public Map<IDBLabel, DataSource> getDataSourceStore() {
+        return this.dataSourceStore;
     }
 
 }
