@@ -1,4 +1,4 @@
-package cn.tswine.jdbc.common.utils;
+package cn.tswine.jdbc.common.toolkit;
 
 import java.util.Arrays;
 
@@ -9,6 +9,56 @@ import java.util.Arrays;
  * @Desc
  */
 public class StringUtils {
+
+    /**
+     * 重载join
+     *
+     * @param array 数组
+     * @return 采用逗号连接后的字符串
+     */
+    public static String join(Object[] array) {
+        return join(array, ", ");
+    }
+
+    /**
+     * 数组连接成字符串
+     *
+     * @param array  数组
+     * @param joiner 连接符
+     * @return 连接后的字符串
+     */
+    public static String join(Object[] array, String joiner) {
+        if (array == null) {
+            return "null";
+        }
+        int iMax = array.length - 1;
+        if (iMax == -1) {
+            return "[]";
+        }
+        StringBuilder b = new StringBuilder();
+        b.append('[');
+        for (int i = 0; ; i++) {
+            b.append(array[i]);
+            if (i == iMax) {
+                return b.append(']').toString();
+            }
+            b.append(joiner);
+        }
+    }
+
+    /**
+     * 格式化字符串
+     *
+     * @param target 目标字符串
+     * @param params 参数
+     * @return 格式化后的字符串
+     */
+    public static String format(String target, Object... params) {
+        if (target.contains("%s") && ArrayUtils.isNotEmpty(params)) {
+            return String.format(target, params);
+        }
+        return target;
+    }
 
 
     /**
@@ -31,6 +81,16 @@ public class StringUtils {
     }
 
     /**
+     * 判断字符串是否不为空
+     *
+     * @param cs 需要判断字符串
+     * @return 判断结果
+     */
+    public static boolean isNotEmpty(final CharSequence cs) {
+        return !isEmpty(cs);
+    }
+
+    /**
      * 字符串包含
      *
      * @param sourceStr    源字符串
@@ -48,14 +108,6 @@ public class StringUtils {
             return sourceStr.toLowerCase().contains(subStr.toLowerCase());
         }
     }
-
-
-    /**
-     *
-     *
-     * @param name
-     * @return 转换后的字符串
-     */
 
     /**
      * 转换字符串首字母

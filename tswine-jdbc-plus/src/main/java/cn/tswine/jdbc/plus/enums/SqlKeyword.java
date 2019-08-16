@@ -1,4 +1,4 @@
-package cn.tswine.jdbc.plus.core.enums;
+package cn.tswine.jdbc.plus.enums;
 
 /**
  * sql保留关键字枚举

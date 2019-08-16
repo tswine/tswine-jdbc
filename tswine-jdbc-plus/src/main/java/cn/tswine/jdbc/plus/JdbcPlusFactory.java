@@ -1,8 +1,10 @@
 package cn.tswine.jdbc.plus;
 
 import cn.tswine.jdbc.common.exception.TswineJdbcException;
+import cn.tswine.jdbc.common.toolkit.ClassUtils;
 import cn.tswine.jdbc.plus.config.GlobalConfig;
-import cn.tswine.jdbc.plus.core.metadata.DaoInfo;
+import cn.tswine.jdbc.plus.core.metadata.DaoMetaData;
+import cn.tswine.jdbc.plus.transaction.jdbc.JdbcTransactionFactory;
 
 
 /**
@@ -14,12 +16,18 @@ import cn.tswine.jdbc.plus.core.metadata.DaoInfo;
  * @Desc
  */
 public class JdbcPlusFactory {
-    private DaoInfo daoInfo = null;
+    private DaoMetaData daoMetaData;
     private GlobalConfig globalConfig;
 
     public JdbcPlusFactory(GlobalConfig globalConfig) {
         this.globalConfig = globalConfig;
-        daoInfo = new DaoInfo(globalConfig.getDataSourceStore());
+        init();
+    }
+
+    public void init() {
+        daoMetaData = ClassUtils.newInstance(DaoMetaData.class);
+        //装载数据源仓库
+        JdbcTransactionFactory.getInstance().load(globalConfig.getDataSourceStore());
     }
 
     /**
@@ -30,7 +38,7 @@ public class JdbcPlusFactory {
      * @return
      */
     public <T> T getDao(Class<T> clazz) throws TswineJdbcException {
-        return daoInfo.create(clazz);
+        return daoMetaData.create(clazz);
     }
 
 }

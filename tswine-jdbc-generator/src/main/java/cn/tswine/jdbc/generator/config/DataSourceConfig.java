@@ -3,7 +3,7 @@ package cn.tswine.jdbc.generator.config;
 import cn.tswine.jdbc.common.ConstValue;
 import cn.tswine.jdbc.common.annotation.DbType;
 import cn.tswine.jdbc.common.exception.TswineJdbcException;
-import cn.tswine.jdbc.common.utils.StringUtils;
+import cn.tswine.jdbc.common.toolkit.StringUtils;
 import cn.tswine.jdbc.generator.config.converts.MySqlTypeConvert;
 import cn.tswine.jdbc.generator.config.converts.PostgreSqlTypeConvert;
 import cn.tswine.jdbc.generator.config.query.MariadbQuery;

@@ -4,10 +4,7 @@ import cn.tswine.jdbc.plus.core.conditions.Wrapper;
 import cn.tswine.jdbc.plus.core.metadata.IPage;
 import cn.tswine.jdbc.plus.core.rules.IDBLabel;
 
-import javax.sql.DataSource;
 import java.io.Serializable;
-import java.sql.Connection;
-import java.sql.SQLException;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
@@ -22,31 +19,7 @@ import java.util.Map;
  */
 public abstract class AbstractDao<T> implements Dao<T> {
 
-    private DataSource dataSource;
-
-
     public abstract IDBLabel getDbLabel();
-
-    /**
-     * 设置数据源
-     *
-     * @param dataSource
-     */
-    public void setDataSource(DataSource dataSource) {
-        this.dataSource = dataSource;
-    }
-
-    /**
-     * 获取数据库连接
-     *
-     * @return
-     */
-    public Connection getConn() throws SQLException {
-        Connection conn = dataSource.getConnection();
-        conn.setAutoCommit(false);
-        return conn;
-    }
-
 
     @Override
     public int insert(T entity) {

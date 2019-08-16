@@ -1,6 +1,6 @@
 package cn.tswine.jdbc.generator.config.rules;
 
-import cn.tswine.jdbc.common.utils.StringUtils;
+import cn.tswine.jdbc.common.toolkit.StringUtils;
 
 /**
  * 命名策略

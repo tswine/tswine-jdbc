@@ -1,6 +1,6 @@
 package cn.tswine.jdbc.generator.engine.function;
 
-import cn.tswine.jdbc.common.utils.StringUtils;
+import cn.tswine.jdbc.common.toolkit.StringUtils;
 import org.beetl.core.Context;
 import org.beetl.core.Function;
 

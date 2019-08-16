@@ -2,7 +2,7 @@ package cn.tswine.jdbc.generator.builder;
 
 import cn.tswine.jdbc.common.annotation.DbType;
 import cn.tswine.jdbc.common.exception.TswineJdbcException;
-import cn.tswine.jdbc.common.utils.StringUtils;
+import cn.tswine.jdbc.common.toolkit.StringUtils;
 import cn.tswine.jdbc.generator.config.*;
 import cn.tswine.jdbc.generator.config.pojo.TableField;
 import cn.tswine.jdbc.generator.config.pojo.TableInfo;
