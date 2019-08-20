@@ -20,9 +20,9 @@ import java.util.Map;
  */
 public class BaseExecutor implements Executor {
 
-    protected Transaction transaction;
+    private Transaction transaction;
 
-    protected BaseExecutor(Transaction transaction) {
+    public BaseExecutor(Transaction transaction) {
         this.transaction = transaction;
     }
 
@@ -95,10 +95,10 @@ public class BaseExecutor implements Executor {
      * @param rs
      * @return
      */
-    private Map<String, Object> rsToMap(ResultSet rs) throws SQLException {
+    public Map<String, Object> rsToMap(ResultSet rs) throws SQLException {
         ResultSetMetaData metaData = rs.getMetaData();
         int columnCount = metaData.getColumnCount();
-        Map<String, Object> rsData = new HashMap<>();
+        Map<String, Object> rsData = new HashMap<>(columnCount);
         for (int i = 0; i < columnCount; i++) {
             String columnName = metaData.getColumnName(i);
             rsData.put(columnName, rs.getObject(columnCount));
@@ -112,7 +112,7 @@ public class BaseExecutor implements Executor {
      * @param ps
      * @param args
      */
-    private void setObject(PreparedStatement ps, Object... args) throws SQLException {
+    protected void setObject(PreparedStatement ps, Object... args) throws SQLException {
         if (ArrayUtils.isNotEmpty(args)) {
             for (int i = 0; i < args.length; i++) {
                 ps.setObject((i + 1), args[i]);
@@ -126,7 +126,7 @@ public class BaseExecutor implements Executor {
      * @param rs 结果集
      * @param ps 参数构造器
      */
-    private void close(ResultSet rs, PreparedStatement ps) {
+    protected void close(ResultSet rs, PreparedStatement ps) {
         if (null != rs) {
             try {
                 rs.close();

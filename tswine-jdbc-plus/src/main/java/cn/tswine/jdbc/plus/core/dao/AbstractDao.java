@@ -1,8 +1,12 @@
 package cn.tswine.jdbc.plus.core.dao;
 
-import cn.tswine.jdbc.plus.core.conditions.Wrapper;
+import cn.tswine.jdbc.plus.conditions.Wrapper;
 import cn.tswine.jdbc.plus.core.metadata.IPage;
 import cn.tswine.jdbc.plus.core.rules.IDBLabel;
+import cn.tswine.jdbc.plus.executor.BaseExecutor;
+import cn.tswine.jdbc.plus.executor.Executor;
+import cn.tswine.jdbc.plus.transaction.Transaction;
+import cn.tswine.jdbc.plus.transaction.jdbc.JdbcTransactionFactory;
 
 import java.io.Serializable;
 import java.util.Collection;
@@ -27,7 +31,7 @@ public abstract class AbstractDao<T> implements Dao<T> {
     }
 
     @Override
-    public int deleteById(Serializable id) {
+    public int deleteById(Serializable... ids) {
         return 0;
     }
 
@@ -57,7 +61,10 @@ public abstract class AbstractDao<T> implements Dao<T> {
     }
 
     @Override
-    public T selectById(Serializable id) {
+    public T selectById(Serializable... ids) {
+        Transaction transaction = JdbcTransactionFactory.getInstance().newTransaction(getDbLabel());
+        Executor executor = new BaseExecutor(transaction);
+
         return null;
     }
 

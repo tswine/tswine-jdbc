@@ -42,6 +42,7 @@ public class DaoMetaData {
                     abstractDao = DAO_INFO_CACHE.get(clazz);
                     if (abstractDao == null) {
                         abstractDao = (AbstractDao) clazz.newInstance();
+                        //TODO 反射创建
                         DAO_INFO_CACHE.put(clazz, abstractDao);
                     } else {
                         return (T) abstractDao;
