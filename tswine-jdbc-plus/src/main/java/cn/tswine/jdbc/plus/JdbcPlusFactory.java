@@ -3,7 +3,8 @@ package cn.tswine.jdbc.plus;
 import cn.tswine.jdbc.common.exception.TswineJdbcException;
 import cn.tswine.jdbc.common.toolkit.ClassUtils;
 import cn.tswine.jdbc.plus.config.GlobalConfig;
-import cn.tswine.jdbc.plus.core.metadata.DaoMetaData;
+import cn.tswine.jdbc.plus.dao.AbstractDao;
+import cn.tswine.jdbc.plus.metadata.DaoMetaData;
 import cn.tswine.jdbc.plus.transaction.jdbc.JdbcTransactionFactory;
 
 
@@ -37,7 +38,7 @@ public class JdbcPlusFactory {
      * @param <T>
      * @return
      */
-    public <T> T getDao(Class<T> clazz) throws TswineJdbcException {
+    public <T> T getDao(Class<? extends AbstractDao> clazz) throws TswineJdbcException {
         return daoMetaData.create(clazz);
     }
 

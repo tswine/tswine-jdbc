@@ -1,6 +1,6 @@
 package cn.tswine.jdbc.plus.config;
 
-import cn.tswine.jdbc.plus.core.rules.IDBLabel;
+import cn.tswine.jdbc.common.rules.IDBLabel;
 
 import javax.sql.DataSource;
 import java.util.HashMap;

@@ -1,6 +1,7 @@
 package cn.tswine.jdbc.common.annotation;
 
 import cn.tswine.jdbc.common.ConstValue;
+import cn.tswine.jdbc.common.rules.IDBLabel;
 
 /**
  * 数据库类型枚举
@@ -10,7 +11,7 @@ import cn.tswine.jdbc.common.ConstValue;
  * @Version 1.0
  * @Desc
  */
-public enum DbType {
+public enum DbType implements IDBLabel {
     /**
      * MYSQL
      */
@@ -72,5 +73,15 @@ public enum DbType {
 
     public String getDesc() {
         return desc;
+    }
+
+    @Override
+    public String getLabel() {
+        return db;
+    }
+
+    @Override
+    public DbType getDbType() {
+        return this;
     }
 }

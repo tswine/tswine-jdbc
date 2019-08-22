@@ -1,4 +1,4 @@
-package cn.tswine.jdbc.plus.core.metadata;
+package cn.tswine.jdbc.plus.metadata;
 
 import java.io.Serializable;
 

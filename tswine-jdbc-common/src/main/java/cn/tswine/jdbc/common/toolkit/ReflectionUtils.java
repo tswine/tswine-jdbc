@@ -17,8 +17,26 @@ public class ReflectionUtils {
     // //判断是否有@TableField、@TableId注解
 
     private ReflectionUtils() {
+    }
+
+    /**
+     * 创建实例
+     *
+     * @param clazz
+     * @param <T>
+     * @return
+     */
+    public static <T> T newInstance(Class<T> clazz) {
+        try {
+            //TODO 优化
+            T t = clazz.newInstance();
+            return t;
+        } catch (IllegalAccessException | InstantiationException ex) {
+            throw ExceptionUtils.tse(ex);
+        }
 
     }
+
 
     /**
      * 获取所有 public get方法的值

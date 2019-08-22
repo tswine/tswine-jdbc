@@ -1,8 +1,8 @@
-package cn.tswine.jdbc.plus.core.dao;
+package cn.tswine.jdbc.plus.dao;
 
+import cn.tswine.jdbc.common.rules.IDBLabel;
 import cn.tswine.jdbc.plus.conditions.Wrapper;
-import cn.tswine.jdbc.plus.core.metadata.IPage;
-import cn.tswine.jdbc.plus.core.rules.IDBLabel;
+import cn.tswine.jdbc.plus.metadata.IPage;
 
 import java.io.Serializable;
 import java.util.Collection;

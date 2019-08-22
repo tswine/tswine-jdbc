@@ -1,4 +1,4 @@
-package cn.tswine.jdbc.plus.core.rules;
+package cn.tswine.jdbc.common.rules;
 
 import cn.tswine.jdbc.common.annotation.DbType;
 

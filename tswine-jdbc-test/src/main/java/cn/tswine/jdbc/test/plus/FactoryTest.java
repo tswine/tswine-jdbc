@@ -24,12 +24,14 @@ public class FactoryTest {
 
     @Test
     public void getDao() throws InterruptedException {
-        for (int i = 0; i < 50; i++) {
-            new Thread(() -> {
-                SysMenuDao dao = factory.getDao(SysMenuDao.class);
-                System.out.println(dao);
-            }).start();
-        }
-        Thread.sleep(Integer.MAX_VALUE);
+        SysMenuDao dao = factory.getDao(SysMenuDao.class);
+
+    }
+
+    @Test
+    public void select() {
+        SysMenuDao dao = factory.getDao(SysMenuDao.class);
+        dao.selectById("1");
+
     }
 }

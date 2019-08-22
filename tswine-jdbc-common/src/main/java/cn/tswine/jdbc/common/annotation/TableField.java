@@ -14,10 +14,18 @@ import java.lang.annotation.Target;
  * @Desc
  */
 @Retention(RetentionPolicy.RUNTIME)
-@Target({ElementType.FIELD})
+@Target({ElementType.FIELD, ElementType.ANNOTATION_TYPE})
 public @interface TableField {
     /**
      * 字段值
      */
     String value() default "";
+
+    /**
+     * 是否为数据库表字段
+     * 默认 true 存在，false 不存在
+     *
+     * @return
+     */
+    boolean exist() default true;
 }

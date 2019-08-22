@@ -11,6 +11,20 @@ import java.util.Arrays;
 public class StringUtils {
 
     /**
+     * 空字符
+     */
+    public static final String EMPTY = "";
+
+    /**
+     * 下划线字符
+     */
+    public static final char UNDERLINE = '_';
+    /**
+     * 占位符
+     */
+    public static final String PLACE_HOLDER = "{%s}";
+
+    /**
      * 重载join
      *
      * @param array 数组
@@ -159,6 +173,28 @@ public class StringUtils {
                 sb.append(StringUtils.changeFirstCharacterCase(camel, true));
             }
         });
+        return sb.toString();
+    }
+
+    /**
+     * 字符串驼峰转下划线格式
+     *
+     * @param str 需要转换的字符串
+     * @return 转换好的字符串  TabUser ==> tab_user
+     */
+    public static String camelToUnderline(String str) {
+        if (isEmpty(str)) {
+            return EMPTY;
+        }
+        int len = str.length();
+        StringBuilder sb = new StringBuilder(len);
+        for (int i = 0; i < len; i++) {
+            char c = str.charAt(i);
+            if (Character.isUpperCase(c) && i > 0) {
+                sb.append(UNDERLINE);
+            }
+            sb.append(Character.toLowerCase(c));
+        }
         return sb.toString();
     }
 

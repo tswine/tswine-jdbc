@@ -1,6 +1,6 @@
 package cn.tswine.jdbc.plus.transaction;
 
-import cn.tswine.jdbc.plus.core.rules.IDBLabel;
+import cn.tswine.jdbc.common.rules.IDBLabel;
 import cn.tswine.jdbc.plus.enums.TransactionIsolationLevel;
 
 /**

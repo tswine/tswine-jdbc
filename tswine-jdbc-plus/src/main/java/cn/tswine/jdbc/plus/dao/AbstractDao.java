@@ -1,14 +1,18 @@
-package cn.tswine.jdbc.plus.core.dao;
+package cn.tswine.jdbc.plus.dao;
 
+import cn.tswine.jdbc.common.rules.IDBLabel;
+import cn.tswine.jdbc.plus.builder.SchemaBuilder;
+import cn.tswine.jdbc.plus.builder.schema.EntitySchema;
 import cn.tswine.jdbc.plus.conditions.Wrapper;
-import cn.tswine.jdbc.plus.core.metadata.IPage;
-import cn.tswine.jdbc.plus.core.rules.IDBLabel;
 import cn.tswine.jdbc.plus.executor.BaseExecutor;
 import cn.tswine.jdbc.plus.executor.Executor;
+import cn.tswine.jdbc.plus.metadata.IPage;
 import cn.tswine.jdbc.plus.transaction.Transaction;
 import cn.tswine.jdbc.plus.transaction.jdbc.JdbcTransactionFactory;
 
 import java.io.Serializable;
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
@@ -22,6 +26,23 @@ import java.util.Map;
  * @Desc
  */
 public abstract class AbstractDao<T> implements Dao<T> {
+
+
+    /**
+     * 泛型类型
+     */
+    protected Class<T> tClass;
+
+    public AbstractDao() {
+        Type type = getClass().getGenericSuperclass();
+        if (type instanceof ParameterizedType) {
+            ParameterizedType pType = (ParameterizedType) type;
+            Type claz = pType.getActualTypeArguments()[0];
+            if (claz instanceof Class) {
+                this.tClass = (Class<T>) claz;
+            }
+        }
+    }
 
     public abstract IDBLabel getDbLabel();
 
@@ -62,9 +83,9 @@ public abstract class AbstractDao<T> implements Dao<T> {
 
     @Override
     public T selectById(Serializable... ids) {
-        Transaction transaction = JdbcTransactionFactory.getInstance().newTransaction(getDbLabel());
-        Executor executor = new BaseExecutor(transaction);
-
+//        Transaction transaction = JdbcTransactionFactory.getInstance().newTransaction(getDbLabel());
+//        Executor executor = new BaseExecutor(transaction);
+        EntitySchema entitySchema = SchemaBuilder.buildEntity(tClass);
         return null;
     }
 
@@ -112,6 +133,4 @@ public abstract class AbstractDao<T> implements Dao<T> {
     public IPage<Map<String, Object>> selectMapsPage(IPage<T> page, Wrapper<T> queryWrapper) {
         return null;
     }
-
-
 }
