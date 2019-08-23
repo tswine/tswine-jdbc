@@ -4,6 +4,7 @@ import cn.tswine.jdbc.common.exception.TswineJdbcException;
 import cn.tswine.jdbc.common.toolkit.ArrayUtils;
 import cn.tswine.jdbc.common.toolkit.ExceptionUtils;
 import cn.tswine.jdbc.common.toolkit.StringUtils;
+import cn.tswine.jdbc.plus.sql.SqlSource;
 import cn.tswine.jdbc.plus.transaction.Transaction;
 
 import java.sql.*;
@@ -18,15 +19,29 @@ import java.util.Map;
  * @Version 1.0
  * @Desc
  */
-public class BaseExecutor implements Executor {
+public abstract class BaseExecutor implements Executor {
 
-    private Transaction transaction;
+    protected Transaction transaction;
+
 
     public BaseExecutor(Transaction transaction) {
         this.transaction = transaction;
     }
 
-    @Override
+    public abstract void execute(SqlSource sqlSource);
+
+    public void setTransaction(Transaction transaction) {
+        this.transaction = transaction;
+    }
+
+    /**
+     * 执行更新:INSERT,DELETE,UPDATE
+     *
+     * @param sql  执行的sql
+     * @param args 参数
+     * @return 受影响的行数
+     * @throws SQLException
+     */
     public int executeUpdate(String sql, Object... args) throws TswineJdbcException {
         int count;
         PreparedStatement ps = null;
@@ -44,7 +59,13 @@ public class BaseExecutor implements Executor {
         return count;
     }
 
-    @Override
+    /**
+     * 执行查询:SELECT
+     *
+     * @param sql  执行的sql
+     * @param args 参数
+     * @return 查询到的数据
+     */
     public List<Map<String, Object>> executeQuery(String sql, Object... args) {
         PreparedStatement ps = null;
         ResultSet rs = null;
@@ -66,7 +87,14 @@ public class BaseExecutor implements Executor {
         return results;
     }
 
-    @Override
+    /**
+     * 批量执行:INSERT,DELETE,UPDATE
+     *
+     * @param sql        执行的sql
+     * @param args       参数
+     * @param batchCount 批量提交的数量
+     * @return
+     */
     public void executeBatch(String sql, List<Object[]> args, int batchCount) {
         PreparedStatement ps = null;
         try (Connection conn = transaction.getConnection()) {
@@ -99,9 +127,9 @@ public class BaseExecutor implements Executor {
         ResultSetMetaData metaData = rs.getMetaData();
         int columnCount = metaData.getColumnCount();
         Map<String, Object> rsData = new HashMap<>(columnCount);
-        for (int i = 0; i < columnCount; i++) {
+        for (int i = 1; i <= columnCount; i++) {
             String columnName = metaData.getColumnName(i);
-            rsData.put(columnName, rs.getObject(columnCount));
+            rsData.put(columnName, rs.getObject(i));
         }
         return rsData;
     }

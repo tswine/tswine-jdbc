@@ -1,0 +1,174 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="cn.tswine.jdbc.test.generator.mapper.SysMenuMapper">
+    <resultMap id="BaseResultMap" type="cn.tswine.jdbc.test.generator.model.SysMenu">
+        <id column="id" property="id"/>
+        <result column="project_id" property="projectId"/>
+        <result column="parent_id" property="parentId"/>
+        <result column="name" property="name"/>
+        <result column="path" property="path"/>
+        <result column="icon" property="icon"/>
+        <result column="sort" property="sort"/>
+        <result column="type" property="type"/>
+        <result column="permission" property="permission"/>
+        <result column="is_valid" property="isValid"/>
+        <result column="remarks" property="remarks"/>
+        <result column="is_delete" property="isDelete"/>
+        <result column="delete_time" property="deleteTime"/>
+        <result column="level" property="level"/>
+    </resultMap>
+    <sql id="columns">`id`,`project_id`,`parent_id`,`name`,`path`,`icon`,`sort`,`type`,`permission`,`is_valid`,`remarks`,`is_delete`,`delete_time`,`level`</sql>
+
+     <insert id="insert" parameterType="cn.tswine.jdbc.test.generator.model.SysMenu">
+        insert into sys_menu
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="sysMenu.id != null">
+                strutil.replace(placeholder,"%s",field.columnName),
+            </if>
+            <if test="sysMenu.projectId != null">
+                strutil.replace(placeholder,"%s",field.columnName),
+            </if>
+            <if test="sysMenu.parentId != null">
+                strutil.replace(placeholder,"%s",field.columnName),
+            </if>
+            <if test="sysMenu.name != null">
+                strutil.replace(placeholder,"%s",field.columnName),
+            </if>
+            <if test="sysMenu.path != null">
+                strutil.replace(placeholder,"%s",field.columnName),
+            </if>
+            <if test="sysMenu.icon != null">
+                strutil.replace(placeholder,"%s",field.columnName),
+            </if>
+            <if test="sysMenu.sort != null">
+                strutil.replace(placeholder,"%s",field.columnName),
+            </if>
+            <if test="sysMenu.type != null">
+                strutil.replace(placeholder,"%s",field.columnName),
+            </if>
+            <if test="sysMenu.permission != null">
+                strutil.replace(placeholder,"%s",field.columnName),
+            </if>
+            <if test="sysMenu.isValid != null">
+                strutil.replace(placeholder,"%s",field.columnName),
+            </if>
+            <if test="sysMenu.remarks != null">
+                strutil.replace(placeholder,"%s",field.columnName),
+            </if>
+            <if test="sysMenu.isDelete != null">
+                strutil.replace(placeholder,"%s",field.columnName),
+            </if>
+            <if test="sysMenu.deleteTime != null">
+                strutil.replace(placeholder,"%s",field.columnName),
+            </if>
+            <if test="sysMenu.level != null">
+                strutil.replace(placeholder,"%s",field.columnName),
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="sysMenu.id != null">
+                #{sysMenu.id},
+            </if>
+            <if test="sysMenu.projectId != null">
+                #{sysMenu.projectId},
+            </if>
+            <if test="sysMenu.parentId != null">
+                #{sysMenu.parentId},
+            </if>
+            <if test="sysMenu.name != null">
+                #{sysMenu.name},
+            </if>
+            <if test="sysMenu.path != null">
+                #{sysMenu.path},
+            </if>
+            <if test="sysMenu.icon != null">
+                #{sysMenu.icon},
+            </if>
+            <if test="sysMenu.sort != null">
+                #{sysMenu.sort},
+            </if>
+            <if test="sysMenu.type != null">
+                #{sysMenu.type},
+            </if>
+            <if test="sysMenu.permission != null">
+                #{sysMenu.permission},
+            </if>
+            <if test="sysMenu.isValid != null">
+                #{sysMenu.isValid},
+            </if>
+            <if test="sysMenu.remarks != null">
+                #{sysMenu.remarks},
+            </if>
+            <if test="sysMenu.isDelete != null">
+                #{sysMenu.isDelete},
+            </if>
+            <if test="sysMenu.deleteTime != null">
+                #{sysMenu.deleteTime},
+            </if>
+            <if test="sysMenu.level != null">
+                #{sysMenu.level},
+            </if>
+        </trim>
+     </insert>
+
+     <select id="selectByPrimaryKey" parameterType="map" resultMap="BaseResultMap">
+        select
+        <include refid="columns" />
+        from sys_menu
+        where  id = #{id} 
+     </select>
+
+     <delete id="deleteByPrimaryKey" parameterType="map">
+        delete from sys_menu
+        where  id = #{id} 
+     </delete>
+
+     <update id="updateByPrimaryKey" parameterType="cn.tswine.jdbc.test.generator.model.SysMenu">
+        update sys_menu
+        <set>
+            <if test="id != null">
+                id = #{id},
+            </if>
+            <if test="projectId != null">
+                project_id = #{projectId},
+            </if>
+            <if test="parentId != null">
+                parent_id = #{parentId},
+            </if>
+            <if test="name != null">
+                name = #{name},
+            </if>
+            <if test="path != null">
+                path = #{path},
+            </if>
+            <if test="icon != null">
+                icon = #{icon},
+            </if>
+            <if test="sort != null">
+                sort = #{sort},
+            </if>
+            <if test="type != null">
+                type = #{type},
+            </if>
+            <if test="permission != null">
+                permission = #{permission},
+            </if>
+            <if test="isValid != null">
+                is_valid = #{isValid},
+            </if>
+            <if test="remarks != null">
+                remarks = #{remarks},
+            </if>
+            <if test="isDelete != null">
+                is_delete = #{isDelete},
+            </if>
+            <if test="deleteTime != null">
+                delete_time = #{deleteTime},
+            </if>
+            <if test="level != null">
+                level = #{level},
+            </if>
+        </set>
+        where  id = #{id} 
+     </update>
+</mapper>

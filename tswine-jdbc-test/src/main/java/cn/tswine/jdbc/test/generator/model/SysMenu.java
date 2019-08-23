@@ -1,14 +1,13 @@
-package cn.tswine.jdbc.test.plus.entity;
+package cn.tswine.jdbc.test.generator.model;
 
+import java.time.LocalDateTime;
+import lombok.Data;
+import lombok.experimental.Accessors;
 import cn.tswine.jdbc.common.annotation.TableField;
 import cn.tswine.jdbc.common.annotation.TableId;
 import cn.tswine.jdbc.common.annotation.TableName;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
-import lombok.Data;
-import lombok.experimental.Accessors;
-
-import java.time.LocalDateTime;
 
 /**
  * <p>
@@ -43,7 +42,7 @@ public class SysMenu {
     public static final String FIELD_LEVEL = "level";
 
     /**
-     *
+     * 
      */
     @ApiModelProperty(value = "")
     @TableId(value = "id")
@@ -112,7 +111,7 @@ public class SysMenu {
      * 是否删除
      */
     @ApiModelProperty(value = "是否删除")
-    @TableField(exist = false)
+    @TableField(value = "is_delete")
     private Integer isDelete;
     /**
      * 删除时间

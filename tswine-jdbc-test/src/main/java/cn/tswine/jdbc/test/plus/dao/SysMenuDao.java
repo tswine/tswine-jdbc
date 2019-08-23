@@ -14,6 +14,6 @@ import cn.tswine.jdbc.test.plus.entity.SysMenu;
 public class SysMenuDao extends AbstractDao<SysMenu> {
     @Override
     public IDBLabel getDbLabel() {
-        return DbType.POSTGRE_SQL;
+        return DbType.MYSQL;
     }
 }

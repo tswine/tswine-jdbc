@@ -1,5 +1,6 @@
 package cn.tswine.jdbc.plus.builder;
 
+import cn.tswine.jdbc.common.annotation.DbType;
 import cn.tswine.jdbc.common.toolkit.ReflectionUtils;
 import cn.tswine.jdbc.plus.builder.schema.EntitySchema;
 
@@ -20,11 +21,11 @@ public class SchemaBuilder {
     private static final Map<Class<?>, ISchema> ENTITY_SCHEMA_CACHE = new ConcurrentHashMap<>();
 
 
-    public synchronized static EntitySchema buildEntity(Class<?> clazz) {
+    public synchronized static EntitySchema buildEntity(Class<?> clazz, DbType dbType) {
         ISchema schema = ENTITY_SCHEMA_CACHE.get(clazz);
         if (schema == null) {
             schema = ReflectionUtils.newInstance(EntitySchema.class);
-            schema.build(clazz);
+            schema.build(clazz, new DbType[]{dbType});
             ENTITY_SCHEMA_CACHE.put(clazz, schema);
         }
         return (EntitySchema) schema;

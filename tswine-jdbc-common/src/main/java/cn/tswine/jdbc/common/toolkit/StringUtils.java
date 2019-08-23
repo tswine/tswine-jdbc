@@ -43,20 +43,19 @@ public class StringUtils {
      */
     public static String join(Object[] array, String joiner) {
         if (array == null) {
-            return "null";
+            return StringUtils.EMPTY;
         }
         int iMax = array.length - 1;
         if (iMax == -1) {
-            return "[]";
+            return "";
         }
-        StringBuilder b = new StringBuilder();
-        b.append('[');
+        StringBuilder sb = new StringBuilder();
         for (int i = 0; ; i++) {
-            b.append(array[i]);
+            sb.append(array[i]);
             if (i == iMax) {
-                return b.append(']').toString();
+                return sb.toString();
             }
-            b.append(joiner);
+            sb.append(joiner);
         }
     }
 

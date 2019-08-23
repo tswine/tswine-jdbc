@@ -1,14 +1,11 @@
 package cn.tswine.jdbc.plus.dao;
 
 import cn.tswine.jdbc.common.rules.IDBLabel;
-import cn.tswine.jdbc.plus.builder.SchemaBuilder;
-import cn.tswine.jdbc.plus.builder.schema.EntitySchema;
 import cn.tswine.jdbc.plus.conditions.Wrapper;
-import cn.tswine.jdbc.plus.executor.BaseExecutor;
-import cn.tswine.jdbc.plus.executor.Executor;
+import cn.tswine.jdbc.plus.injector.IMethod;
+import cn.tswine.jdbc.plus.injector.methods.SelectById;
 import cn.tswine.jdbc.plus.metadata.IPage;
-import cn.tswine.jdbc.plus.transaction.Transaction;
-import cn.tswine.jdbc.plus.transaction.jdbc.JdbcTransactionFactory;
+import cn.tswine.jdbc.plus.sql.SqlSource;
 
 import java.io.Serializable;
 import java.lang.reflect.ParameterizedType;
@@ -33,13 +30,14 @@ public abstract class AbstractDao<T> implements Dao<T> {
      */
     protected Class<T> tClass;
 
+
     public AbstractDao() {
         Type type = getClass().getGenericSuperclass();
         if (type instanceof ParameterizedType) {
             ParameterizedType pType = (ParameterizedType) type;
-            Type claz = pType.getActualTypeArguments()[0];
-            if (claz instanceof Class) {
-                this.tClass = (Class<T>) claz;
+            Type clazz = pType.getActualTypeArguments()[0];
+            if (clazz instanceof Class) {
+                this.tClass = (Class<T>) clazz;
             }
         }
     }
@@ -83,9 +81,9 @@ public abstract class AbstractDao<T> implements Dao<T> {
 
     @Override
     public T selectById(Serializable... ids) {
-//        Transaction transaction = JdbcTransactionFactory.getInstance().newTransaction(getDbLabel());
-//        Executor executor = new BaseExecutor(transaction);
-        EntitySchema entitySchema = SchemaBuilder.buildEntity(tClass);
+        IMethod method = new SelectById(getDbLabel(), tClass);
+        SqlSource sqlSource = method.execute();
+        System.out.println(sqlSource.getResult());
         return null;
     }
 

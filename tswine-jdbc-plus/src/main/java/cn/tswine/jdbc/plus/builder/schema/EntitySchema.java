@@ -1,17 +1,14 @@
 package cn.tswine.jdbc.plus.builder.schema;
 
+import cn.tswine.jdbc.common.annotation.DbType;
 import cn.tswine.jdbc.common.annotation.TableField;
 import cn.tswine.jdbc.common.annotation.TableId;
 import cn.tswine.jdbc.common.annotation.TableName;
-import cn.tswine.jdbc.common.toolkit.Assert;
-import cn.tswine.jdbc.common.toolkit.ReflectionUtils;
-import cn.tswine.jdbc.common.toolkit.StringUtils;
+import cn.tswine.jdbc.common.toolkit.*;
 import cn.tswine.jdbc.plus.builder.ISchema;
 
 import java.lang.reflect.Field;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * @Author: silly
@@ -20,11 +17,6 @@ import java.util.Map;
  * @Desc
  */
 public class EntitySchema implements ISchema {
-
-    public EntitySchema() {
-
-    }
-
     /**
      * 类
      */
@@ -35,6 +27,11 @@ public class EntitySchema implements ISchema {
     String tableName;
 
     /**
+     * 数据库类型
+     */
+    DbType dbType;
+
+    /**
      * 所有字段
      */
     final Map<String, Field> fields = new HashMap<>();
@@ -42,19 +39,22 @@ public class EntitySchema implements ISchema {
     /**
      * 主键字段
      */
-    final Map<String, TableId> ids = new HashMap<>();
+    LinkedHashMap<String, TableId> ids = new LinkedHashMap<>();
 
     // TODO 逻辑删除
 
-    public EntitySchema(Class<?> clazz) {
-        this.clazz = clazz;
+    public EntitySchema() {
+
     }
 
+
     @Override
-    public void build(Class<?> clazz) {
+    public void build(Class<?> clazz, Object[] params) {
         Assert.isNotNull(clazz, "Class<?> clazz");
+        Assert.isNotNull(params, "params");
         this.clazz = clazz;
-        tablName().fields();
+        this.dbType = (DbType) params[0];
+        tableName().fields();
     }
 
     /**
@@ -79,27 +79,34 @@ public class EntitySchema implements ISchema {
         List<Field> fieldList = ReflectionUtils.getFieldList(clazz);
         if (fieldList != null && fieldList.size() > 0) {
             for (Field field : fieldList) {
-                String columnName;
-                TableField anno = field.getAnnotation(TableField.class);
-                if (anno != null) {
-                    boolean exist = anno.exist();
+                TableId annoId = null;
+                String columnName = null;
+                //判断是否为字段
+                TableField annoField = field.getAnnotation(TableField.class);
+                if (annoField != null) {
+                    boolean exist = annoField.exist();
                     if (!exist) {
                         continue;
                     }
-                    if (StringUtils.isEmpty(anno.value())) {
-                        columnName = StringUtils.camelToUnderline(field.getName());
-                    } else {
-                        columnName = anno.value();
-                    }
-                    //判断是否为主键
-                    if (anno instanceof TableField) {
-                        ids.put(columnName, (TableId) anno);
-                    }
+                    columnName = annoField.value();
                 } else {
+                    annoId = field.getAnnotation(TableId.class);
+                    if (annoId != null) {
+                        columnName = annoId.value();
+                    }
+                }
+                if (StringUtils.isEmpty(columnName)) {
                     columnName = StringUtils.camelToUnderline(field.getName());
                 }
                 fields.put(columnName, field);
+                if (annoId != null) {
+                    ids.put(columnName, annoId);
+                }
             }
+        }
+        //排序id 索引
+        if (ids != null && ids.size() > 0) {
+            ids = sortByTableIdIndex(ids);
         }
         return this;
     }
@@ -107,7 +114,7 @@ public class EntitySchema implements ISchema {
     /**
      * 获取class上TableName注解值
      */
-    private EntitySchema tablName() {
+    private EntitySchema tableName() {
         Class<TableName> tableNameClass = TableName.class;
         TableName annotation = clazz.getAnnotation(tableNameClass);
         if (annotation != null) {
@@ -119,4 +126,79 @@ public class EntitySchema implements ISchema {
         return this;
     }
 
+    /**
+     * 获取表名
+     *
+     * @return
+     */
+    public String getTableName() {
+        return this.tableName;
+    }
+
+
+    /**
+     * 获取数据库表字段
+     *
+     * @param excludeColumns 排除的列名
+     * @return
+     */
+    public List<String> getColumns(String... excludeColumns) {
+        Map<String, Field> newFileds = MapUtils.copy(fields);
+        if (excludeColumns != null) {
+            for (String column : excludeColumns) {
+                if (newFileds.containsKey(column)) {
+                    newFileds.remove(newFileds);
+                }
+            }
+        }
+        return fieldToColumnList(newFileds.keySet());
+    }
+
+    /**
+     * 获取所有的id
+     *
+     * @return
+     */
+    public List<String> getIds() {
+        if (ids == null || ids.size() <= 0) {
+            throw ExceptionUtils.tse(String.format("clazz:%s no id", clazz.getName()));
+        }
+        return fieldToColumnList(ids.keySet());
+    }
+
+    /**
+     * 字段转换为列集合
+     *
+     * @param fields
+     * @return
+     */
+    private List<String> fieldToColumnList(Set<String> fields) {
+        ArrayList<String> columns = new ArrayList<>();
+        String placeholder = dbType.getPlaceholder();
+        fields.forEach(k -> {
+            if (StringUtils.isNotEmpty(placeholder)) {
+                k = String.format(placeholder, k);
+            }
+            columns.add(k);
+        });
+        return columns;
+    }
+
+
+    /**
+     * 按照注解TableId 中的index值排序
+     *
+     * @param ids
+     * @return
+     */
+    private LinkedHashMap<String, TableId> sortByTableIdIndex(Map<String, TableId> ids) {
+        List<Map.Entry<String, TableId>> list = new LinkedList<>(ids.entrySet());
+        Collections.sort(list, Comparator.comparingInt(o -> o.getValue().index()));
+        LinkedHashMap<String, TableId> result = new LinkedHashMap<>();
+        for (Map.Entry<String, TableId> entry : list) {
+            result.put(entry.getKey(), entry.getValue());
+        }
+        return result;
+
+    }
 }

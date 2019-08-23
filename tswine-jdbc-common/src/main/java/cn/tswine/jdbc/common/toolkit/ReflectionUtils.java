@@ -1,5 +1,6 @@
 package cn.tswine.jdbc.common.toolkit;
 
+import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
@@ -20,18 +21,57 @@ public class ReflectionUtils {
     }
 
     /**
-     * 创建实例
+     * 创建实例:无参构造函数
      *
      * @param clazz
      * @param <T>
      * @return
      */
     public static <T> T newInstance(Class<T> clazz) {
+        return newInstance(clazz, null, null);
+    }
+
+    /**
+     * 创建实例:构造函数传参
+     *
+     * @param clazz
+     * @param params 构造函数参数
+     * @param <T>
+     * @return
+     */
+    public static <T> T newInstance(Class<T> clazz, Object[] params) {
+        Class<?>[] paramClazz = null;
+        if (params != null && params.length > 0) {
+            paramClazz = new Class<?>[params.length];
+            for (int i = 0; i < params.length; i++) {
+                paramClazz[i] = params[i].getClass();
+            }
+        }
+        return newInstance(clazz, paramClazz, params);
+    }
+
+
+    /**
+     * 创建实例:构造函数传参
+     *
+     * @param clazz
+     * @param paramClazz 执行构造函数参数类型
+     * @param params
+     * @param <T>
+     * @return
+     */
+    public static <T> T newInstance(Class<T> clazz, Class<?>[] paramClazz, Object[] params) {
         try {
-            //TODO 优化
-            T t = clazz.newInstance();
-            return t;
-        } catch (IllegalAccessException | InstantiationException ex) {
+            Constructor constructor;
+            if (params == null || params.length <= 0 || paramClazz == null || paramClazz.length <= 0) {
+                constructor = clazz.getConstructor();
+            } else {
+                constructor = clazz.getConstructor(paramClazz);
+            }
+            //反射私有构造函数
+            constructor.setAccessible(true);
+            return (T) constructor.newInstance(params);
+        } catch (Exception ex) {
             throw ExceptionUtils.tse(ex);
         }
 

@@ -14,7 +14,7 @@ import java.lang.annotation.Target;
  * @Desc
  */
 @Retention(RetentionPolicy.RUNTIME)
-@Target({ElementType.FIELD, ElementType.ANNOTATION_TYPE})
+@Target({ElementType.FIELD})
 public @interface TableField {
     /**
      * 字段值

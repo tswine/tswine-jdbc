@@ -17,7 +17,6 @@ import java.lang.annotation.Target;
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ElementType.FIELD})
-@TableField
 public @interface TableId {
 
     /**
@@ -25,7 +24,7 @@ public @interface TableId {
      *
      * @return
      */
-    String value();
+    String value() default "";
 
     /**
      * 主键类型

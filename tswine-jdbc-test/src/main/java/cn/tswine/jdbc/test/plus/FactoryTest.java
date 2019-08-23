@@ -1,8 +1,10 @@
 package cn.tswine.jdbc.test.plus;
 
+import cn.tswine.jdbc.common.annotation.DbType;
 import cn.tswine.jdbc.plus.JdbcPlusFactory;
 import cn.tswine.jdbc.plus.config.GlobalConfig;
 import cn.tswine.jdbc.test.plus.dao.SysMenuDao;
+import com.alibaba.druid.pool.DruidDataSource;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -19,6 +21,12 @@ public class FactoryTest {
     @Before
     public void init() {
         GlobalConfig globalConfig = new GlobalConfig();
+        DruidDataSource dataSource = new DruidDataSource();
+        dataSource.setUrl("jdbc:mysql://192.168.47.100:3306/tswine_boot?characterEncoding=UTF-8&useUnicode=true&useSSL=false");
+        dataSource.setUsername("tswine_boot");
+        dataSource.setPassword("123456");
+        dataSource.setDriverClassName("com.mysql.jdbc.Driver");
+        globalConfig.addDataSource(DbType.MYSQL, dataSource);
         factory = new JdbcPlusFactory(globalConfig);
     }
 
@@ -31,7 +39,7 @@ public class FactoryTest {
     @Test
     public void select() {
         SysMenuDao dao = factory.getDao(SysMenuDao.class);
-        dao.selectById("1");
+        dao.selectById("1e69489fd9ce31559ba69e3978357127");
 
     }
 }

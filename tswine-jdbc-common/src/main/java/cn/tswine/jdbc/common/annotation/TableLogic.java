@@ -15,7 +15,6 @@ import java.lang.annotation.Target;
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ElementType.FIELD})
-@TableField
 public @interface TableLogic {
     String value();
 

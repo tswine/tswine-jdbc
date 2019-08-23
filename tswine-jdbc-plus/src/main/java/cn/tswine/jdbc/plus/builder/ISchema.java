@@ -7,5 +7,10 @@ package cn.tswine.jdbc.plus.builder;
  * @Desc
  */
 public interface ISchema {
-    void build(Class<?> clazz);
+    /**
+     * 初始化参数
+     * @param clazz
+     * @param params
+     */
+    void build(Class<?> clazz, Object[] params);
 }

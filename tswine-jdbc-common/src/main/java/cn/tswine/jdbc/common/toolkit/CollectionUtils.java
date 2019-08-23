@@ -12,6 +12,7 @@ import java.util.Map;
  * @Desc
  */
 public class CollectionUtils {
+    
     /**
      * 校验集合是否为空
      *

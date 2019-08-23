@@ -14,6 +14,11 @@
 
     <dependencies>
         <dependency>
+            <groupId>com.alibaba</groupId>
+            <artifactId>druid</artifactId>
+            <version>1.1.18</version>
+        </dependency>
+        <dependency>
             <groupId>cn.tswine.jdbc</groupId>
             <artifactId>tswine-jdbc-common</artifactId>
         </dependency>
