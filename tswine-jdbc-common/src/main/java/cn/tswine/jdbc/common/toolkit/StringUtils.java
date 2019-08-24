@@ -8,21 +8,7 @@ import java.util.Arrays;
  * @Version 1.0
  * @Desc
  */
-public class StringUtils {
-
-    /**
-     * 空字符
-     */
-    public static final String EMPTY = "";
-
-    /**
-     * 下划线字符
-     */
-    public static final char UNDERLINE = '_';
-    /**
-     * 占位符
-     */
-    public static final String PLACE_HOLDER = "{%s}";
+public class StringUtils implements StringPool {
 
     /**
      * 重载join

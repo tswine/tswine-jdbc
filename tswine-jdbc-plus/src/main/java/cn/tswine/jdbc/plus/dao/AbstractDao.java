@@ -1,7 +1,11 @@
 package cn.tswine.jdbc.plus.dao;
 
 import cn.tswine.jdbc.common.rules.IDBLabel;
+import cn.tswine.jdbc.common.toolkit.ArrayUtils;
+import cn.tswine.jdbc.plus.builder.SchemaBuilder;
 import cn.tswine.jdbc.plus.conditions.Wrapper;
+import cn.tswine.jdbc.plus.converts.IResultConvert;
+import cn.tswine.jdbc.plus.converts.ResultConvertEntity;
 import cn.tswine.jdbc.plus.injector.IMethod;
 import cn.tswine.jdbc.plus.injector.methods.SelectById;
 import cn.tswine.jdbc.plus.metadata.IPage;
@@ -10,6 +14,7 @@ import cn.tswine.jdbc.plus.sql.SqlSource;
 import java.io.Serializable;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
@@ -23,7 +28,6 @@ import java.util.Map;
  * @Desc
  */
 public abstract class AbstractDao<T> implements Dao<T> {
-
 
     /**
      * 泛型类型
@@ -81,9 +85,13 @@ public abstract class AbstractDao<T> implements Dao<T> {
 
     @Override
     public T selectById(Serializable... ids) {
-        IMethod method = new SelectById(getDbLabel(), tClass);
+        ArrayList<Object> params = ArrayUtils.asList(ids);
+        IMethod method = new SelectById(getDbLabel(), tClass, params);
         SqlSource sqlSource = method.execute();
-        System.out.println(sqlSource.getResult());
+        List<Map<String, Object>> resultSelect = sqlSource.getResultSelect();
+        IResultConvert convert = new ResultConvertEntity();
+        Object obj = convert.execute(SchemaBuilder.buildEntity(tClass, getDbLabel().getDbType()), resultSelect);
+        System.out.println(obj.toString());
         return null;
     }
 
@@ -118,11 +126,6 @@ public abstract class AbstractDao<T> implements Dao<T> {
     }
 
     @Override
-    public List<Object> selectObjs(Wrapper<T> queryWrapper) {
-        return null;
-    }
-
-    @Override
     public IPage<T> selectPage(IPage<T> page, Wrapper<T> queryWrapper) {
         return null;
     }
@@ -131,4 +134,6 @@ public abstract class AbstractDao<T> implements Dao<T> {
     public IPage<Map<String, Object>> selectMapsPage(IPage<T> page, Wrapper<T> queryWrapper) {
         return null;
     }
+
+
 }

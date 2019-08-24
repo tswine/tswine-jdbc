@@ -1,4 +1,4 @@
-package cn.tswine.jdbc.plus.enums;
+package cn.tswine.jdbc.common.enums;
 
 /**
  * sql保留关键字枚举
@@ -8,18 +8,17 @@ package cn.tswine.jdbc.plus.enums;
  * @Version 1.0
  * @Desc
  */
-public enum SqlKeyword {
+public enum SQLSentenceType {
+    SELECT("SELECT"),
+    INSERT("INSERT"),
+    DELETE("DELETE"),
+    UPDATE("UPDATE"),
+
     AND("AND"),
     OR("OR"),
     IN("IN"),
     NOT("NOT"),
     LIKE("LIKE"),
-    EQ("="),
-    NE("<>"),
-    GT(">"),
-    GE(">="),
-    LT("<"),
-    LE("<="),
     IS_NULL("IS NULL"),
     IS_NOT_NULL("IS NOT NULL"),
     GROUP_BY("GROUP BY"),
@@ -30,10 +29,17 @@ public enum SqlKeyword {
     ASC("ASC"),
     DESC("DESC");
 
-    private final String keyword;
+    /**
+     * 值
+     */
+    private final String value;
 
-    SqlKeyword(final String keyword) {
-        this.keyword = keyword;
+
+    SQLSentenceType(final String value) {
+        this.value = value;
     }
 
+    public String getValue() {
+        return value;
+    }
 }

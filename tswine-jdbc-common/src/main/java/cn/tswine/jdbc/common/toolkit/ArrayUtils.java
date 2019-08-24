@@ -1,5 +1,9 @@
 package cn.tswine.jdbc.common.toolkit;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
 /**
  * 数组工具类
  *
@@ -30,6 +34,20 @@ public class ArrayUtils {
      */
     public static boolean isNotEmpty(Object[] array) {
         return !isEmpty(array);
+    }
+
+
+    /**
+     * 转成list
+     *
+     * @param array
+     * @return
+     */
+    public static <T> ArrayList<T> asList(T... array) {
+        if (array == null) {
+            return null;
+        }
+        return new ArrayList<>(Arrays.asList(array));
     }
 
 

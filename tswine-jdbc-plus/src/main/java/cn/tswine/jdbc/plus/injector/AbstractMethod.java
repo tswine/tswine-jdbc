@@ -11,6 +11,8 @@ import cn.tswine.jdbc.plus.transaction.jdbc.JdbcTransactionFactory;
 
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @Author: silly
@@ -22,16 +24,21 @@ public abstract class AbstractMethod<E extends Executor> implements IMethod {
 
     protected IDBLabel dbLabel;
     protected EntitySchema entitySchema;
-
     /**
      * 执行器类型
      */
     protected Class<E> executorClass;
 
-    public AbstractMethod(IDBLabel dbLabel, Class<?> eClazz) {
+    /**
+     * 执行的参数
+     */
+    protected ArrayList<Object> params;
+
+    public AbstractMethod(IDBLabel dbLabel, Class<?> eClazz,ArrayList<Object> params) {
         setExecutorClass();
         this.dbLabel = dbLabel;
         this.entitySchema = SchemaBuilder.buildEntity(eClazz, dbLabel.getDbType());
+        this.params =params;
     }
 
     public abstract SqlSource injectSqlSource();

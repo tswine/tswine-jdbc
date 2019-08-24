@@ -26,6 +26,6 @@ public class ExecutorQuery extends BaseExecutor {
             args = sqlSource.getParameters().toArray();
         }
         List<Map<String, Object>> maps = executeQuery(sqlSource.getSql(), args);
-        sqlSource.setResult(maps);
+        sqlSource.setResultSelect(maps);
     }
 }

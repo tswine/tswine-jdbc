@@ -8,6 +8,7 @@ import cn.tswine.jdbc.common.toolkit.*;
 import cn.tswine.jdbc.plus.builder.ISchema;
 
 import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 import java.util.*;
 
 /**
@@ -60,14 +61,35 @@ public class EntitySchema implements ISchema {
     /**
      * 将map数据转载为实体对象
      *
-     * @param clazz
-     * @param data
-     * @param <T>
+     * @param result
      * @return
      */
-    public <T> T load(Class<T> clazz, Map<String, Object> data) {
-        //TODO  实现装载逻辑
-        return null;
+    public Object asEntity(Map<String, Object> result) {
+        //TODO 优化
+        Object obj = ReflectionUtils.newInstance(clazz);
+        for (Map.Entry<String, Object> entry : result.entrySet()) {
+            String column = entry.getKey();
+            Object val = entry.getValue();
+            if (val == null) {
+                //数据为空不处理
+                continue;
+            }
+            Field field = fields.get(column);
+            if (field == null) {
+                //实体对象不包含此列，不处理
+                continue;
+            }
+            //获取方法名
+            String methodName = StringUtils.concatCapitalize("set", field.getName());
+            try {
+                Method method = clazz.getMethod(methodName, field.getType());
+                method.invoke(obj, val);
+            } catch (Exception e) {
+                throw ExceptionUtils.tse(e);
+            }
+
+        }
+        return obj;
     }
 
     /**

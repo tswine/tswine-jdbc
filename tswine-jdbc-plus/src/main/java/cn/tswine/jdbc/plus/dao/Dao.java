@@ -127,14 +127,6 @@ public interface Dao<T> {
     List<Map<String, Object>> selectMaps(Wrapper<T> queryWrapper);
 
     /**
-     * 根据 Wrapper 条件，查询全部记录
-     * <p>注意： 只返回第一个字段的值</p>
-     *
-     * @param queryWrapper 实体对象封装操作类（可以为 null）
-     */
-    List<Object> selectObjs(Wrapper<T> queryWrapper);
-
-    /**
      * 根据 entity 条件，查询全部记录（并翻页）
      *
      * @param page         分页查询条件（可以为 RowBounds.DEFAULT）
