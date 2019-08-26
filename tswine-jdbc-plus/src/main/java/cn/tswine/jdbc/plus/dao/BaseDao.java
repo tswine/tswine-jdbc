@@ -2,6 +2,7 @@ package cn.tswine.jdbc.plus.dao;
 
 import cn.tswine.jdbc.common.rules.IDBLabel;
 import cn.tswine.jdbc.plus.injector.IMethod;
+import cn.tswine.jdbc.plus.injector.methods.Insert;
 import cn.tswine.jdbc.plus.injector.methods.Select;
 import cn.tswine.jdbc.plus.sql.SqlSource;
 
@@ -20,8 +21,12 @@ public abstract class BaseDao implements Dao {
 
     @Override
     public int insert(String sql, Object[] params) {
-        return 0;
+        IMethod method = new Insert(getDbLabel(), sql, params);
+        SqlSource sqlSource = method.execute();
+        return sqlSource.getUpdate();
     }
+
+
 
     @Override
     public int delete(String sql, Object[] params) {

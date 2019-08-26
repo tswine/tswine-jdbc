@@ -3,7 +3,9 @@ package cn.tswine.jdbc.common.toolkit.sql;
 import cn.tswine.jdbc.common.enums.SQLSentenceType;
 import cn.tswine.jdbc.common.toolkit.Assert;
 import cn.tswine.jdbc.common.toolkit.StringPool;
+import cn.tswine.jdbc.common.toolkit.StringUtils;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 
@@ -82,4 +84,40 @@ public class SqlUtils implements StringPool {
             sb.append(COMMA);
         }
     }
+
+
+    /**
+     * 字段转换为列集合
+     *
+     * @param fields 表字段
+     * @return `user_name`,`password`,`status`
+     */
+    public static String getColumns(Collection<String> fields, String placeholder) {
+        ArrayList<String> columns = new ArrayList<>();
+        fields.forEach(k -> {
+            if (StringUtils.isNotEmpty(placeholder)) {
+                k = String.format(placeholder, k);
+            }
+            columns.add(k);
+        });
+        return StringUtils.join(columns.toArray(), ",");
+    }
+
+    /**
+     * 获取？
+     *
+     * @param count ？个数
+     * @return ?,?,?,?,?
+     */
+    public static String getQuestionMark(int count) {
+        StringBuilder sb = new StringBuilder();
+        for (int i = 0; ; i++) {
+            sb.append(QUESTION_MARK);
+            if (i == (count - 1)) {
+                return sb.toString();
+            }
+            sb.append(COMMA);
+        }
+    }
+
 }

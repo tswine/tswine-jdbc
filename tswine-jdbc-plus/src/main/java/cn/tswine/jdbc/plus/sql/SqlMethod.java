@@ -13,7 +13,7 @@ public enum SqlMethod {
     /**
      * 插入
      */
-    INSERT("insert", "插入一条数据", ""),
+    INSERT("insert", "插入一条数据", "INSERT INTO %s ( %s ) VALUES ( %s )"),
     /**
      * 删除
      */

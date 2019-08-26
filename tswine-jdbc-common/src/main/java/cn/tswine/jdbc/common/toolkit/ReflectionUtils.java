@@ -74,24 +74,48 @@ public class ReflectionUtils {
         } catch (Exception ex) {
             throw ExceptionUtils.tse(ex);
         }
-
     }
 
+    /**
+     * 根据指定字段或者值
+     *
+     * @param entity
+     * @param fields
+     * @return
+     */
+    public static Map<String, Object> getAllMethodValue(Object entity, Map<String, Field> fields) {
+        if (CollectionUtils.isEmpty(fields)) {
+            return null;
+        }
+        Class<?> clazz = entity.getClass();
+        Map<String, Object> map = new HashMap<>();
+        fields.forEach((k, v) -> {
+            try {
+                Method method = clazz.getMethod(getMethodCapitalize(v, v.getName()));
+                //执行方法
+                map.put(k, method.invoke(entity));
+            } catch (Exception e) {
+                throw ExceptionUtils.tse(e);
+            }
+
+        });
+        return map;
+    }
 
     /**
      * 获取所有 public get方法的值
      *
-     * @param clazz
      * @param entity 实体
      * @return
      */
-    public static Map<Field, Object> getAllMethodValue(Class<?> clazz, Object entity) {
+    public static Map<Field, Object> getAllMethodValue(Object entity) {
+        Class<?> clazz = entity.getClass();
         List<Field> fieldList = getFieldList(clazz);
         Map<Field, Object> mapMethodValue = Collections.emptyMap();
         if (CollectionUtils.isNotEmpty(fieldList)) {
             mapMethodValue = new HashMap<>();
             for (Field field : fieldList) {
-                mapMethodValue.put(field, getMethodValue(clazz, entity, field.getName()));
+                mapMethodValue.put(field, getMethodValue(entity, field.getName()));
             }
         }
         return mapMethodValue;
@@ -100,13 +124,13 @@ public class ReflectionUtils {
     /**
      * 获取 public get方法的值
      *
-     * @param clazz
      * @param entity 实体
      * @param str    属性字符串内容
      * @return
      */
-    public static Object getMethodValue(Class<?> clazz, Object entity, String str) {
-        Map<String, Field> fieldMaps = getFieldMap(clazz);
+    public static Object getMethodValue(Object entity, String str) {
+        Class<?> clazz = entity.getClass();
+        Map<String, Field> fieldMaps = getFieldMap(entity.getClass());
         try {
             if (CollectionUtils.isEmpty(fieldMaps)) {
                 throw ExceptionUtils.tse("获取字段为空,clazz=%s,str=%s", clazz.getSimpleName(), str);

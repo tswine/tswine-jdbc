@@ -9,6 +9,7 @@ import com.alibaba.druid.pool.DruidDataSource;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -75,5 +76,25 @@ public class FactoryTest {
         for (SysMenu sysMenu : sysMenus) {
             System.out.println(sysMenu.toString());
         }
+    }
+
+    @Test
+    public void insert() {
+        SysMenu sysMenu = new SysMenu();
+        sysMenu.setId(System.currentTimeMillis() + "");
+        sysMenu.setName("测试");
+        sysMenu.setParentId("/admin/test");
+        sysMenu.setIcon("test");
+        sysMenu.setIsValid(0);
+        sysMenu.setRemarks("备注");
+        sysMenu.setIsDelete(1);
+        sysMenu.setDeleteTime(LocalDateTime.now());
+        sysMenu.setLevel(99);
+        sysMenu.setSort(100);
+        sysMenu.setType("test");
+        sysMenu.setProjectId("-1");
+
+        int insert = sysMenuDao.insert(sysMenu);
+        System.out.println(insert);
     }
 }

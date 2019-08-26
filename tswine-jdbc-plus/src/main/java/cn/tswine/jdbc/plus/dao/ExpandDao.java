@@ -33,6 +33,15 @@ public interface ExpandDao<T> {
      */
     int[] insert(List<T> listEntity);
 
+    /**
+     * 插入
+     *
+     * @param tableName    表名
+     * @param columnValues 列值
+     * @return 插入的条数
+     */
+    int insert(String tableName, Map<String, Object> columnValues);
+
     /***********查找***********/
     /**
      * 查询（根据where条件查询）

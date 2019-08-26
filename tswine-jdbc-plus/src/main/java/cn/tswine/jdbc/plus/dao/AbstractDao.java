@@ -2,6 +2,7 @@ package cn.tswine.jdbc.plus.dao;
 
 import cn.tswine.jdbc.common.toolkit.ExceptionUtils;
 import cn.tswine.jdbc.common.toolkit.MapUtils;
+import cn.tswine.jdbc.common.toolkit.ReflectionUtils;
 import cn.tswine.jdbc.common.toolkit.StringUtils;
 import cn.tswine.jdbc.common.toolkit.sql.SqlUtils;
 import cn.tswine.jdbc.plus.builder.SchemaBuilder;
@@ -9,6 +10,7 @@ import cn.tswine.jdbc.plus.builder.schema.EntitySchema;
 import cn.tswine.jdbc.plus.sql.SqlMethod;
 
 import java.io.Serializable;
+import java.lang.reflect.Field;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
@@ -24,12 +26,11 @@ import java.util.Map;
  * @Version 1.0
  * @Desc
  */
-public abstract  class AbstractDao<T> extends BaseDao implements ExpandDao<T> {
+public abstract class AbstractDao<T> extends BaseDao implements ExpandDao<T> {
 
     protected Class<T> classEntity;
 
     protected EntitySchema entitySchema;
-
 
     /**
      * 不允许该类通过new创建
@@ -41,13 +42,42 @@ public abstract  class AbstractDao<T> extends BaseDao implements ExpandDao<T> {
 
     @Override
     public int insert(T entity) {
-        return 0;
+        if (entity == null) {
+            throw ExceptionUtils.tse("entity is empty");
+        }
+        //TODO 考虑主键生成策略
+        //获取所有字段
+        Map<String, Field> fields = entitySchema.getFields();
+        Map<String, Object> methodValue = ReflectionUtils.getAllMethodValue(entity, fields);
+        if (methodValue == null) {
+            throw ExceptionUtils.tse("reflection not get entity values");
+        }
+        return insert(entitySchema.getTableName(), methodValue);
     }
+
+    @Override
+    public int insert(String tableName, Map<String, Object> columnValues) {
+        //INSERT INTO %s ( %s ) VALUES %s
+        SqlMethod sqlMethod = SqlMethod.INSERT;
+        //将列值分开
+        List<String> columnsList = new ArrayList<>();
+        List<Object> valuesList = new ArrayList<>();
+        columnValues.forEach((k, v) -> {
+            columnsList.add(k);
+            valuesList.add(v);
+        });
+        String columns = SqlUtils.getColumns(columnsList, getDbLabel().getDbType().getPlaceholder());
+        String questionMark = SqlUtils.getQuestionMark(valuesList.size());
+        String sql = String.format(sqlMethod.getSql(), tableName, columns, questionMark);
+        return insert(sql, valuesList.toArray());
+    }
+
 
     @Override
     public int[] insert(List<T> listEntity) {
         return new int[0];
     }
+
 
     @Override
     public List<T> selectByWhere(String whereSql, Object... params) {

@@ -61,8 +61,8 @@ public class CollectionUtils {
      * @param coll
      * @return
      */
-    public static List<Object> asList(Collection<?> coll) {
-        List<Object> list = new ArrayList(coll);
+    public static <T> List<T> asList(Collection<T> coll) {
+        List<T> list = new ArrayList(coll);
         return list;
     }
 }

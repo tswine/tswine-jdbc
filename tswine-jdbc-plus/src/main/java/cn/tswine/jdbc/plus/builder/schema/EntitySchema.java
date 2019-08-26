@@ -196,6 +196,11 @@ public class EntitySchema implements ISchema {
         return fieldToColumnList(ids.keySet());
     }
 
+
+    public Map<String, Field> getFields() {
+        return fields;
+    }
+
     /**
      * 字段转换为列集合
      *
