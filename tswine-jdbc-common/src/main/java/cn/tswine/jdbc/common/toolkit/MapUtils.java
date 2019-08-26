@@ -13,6 +13,14 @@ import java.util.Map;
  */
 public class MapUtils {
 
+    public static boolean isEmpty(Map<?, ?> map) {
+        if (map == null || map.size() <= 0) {
+            return true;
+        }
+        return false;
+    }
+
+
     /**
      * 不能为空
      *

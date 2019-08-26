@@ -3,6 +3,7 @@ package cn.tswine.jdbc.test.plus.entity;
 import cn.tswine.jdbc.common.annotation.TableField;
 import cn.tswine.jdbc.common.annotation.TableId;
 import cn.tswine.jdbc.common.annotation.TableName;
+import cn.tswine.jdbc.common.enums.IdType;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
@@ -46,7 +47,7 @@ public class SysMenu {
      *
      */
     @ApiModelProperty(value = "")
-    @TableId(value = "id")
+    @TableId(value = "id", type = IdType.UUID)
     private String id;
     /**
      * 工程ID,多个项目的ID，暂为空，不启用

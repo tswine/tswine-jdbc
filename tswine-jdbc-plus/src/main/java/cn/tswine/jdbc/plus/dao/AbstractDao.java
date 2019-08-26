@@ -1,5 +1,7 @@
 package cn.tswine.jdbc.plus.dao;
 
+import cn.tswine.jdbc.common.annotation.TableId;
+import cn.tswine.jdbc.common.enums.generator.UUIDGenerator;
 import cn.tswine.jdbc.common.toolkit.ExceptionUtils;
 import cn.tswine.jdbc.common.toolkit.MapUtils;
 import cn.tswine.jdbc.common.toolkit.ReflectionUtils;
@@ -45,10 +47,10 @@ public abstract class AbstractDao<T> extends BaseDao implements ExpandDao<T> {
         if (entity == null) {
             throw ExceptionUtils.tse("entity is empty");
         }
-        //TODO 考虑主键生成策略
         //获取所有字段
         Map<String, Field> fields = entitySchema.getFields();
-        Map<String, Object> methodValue = ReflectionUtils.getAllMethodValue(entity, fields);
+        //处理主键
+        Map<String, Object> methodValue = dispsoseIds(ReflectionUtils.getAllMethodValue(entity, fields), entitySchema.getIdsAnno());
         if (methodValue == null) {
             throw ExceptionUtils.tse("reflection not get entity values");
         }
@@ -155,6 +157,34 @@ public abstract class AbstractDao<T> extends BaseDao implements ExpandDao<T> {
             }
         }
         return list;
+    }
+
+    /**
+     * 处理主键
+     *
+     * @param values
+     * @param ids
+     */
+    private Map<String, Object> dispsoseIds(Map<String, Object> values, Map<String, TableId> ids) {
+        if (MapUtils.isEmpty(ids)) {
+            return values;
+        }
+        ids.forEach((k, v) -> {
+            switch (v.type()) {
+                //uuid
+                case UUID:
+                    String newValue = new UUIDGenerator().get();
+                    values.put(k, newValue);
+                    break;
+                //自增
+                case AUTO:
+                    values.remove(k);
+                case ID_WORKER:
+                    //TODO 实现全局唯一逻辑
+
+            }
+        });
+        return values;
     }
 
 }

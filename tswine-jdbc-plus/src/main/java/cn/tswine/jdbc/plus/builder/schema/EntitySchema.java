@@ -196,6 +196,10 @@ public class EntitySchema implements ISchema {
         return fieldToColumnList(ids.keySet());
     }
 
+    public LinkedHashMap<String, TableId> getIdsAnno() {
+        return ids;
+    }
+
 
     public Map<String, Field> getFields() {
         return fields;

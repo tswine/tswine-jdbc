@@ -19,7 +19,7 @@ public enum IdType {
     private final int key;
     private final String desc;
 
-    private IdType(int key, String desc) {
+    IdType(int key, String desc) {
         this.key = key;
         this.desc = desc;
     }
