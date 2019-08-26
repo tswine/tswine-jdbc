@@ -4,24 +4,21 @@ import cn.tswine.jdbc.plus.executor.BaseExecutor;
 import cn.tswine.jdbc.plus.sql.SqlSource;
 import cn.tswine.jdbc.plus.transaction.Transaction;
 
-import java.util.List;
-import java.util.Map;
-
 /**
  * @Author: silly
  * @Date: 2019/8/23 20:55
  * @Version 1.0
  * @Desc
  */
-public class ExecutorQuery extends BaseExecutor {
+public class ExecutorUpdate extends BaseExecutor {
 
-    public ExecutorQuery(Transaction transaction) {
+    public ExecutorUpdate(Transaction transaction) {
         super(transaction);
     }
 
     @Override
     public void execute(SqlSource sqlSource) {
-        List<Map<String, Object>> maps = executeQuery(sqlSource.getSql(), sqlSource.getParameters());
-        sqlSource.setResults(maps);
+        int update = executeUpdate(sqlSource.getSql(), sqlSource.getParameters());
+        sqlSource.setUpdate(update);
     }
 }

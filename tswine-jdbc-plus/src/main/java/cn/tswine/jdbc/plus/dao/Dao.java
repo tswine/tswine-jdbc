@@ -1,154 +1,53 @@
 package cn.tswine.jdbc.plus.dao;
 
-import cn.tswine.jdbc.common.rules.IDBLabel;
-import cn.tswine.jdbc.plus.conditions.Wrapper;
-import cn.tswine.jdbc.plus.metadata.IPage;
-
-import java.io.Serializable;
-import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
 /**
- * 基础dao
+ * 顶级Dao
  *
  * @Author: silly
  * @Date: 2019/8/13 22:30
  * @Version 1.0
  * @Desc
  */
-public interface Dao<T> {
+public interface Dao {
 
     /**
-     * 获取数据库标签
+     * 插入
      *
-     * @return
+     * @param sql    执行的sql语句
+     * @param params 执行的参数
+     * @return 受影响的行数
      */
-    IDBLabel getDbLabel();
+    int insert(String sql, Object[] params);
 
     /**
-     * 插入一条记录
+     * 删除
      *
-     * @param entity 实体对象
+     * @param sql    执行的sql语句
+     * @param params 执行的参数
+     * @return 受影响的行数
      */
-    int insert(T entity);
-
-    /**
-     * 根据 ID 删除
-     *
-     * @param ids 主键ID
-     */
-    int deleteById(Serializable... ids);
-
-    /**
-     * 根据 columnMap 条件，删除记录
-     *
-     * @param columnMap 表字段 map 对象
-     */
-    int deleteByMap(Map<String, Object> columnMap);
-
-    /**
-     * 根据 entity 条件，删除记录
-     *
-     * @param wrapper 实体对象封装操作类
-     */
-    int delete(Wrapper<T> wrapper);
-
-    /**
-     * 删除（根据ID 批量删除）
-     *
-     * @param idList 主键ID列表(不能为 null 以及 empty)
-     */
-    int deleteBatchIds(Collection<? extends Serializable> idList);
-
-    /**
-     * 根据 ID 修改
-     *
-     * @param entity 实体对象
-     */
-    int updateById(T entity);
-
-    /**
-     * 根据 whereEntity 条件，更新记录
-     *
-     * @param entity        实体对象 (set 条件值,可以为 null)
-     * @param updateWrapper 实体对象封装操作类（可以为 null,里面的 entity 用于生成 where 语句）
-     */
-    int update(T entity, Wrapper<T> updateWrapper);
+    int delete(String sql, Object[] params);
 
 
     /**
-     * 通过where条件查询
+     * 更新
      *
-     * @param whereSql
-     * @param params
-     * @return
+     * @param sql    执行的sql语句
+     * @param params 执行的参数
+     * @return 受影响的行数
      */
-    List<T> selectByWhere(String whereSql, List<Object> params);
-
-    /**
-     * 根据ID查询:支持多主键
-     *
-     * @param ids 主键ID
-     */
-    T selectByIds(Serializable... ids);
-
-    /**
-     * 查询（根据ID 批量查询）:不支持多主键
-     *
-     * @param idList 主键ID列表(不能为 null 以及 empty)
-     */
-    List<T> selectBatchIds(Collection<? extends Serializable> idList);
-
-    /**
-     * 查询（根据 columnMap 条件）
-     *
-     * @param columnMap 表字段 map 对象
-     */
-    List<T> selectByMap(Map<String, Object> columnMap);
-
-    /**
-     * 根据 entity 条件，查询一条记录
-     *
-     * @param queryWrapper 实体对象封装操作类（可以为 null）
-     */
-    T selectOne(Wrapper<T> queryWrapper);
-
-    /**
-     * 根据 entity 条件，查询全部记录
-     *
-     * @param queryWrapper 实体对象封装操作类（可以为 null）
-     */
-    List<T> selectList(Wrapper<T> queryWrapper);
-
-    /**
-     * 根据 Wrapper 条件，查询总记录数
-     *
-     * @param queryWrapper 实体对象封装操作类（可以为 null）
-     */
-    Integer selectCount(Wrapper<T> queryWrapper);
+    int update(String sql, Object[] params);
 
 
     /**
-     * 根据 Wrapper 条件，查询全部记录
+     * 查找
      *
-     * @param queryWrapper 实体对象封装操作类（可以为 null）
+     * @param sql    执行的sql语句
+     * @param params 执行的参数
+     * @return 查询到的集合数据
      */
-    List<Map<String, Object>> selectMaps(Wrapper<T> queryWrapper);
-
-    /**
-     * 根据 entity 条件，查询全部记录（并翻页）
-     *
-     * @param page         分页查询条件（可以为 RowBounds.DEFAULT）
-     * @param queryWrapper 实体对象封装操作类（可以为 null）
-     */
-    IPage<T> selectPage(IPage<T> page, Wrapper<T> queryWrapper);
-
-    /**
-     * 根据 Wrapper 条件，查询全部记录（并翻页）
-     *
-     * @param page         分页查询条件
-     * @param queryWrapper 实体对象封装操作类
-     */
-    IPage<Map<String, Object>> selectMapsPage(IPage<T> page, Wrapper<T> queryWrapper);
+    List<Map<String, Object>> select(String sql, Object[] params);
 }

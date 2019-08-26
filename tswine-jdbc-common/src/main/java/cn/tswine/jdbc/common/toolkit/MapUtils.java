@@ -14,6 +14,18 @@ import java.util.Map;
 public class MapUtils {
 
     /**
+     * 不能为空
+     *
+     * @param map
+     * @param error
+     */
+    public static void isNotEmpty(Map<?, ?> map, String error) {
+        if (map == null || map.size() <= 0) {
+            throw ExceptionUtils.tse(error);
+        }
+    }
+
+    /**
      * 深度拷贝
      *
      * @param data

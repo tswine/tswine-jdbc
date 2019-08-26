@@ -15,17 +15,7 @@ import cn.tswine.jdbc.plus.sql.SqlSource;
  */
 public class Select extends AbstractMethod<ExecutorQuery> {
 
-
-    private SqlSource sqlSource;
-
-    public Select(IDBLabel dbLabel, SqlSource sqlSource) {
-        super(dbLabel, sqlSource.getClassEntity(), sqlSource.getParameters());
-        this.sqlSource = sqlSource;
+    public Select(IDBLabel dbLabel, String sql, Object[] params) {
+        super(dbLabel, sql, params);
     }
-
-    @Override
-    public SqlSource injectSqlSource() {
-        return sqlSource;
-    }
-
 }

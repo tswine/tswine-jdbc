@@ -2,9 +2,6 @@ package cn.tswine.jdbc.plus.injector;
 
 import cn.tswine.jdbc.common.rules.IDBLabel;
 import cn.tswine.jdbc.common.toolkit.ReflectionUtils;
-import cn.tswine.jdbc.common.toolkit.StringUtils;
-import cn.tswine.jdbc.plus.builder.SchemaBuilder;
-import cn.tswine.jdbc.plus.builder.schema.EntitySchema;
 import cn.tswine.jdbc.plus.executor.Executor;
 import cn.tswine.jdbc.plus.sql.SqlSource;
 import cn.tswine.jdbc.plus.transaction.Transaction;
@@ -12,8 +9,6 @@ import cn.tswine.jdbc.plus.transaction.jdbc.JdbcTransactionFactory;
 
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * @Author: silly
@@ -24,25 +19,21 @@ import java.util.List;
 public abstract class AbstractMethod<E extends Executor> implements IMethod {
 
     protected IDBLabel dbLabel;
-    protected EntitySchema entitySchema;
     /**
      * 执行器类型
      */
     protected Class<E> executorClass;
 
-    /**
-     * 执行的参数
-     */
-    protected List<Object> params;
+    protected SqlSource sqlSource;
 
-    public AbstractMethod(IDBLabel dbLabel, Class<?> eClazz, List<Object> params) {
+
+    public AbstractMethod(IDBLabel dbLabel, String sql, Object[] params) {
         setExecutorClass();
         this.dbLabel = dbLabel;
-        this.entitySchema = SchemaBuilder.buildEntity(eClazz, dbLabel.getDbType());
-        this.params = params;
-    }
+        this.sqlSource = new SqlSource(sql, params);
 
-    public abstract SqlSource injectSqlSource();
+
+    }
 
     private void setExecutorClass() {
         Type type = getClass().getGenericSuperclass();
@@ -55,19 +46,8 @@ public abstract class AbstractMethod<E extends Executor> implements IMethod {
         }
     }
 
-
-    /**
-     * 获取列名
-     *
-     * @return
-     */
-    protected String getColumns() {
-        return StringUtils.join(entitySchema.getColumns().toArray(), ",");
-    }
-
     @Override
     public SqlSource execute() {
-        SqlSource sqlSource = injectSqlSource();
         Transaction transaction = JdbcTransactionFactory.getInstance().newTransaction(dbLabel);
         Executor executor = ReflectionUtils.newInstance(executorClass,
                 new Class<?>[]{Transaction.class}, new Object[]{transaction});

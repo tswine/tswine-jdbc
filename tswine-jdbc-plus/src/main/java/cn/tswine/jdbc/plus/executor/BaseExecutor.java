@@ -66,7 +66,7 @@ public abstract class BaseExecutor implements Executor {
      * @param args 参数
      * @return 查询到的数据
      */
-    public List<Map<String, Object>> executeQuery(String sql, Object... args) {
+    public List<Map<String, Object>> executeQuery(String sql, Object[] args) {
         PreparedStatement ps = null;
         ResultSet rs = null;
         List<Map<String, Object>> results = new ArrayList<>();

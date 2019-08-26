@@ -1,27 +1,20 @@
 package cn.tswine.jdbc.plus.dao;
 
-import cn.tswine.jdbc.common.rules.IDBLabel;
-import cn.tswine.jdbc.common.toolkit.ArrayUtils;
-import cn.tswine.jdbc.common.toolkit.CollectionUtils;
-import cn.tswine.jdbc.common.toolkit.ReflectionUtils;
+import cn.tswine.jdbc.common.toolkit.ExceptionUtils;
+import cn.tswine.jdbc.common.toolkit.MapUtils;
+import cn.tswine.jdbc.common.toolkit.StringUtils;
 import cn.tswine.jdbc.common.toolkit.sql.SqlUtils;
 import cn.tswine.jdbc.plus.builder.SchemaBuilder;
-import cn.tswine.jdbc.plus.conditions.Wrapper;
-import cn.tswine.jdbc.plus.converts.IResultConvert;
-import cn.tswine.jdbc.plus.converts.ResultConvertEntity;
-import cn.tswine.jdbc.plus.converts.ResultConvertList;
-import cn.tswine.jdbc.plus.injector.IMethod;
-import cn.tswine.jdbc.plus.injector.methods.Select;
-import cn.tswine.jdbc.plus.injector.methods.SelectBatchIds;
-import cn.tswine.jdbc.plus.injector.methods.SelectById;
-import cn.tswine.jdbc.plus.injector.methods.SelectByWhere;
-import cn.tswine.jdbc.plus.metadata.IPage;
-import cn.tswine.jdbc.plus.sql.SqlSource;
+import cn.tswine.jdbc.plus.builder.schema.EntitySchema;
+import cn.tswine.jdbc.plus.sql.SqlMethod;
 
 import java.io.Serializable;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+import java.util.Map;
 
 /**
  * 抽象dao操作
@@ -31,26 +24,20 @@ import java.util.*;
  * @Version 1.0
  * @Desc
  */
-public abstract class AbstractDao<T> implements Dao<T> {
+public abstract  class AbstractDao<T> extends BaseDao implements ExpandDao<T> {
+
+    protected Class<T> classEntity;
+
+    protected EntitySchema entitySchema;
+
 
     /**
-     * 泛型类型
+     * 不允许该类通过new创建
      */
-    protected Class<T> tClass;
-
-
-    public AbstractDao() {
-        Type type = getClass().getGenericSuperclass();
-        if (type instanceof ParameterizedType) {
-            ParameterizedType pType = (ParameterizedType) type;
-            Type clazz = pType.getActualTypeArguments()[0];
-            if (clazz instanceof Class) {
-                this.tClass = (Class<T>) clazz;
-            }
-        }
+    protected AbstractDao() {
+        this.setClassEntity();
+        this.entitySchema = SchemaBuilder.buildEntity(classEntity, getDbLabel().getDbType());
     }
-
-    public abstract IDBLabel getDbLabel();
 
     @Override
     public int insert(T entity) {
@@ -58,136 +45,86 @@ public abstract class AbstractDao<T> implements Dao<T> {
     }
 
     @Override
-    public int deleteById(Serializable... ids) {
-        return 0;
+    public int[] insert(List<T> listEntity) {
+        return new int[0];
     }
 
     @Override
-    public int deleteByMap(Map<String, Object> columnMap) {
-        return 0;
-    }
-
-    @Override
-    public int delete(Wrapper<T> wrapper) {
-        return 0;
-    }
-
-    @Override
-    public int deleteBatchIds(Collection<? extends Serializable> idList) {
-        return 0;
-    }
-
-    @Override
-    public int updateById(T entity) {
-        return 0;
-    }
-
-    @Override
-    public int update(T entity, Wrapper<T> updateWrapper) {
-        return 0;
-    }
-
-
-    /**
-     * 自定义查询
-     *
-     * @param sqlSource
-     * @return
-     */
-    protected List<T> select(SqlSource sqlSource) {
-        IMethod method = new Select(getDbLabel(), sqlSource);
-        SqlSource<T> execute = execute(method, new ResultConvertList());
-        return execute.getResultList();
-    }
-
-    @Override
-    public List<T> selectByWhere(String whereSql, List<Object> params) {
-        params.add(whereSql);
-        SqlSource<T> sqlSource = execute(SelectByWhere.class, params,
-                new ResultConvertList());
-        return sqlSource.getResultList();
-    }
-
-    @Override
-    public T selectByIds(Serializable... ids) {
-        ArrayList<Object> params = ArrayUtils.asList(ids);
-        SqlSource<T> sqlSource = execute(SelectById.class, params,
-                new ResultConvertEntity());
-        return sqlSource.getResult();
-    }
-
-    @Override
-    public List<T> selectBatchIds(Collection<? extends Serializable> idList) {
-        SqlSource<T> sqlSource = execute(SelectBatchIds.class, CollectionUtils.asList(idList),
-                new ResultConvertList());
-        return sqlSource.getResultList();
+    public List<T> selectByWhere(String whereSql, Object... params) {
+        //SELECT %s FROM %s WHERE %s
+        SqlMethod sqlMethod = SqlMethod.SELECT;
+        String sql = String.format(sqlMethod.getSql(), getColumns(), entitySchema.getTableName(), whereSql);
+        List<Map<String, Object>> maps = select(sql, params);
+        return mapToObject(maps);
     }
 
     @Override
     public List<T> selectByMap(Map<String, Object> columnMap) {
-        Set<String> keys = columnMap.keySet();
-        String whereSql = SqlUtils.getWhere(keys);
-        return selectByWhere(whereSql, CollectionUtils.asList(columnMap.values()));
+        MapUtils.isNotEmpty(columnMap, "columnMap不能为空");
+        String sqlWhere = SqlUtils.getWhere(columnMap.keySet());
+        return selectByWhere(sqlWhere, columnMap.values().toArray());
+    }
+
+
+    @Override
+    public T selectByIds(Serializable... ids) {
+        String sqlWhere = SqlUtils.getWhere(entitySchema.getIds());
+        List<T> list = selectByWhere(sqlWhere, ids);
+        return list != null ? list.get(0) : null;
     }
 
     @Override
-    public T selectOne(Wrapper<T> queryWrapper) {
-        return null;
-    }
-
-    @Override
-    public Integer selectCount(Wrapper<T> queryWrapper) {
-        return null;
-    }
-
-    @Override
-    public List<T> selectList(Wrapper<T> queryWrapper) {
-        return null;
-    }
-
-    @Override
-    public List<Map<String, Object>> selectMaps(Wrapper<T> queryWrapper) {
-        return null;
-    }
-
-    @Override
-    public IPage<T> selectPage(IPage<T> page, Wrapper<T> queryWrapper) {
-        return null;
-    }
-
-    @Override
-    public IPage<Map<String, Object>> selectMapsPage(IPage<T> page, Wrapper<T> queryWrapper) {
-        return null;
+    public List<T> selectBatchIds(Collection<? extends Serializable> idList) {
+        List<String> ids = entitySchema.getIds();
+        if (ids.size() != 1) {
+            throw ExceptionUtils.tse("The primary key only supports one");
+        }
+        String sqlIn = SqlUtils.getIn(ids.get(0), idList.size());
+        return selectByWhere(sqlIn, idList.toArray());
     }
 
 
     /**
-     * 执行
-     *
-     * @param clazzMethod   执行方法类名
-     * @param params        执行参数
-     * @param resultConvert 结果转换器
-     * @return
+     * 实体对象类型
      */
-    private SqlSource execute(Class<? extends IMethod> clazzMethod, List<Object> params, IResultConvert resultConvert) {
-        IMethod method = ReflectionUtils.newInstance(clazzMethod,
-                new Class<?>[]{IDBLabel.class, Class.class, List.class},
-                new Object[]{getDbLabel(), tClass, params});
-        return execute(method, resultConvert);
+    private void setClassEntity() {
+        Type type = getClass().getGenericSuperclass();
+        if (type instanceof ParameterizedType) {
+            ParameterizedType pType = (ParameterizedType) type;
+            Type clazz = pType.getActualTypeArguments()[0];
+            if (clazz instanceof Class) {
+                this.classEntity = (Class<T>) clazz;
+            }
+        }
     }
 
     /**
-     * 执行：重载
+     * 获取列名
      *
-     * @param method        执行方法对象
-     * @param resultConvert 结果转换器
      * @return
      */
-    private SqlSource execute(IMethod method, IResultConvert resultConvert) {
-        SqlSource<T> sqlSource = method.execute();
-        resultConvert.convertTo(SchemaBuilder.buildEntity(tClass, getDbLabel().getDbType()), sqlSource);
-        return sqlSource;
+    protected String getColumns() {
+        return StringUtils.join(entitySchema.getColumns().toArray(), ",");
     }
 
+    /**
+     * 集合Map转换为集合Object对象
+     *
+     * @param maps
+     * @return
+     */
+    protected List<T> mapToObject(List<Map<String, Object>> maps) {
+        if (maps == null) {
+            return null;
+        }
+        List<T> list = new ArrayList<>();
+        for (Map<String, Object> entity : maps) {
+            Object obj = entitySchema.asEntity(entity);
+            if (obj != null) {
+                list.add((T) obj);
+            }
+        }
+        return list;
+    }
 
 }
