@@ -42,7 +42,7 @@ public abstract class BaseExecutor implements Executor {
      * @return 受影响的行数
      * @throws SQLException
      */
-    public int executeUpdate(String sql, Object... args) throws TswineJdbcException {
+    public int executeUpdate(String sql, Object[] args) throws TswineJdbcException {
         int count;
         PreparedStatement ps = null;
         try (Connection conn = transaction.getConnection()) {
@@ -87,35 +87,7 @@ public abstract class BaseExecutor implements Executor {
         return results;
     }
 
-    /**
-     * 批量执行:INSERT,DELETE,UPDATE
-     *
-     * @param sql        执行的sql
-     * @param args       参数
-     * @param batchCount 批量提交的数量
-     * @return
-     */
-    public void executeBatch(String sql, List<Object[]> args, int batchCount) {
-        PreparedStatement ps = null;
-        try (Connection conn = transaction.getConnection()) {
-            ps = conn.prepareStatement(sql);
-            for (int i = 0; i < args.size(); i++) {
-                setObject(ps, args.get(i));
-                ps.addBatch();
-                if (i % batchCount == 0) {
-                    ps.executeBatch();
-                    ps.clearBatch();
-                }
-            }
-            transaction.commit();
-        } catch (SQLException e) {
-            transaction.rollback();
-            throw ExceptionUtils.tse(e, "BaseExecutor->executeBatch,sql:%s", sql);
-        } finally {
-            close(null, ps);
-            transaction.close();
-        }
-    }
+
 
     /**
      * ResultSet  转成map

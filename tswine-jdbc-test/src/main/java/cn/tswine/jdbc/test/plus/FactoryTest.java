@@ -98,4 +98,30 @@ public class FactoryTest {
         int insert = sysMenuDao.insert(sysMenu);
         System.out.println(insert);
     }
+
+    @Test
+    public void insertBatch() {
+        List<SysMenu> list = new ArrayList<>();
+        for (int i = 0; i < 100; i++) {
+            SysMenu sysMenu = new SysMenu();
+            sysMenu.setName("测试" + i);
+            sysMenu.setParentId("/admin/test" + i);
+            sysMenu.setIcon("test" + i);
+            sysMenu.setIsValid(0);
+            sysMenu.setRemarks("备注");
+            sysMenu.setIsDelete(1);
+            sysMenu.setDeleteTime(LocalDateTime.now());
+            sysMenu.setLevel(i);
+            sysMenu.setSort(i);
+            sysMenu.setType("test");
+            sysMenu.setProjectId("-1");
+
+            list.add(sysMenu);
+        }
+
+
+        int[] insert = sysMenuDao.insert(list);
+        System.out.println(insert);
+    }
+
 }

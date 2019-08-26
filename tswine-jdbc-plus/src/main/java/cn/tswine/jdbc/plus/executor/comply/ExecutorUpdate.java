@@ -18,7 +18,7 @@ public class ExecutorUpdate extends BaseExecutor {
 
     @Override
     public void execute(SqlSource sqlSource) {
-        int update = executeUpdate(sqlSource.getSql(), sqlSource.getParameters());
+        int update = executeUpdate(sqlSource.getSql(), sqlSource.get0());
         sqlSource.setUpdate(update);
     }
 }

@@ -21,7 +21,7 @@ public class ExecutorQuery extends BaseExecutor {
 
     @Override
     public void execute(SqlSource sqlSource) {
-        List<Map<String, Object>> maps = executeQuery(sqlSource.getSql(), sqlSource.getParameters());
+        List<Map<String, Object>> maps = executeQuery(sqlSource.getSql(), sqlSource.get0());
         sqlSource.setResults(maps);
     }
 }

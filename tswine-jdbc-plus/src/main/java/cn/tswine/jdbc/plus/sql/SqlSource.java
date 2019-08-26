@@ -3,6 +3,7 @@ package cn.tswine.jdbc.plus.sql;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -22,7 +23,7 @@ public class SqlSource {
      * sql参数
      */
     @Getter
-    protected final Object[] parameters;
+    protected final List<Object[]> parameters = new ArrayList<>();
 
     /**
      * 查询的结果集
@@ -38,9 +39,35 @@ public class SqlSource {
     @Setter
     private int update;
 
+    /**
+     * 批量更新
+     */
+    @Getter
+    @Setter
+    private int[] batchUpdate;
+
     public SqlSource(String sql, Object[] parameter) {
         this.sql = sql;
-        this.parameters = parameter;
+        this.parameters.add(parameter);
+    }
+
+    public SqlSource(String sql, List<Object[]> parameter) {
+        this.sql = sql;
+        for (Object[] param : parameter) {
+            this.parameters.add(param);
+        }
+    }
+
+    /**
+     * 获取第一个参数
+     *
+     * @return
+     */
+    public Object[] get0() {
+        if (parameters != null && parameters.size() > 0) {
+            return parameters.get(0);
+        }
+        return null;
     }
 
 

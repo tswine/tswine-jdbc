@@ -27,12 +27,19 @@ public abstract class AbstractMethod<E extends Executor> implements IMethod {
     protected SqlSource sqlSource;
 
 
-    public AbstractMethod(IDBLabel dbLabel, String sql, Object[] params) {
+    public AbstractMethod() {
         setExecutorClass();
+    }
+
+
+    public AbstractMethod(IDBLabel dbLabel, SqlSource sqlSource) {
+        this();
         this.dbLabel = dbLabel;
-        this.sqlSource = new SqlSource(sql, params);
+        this.sqlSource = sqlSource;
+    }
 
-
+    public AbstractMethod(IDBLabel dbLabel, String sql, Object[] params) {
+        this(dbLabel, new SqlSource(sql, params));
     }
 
     private void setExecutorClass() {

@@ -77,6 +77,8 @@ public abstract class AbstractDao<T> extends BaseDao implements ExpandDao<T> {
 
     @Override
     public int[] insert(List<T> listEntity) {
+        //
+//        IMethod method = new UpdateBatch(getDbLabel(),listEntity)
         return new int[0];
     }
 
