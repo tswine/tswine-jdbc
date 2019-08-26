@@ -1,6 +1,6 @@
 package cn.tswine.jdbc.generator.config;
 
-import cn.tswine.jdbc.generator.config.rules.DateConvertType;
+import cn.tswine.jdbc.common.rules.DateConvertType;
 import lombok.Data;
 import lombok.experimental.Accessors;
 

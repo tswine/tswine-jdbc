@@ -1,4 +1,4 @@
-package cn.tswine.jdbc.generator.config.rules;
+package cn.tswine.jdbc.common.rules;
 
 /**
  * 数据库实践类型与实体类时间类型转换对应策略

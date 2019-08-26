@@ -90,9 +90,8 @@ public abstract class AbstractDao<T> implements Dao<T> {
         SqlSource sqlSource = method.execute();
         List<Map<String, Object>> resultSelect = sqlSource.getResultSelect();
         IResultConvert convert = new ResultConvertEntity();
-        Object obj = convert.execute(SchemaBuilder.buildEntity(tClass, getDbLabel().getDbType()), resultSelect);
-        System.out.println(obj.toString());
-        return null;
+        Object obj = convert.convertTo(SchemaBuilder.buildEntity(tClass, getDbLabel().getDbType()), resultSelect);
+        return obj != null ? (T) obj : null;
     }
 
     @Override

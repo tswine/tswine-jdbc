@@ -33,7 +33,7 @@ public class SysMenu {
     public static final String FIELD_PATH = "path";
     public static final String FIELD_ICON = "icon";
     public static final String FIELD_SORT = "sort";
-    public static final String FIELD_TYPE = "type";
+    public static final String FIELD_TYPE = "object";
     public static final String FIELD_PERMISSION = "permission";
     public static final String FIELD_IS_VALID = "is_valid";
     public static final String FIELD_REMARKS = "remarks";
@@ -87,7 +87,7 @@ public class SysMenu {
      * 菜单类型  menu:菜单 view:视图  button:按钮
      */
     @ApiModelProperty(value = "菜单类型  menu:菜单 view:视图  button:按钮")
-    @TableField(value = "type")
+    @TableField(value = "object")
     private String type;
     /**
      * 权限

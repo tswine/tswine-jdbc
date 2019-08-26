@@ -4,6 +4,9 @@ import cn.tswine.jdbc.common.annotation.DbType;
 import cn.tswine.jdbc.common.annotation.TableField;
 import cn.tswine.jdbc.common.annotation.TableId;
 import cn.tswine.jdbc.common.annotation.TableName;
+import cn.tswine.jdbc.common.rules.FieldType;
+import cn.tswine.jdbc.common.rules.IFieldType;
+import cn.tswine.jdbc.common.rules.ObjectConvert;
 import cn.tswine.jdbc.common.toolkit.*;
 import cn.tswine.jdbc.plus.builder.ISchema;
 
@@ -83,6 +86,11 @@ public class EntitySchema implements ISchema {
             String methodName = StringUtils.concatCapitalize("set", field.getName());
             try {
                 Method method = clazz.getMethod(methodName, field.getType());
+                IFieldType fieldType = FieldType.valueOf(field.getType());
+                ObjectConvert convert = fieldType.convert();
+                if (convert != null) {
+                    val = convert.convert(val);
+                }
                 method.invoke(obj, val);
             } catch (Exception e) {
                 throw ExceptionUtils.tse(e);

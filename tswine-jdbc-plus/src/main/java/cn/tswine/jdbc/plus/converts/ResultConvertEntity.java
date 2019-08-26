@@ -14,7 +14,7 @@ import java.util.Map;
 public class ResultConvertEntity implements IResultConvert {
 
     @Override
-    public <T> T execute(EntitySchema schema, List<Map<String, Object>> results) {
+    public <T> T convertTo(EntitySchema schema, List<Map<String, Object>> results) {
         if (results != null && results.size() > 0) {
             Map<String, Object> result = results.get(0);
             return (T) schema.asEntity(result);

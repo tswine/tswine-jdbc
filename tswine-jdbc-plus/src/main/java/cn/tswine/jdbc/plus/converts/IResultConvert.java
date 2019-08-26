@@ -15,5 +15,5 @@ import java.util.Map;
  */
 public interface IResultConvert {
 
-    <T> T execute( EntitySchema schema,List<Map<String, Object>> results);
+    <T> T convertTo(EntitySchema schema, List<Map<String, Object>> results);
 }

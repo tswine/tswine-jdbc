@@ -127,4 +127,5 @@ public class SysMenu {
     @TableField(value = "level")
     private Integer level;
 
+
 }

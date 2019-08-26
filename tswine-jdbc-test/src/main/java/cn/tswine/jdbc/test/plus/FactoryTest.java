@@ -4,6 +4,7 @@ import cn.tswine.jdbc.common.annotation.DbType;
 import cn.tswine.jdbc.plus.JdbcPlusFactory;
 import cn.tswine.jdbc.plus.config.GlobalConfig;
 import cn.tswine.jdbc.test.plus.dao.SysMenuDao;
+import cn.tswine.jdbc.test.plus.entity.SysMenu;
 import com.alibaba.druid.pool.DruidDataSource;
 import org.junit.Before;
 import org.junit.Test;
@@ -31,7 +32,7 @@ public class FactoryTest {
     }
 
     @Test
-    public void getDao() throws InterruptedException {
+    public void getDao() {
         SysMenuDao dao = factory.getDao(SysMenuDao.class);
 
     }
@@ -39,7 +40,8 @@ public class FactoryTest {
     @Test
     public void select() {
         SysMenuDao dao = factory.getDao(SysMenuDao.class);
-        dao.selectById("1e69489fd9ce31559ba69e3978357127");
+        SysMenu sysMenu = dao.selectById("1e69489fd9ce31559ba69e3978357127");
+        System.out.println(sysMenu.toString());
 
     }
 }
