@@ -1,9 +1,7 @@
 package cn.tswine.jdbc.plus.converts;
 
 import cn.tswine.jdbc.plus.builder.schema.EntitySchema;
-
-import java.util.List;
-import java.util.Map;
+import cn.tswine.jdbc.plus.sql.SqlSource;
 
 /**
  * 结果转换器接口
@@ -15,5 +13,5 @@ import java.util.Map;
  */
 public interface IResultConvert {
 
-    <T> T convertTo(EntitySchema schema, List<Map<String, Object>> results);
+    void convertTo(EntitySchema schema, SqlSource sqlSource);
 }

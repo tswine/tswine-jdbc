@@ -3,6 +3,7 @@ package cn.tswine.jdbc.plus.converts;
 import cn.tswine.jdbc.plus.builder.schema.EntitySchema;
 import cn.tswine.jdbc.plus.sql.SqlSource;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -12,7 +13,7 @@ import java.util.Map;
  * @Version 1.0
  * @Desc
  */
-public class ResultConvertEntity implements IResultConvert {
+public class ResultConvertList implements IResultConvert {
 
 
     @Override
@@ -21,8 +22,11 @@ public class ResultConvertEntity implements IResultConvert {
         if (results == null || results.size() <= 0) {
             return;
         }
-        Map<String, Object> result = results.get(0);
-        Object obj = schema.asEntity(result);
-        sqlSource.setResult(obj);
+        List<Object> list = new ArrayList<>();
+        for (Map<String, Object> result : results) {
+            Object obj = schema.asEntity(result);
+            list.add(obj);
+        }
+        sqlSource.setResultList(list);
     }
 }

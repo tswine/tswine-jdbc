@@ -1,6 +1,8 @@
 package cn.tswine.jdbc.plus.sql;
 
-import java.util.ArrayList;
+import lombok.Getter;
+import lombok.Setter;
+
 import java.util.List;
 import java.util.Map;
 
@@ -10,7 +12,7 @@ import java.util.Map;
  * @Version 1.0
  * @Desc
  */
-public class SqlSource {
+public class SqlSource<T> {
     /**
      * 执行的sql语句
      */
@@ -18,23 +20,31 @@ public class SqlSource {
     /**
      * sql参数
      */
-    private final ArrayList<Object> parameters;
+    private final List<Object> parameters;
     /**
      * 查询结果
      */
-    private List<Map<String, Object>> resultSelect;
+    private List<Map<String, Object>> resultMap;
+
+    @Getter
+    @Setter
+    private T result;
+    @Getter
+    @Setter
+    private List<T> resultList;
+
     /**
      * 更新结果
      */
     private int resultUpdate;
 
-    public SqlSource(String sql, ArrayList<Object> parameter) {
+    public SqlSource(String sql, List<Object> parameter) {
         this.sql = sql;
         this.parameters = parameter;
     }
 
     public SqlSource setResultSelect(List<Map<String, Object>> resultSelect) {
-        this.resultSelect = resultSelect;
+        this.resultMap = resultSelect;
         return this;
     }
 
@@ -48,10 +58,10 @@ public class SqlSource {
     }
 
     public List<Map<String, Object>> getResultSelect() {
-        return resultSelect;
+        return resultMap;
     }
 
-    public ArrayList<Object> getParameters() {
+    public List<Object> getParameters() {
         return parameters;
     }
 

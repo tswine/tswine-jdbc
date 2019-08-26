@@ -77,14 +77,14 @@ public interface Dao<T> {
     int update(T entity, Wrapper<T> updateWrapper);
 
     /**
-     * 根据 ID 查询
+     * 根据ID查询:支持多主键
      *
      * @param ids 主键ID
      */
-    T selectById(Serializable... ids);
+    T selectByIds(Serializable... ids);
 
     /**
-     * 查询（根据ID 批量查询）
+     * 查询（根据ID 批量查询）:不支持多主键
      *
      * @param idList 主键ID列表(不能为 null 以及 empty)
      */

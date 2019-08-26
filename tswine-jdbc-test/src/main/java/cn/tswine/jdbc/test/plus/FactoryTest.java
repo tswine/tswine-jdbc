@@ -9,6 +9,9 @@ import com.alibaba.druid.pool.DruidDataSource;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * @Author: silly
  * @Date: 2019/8/14 20:28
@@ -18,6 +21,8 @@ import org.junit.Test;
 public class FactoryTest {
 
     JdbcPlusFactory factory;
+    SysMenuDao sysMenuDao;
+
 
     @Before
     public void init() {
@@ -29,6 +34,7 @@ public class FactoryTest {
         dataSource.setDriverClassName("com.mysql.jdbc.Driver");
         globalConfig.addDataSource(DbType.MYSQL, dataSource);
         factory = new JdbcPlusFactory(globalConfig);
+        sysMenuDao = factory.getDao(SysMenuDao.class);
     }
 
     @Test
@@ -38,10 +44,23 @@ public class FactoryTest {
     }
 
     @Test
-    public void select() {
-        SysMenuDao dao = factory.getDao(SysMenuDao.class);
-        SysMenu sysMenu = dao.selectById("1e69489fd9ce31559ba69e3978357127");
+    public void selectByIds() {
+        SysMenu sysMenu = sysMenuDao.selectByIds("1e69489fd9ce31559ba69e3978357127");
         System.out.println(sysMenu.toString());
+
+    }
+
+    @Test
+    public void selectBatchIds() {
+        List<String> ids = new ArrayList<>();
+        ids.add("1e69489fd9ce31559ba69e3978357127");
+        ids.add("c2f64fd2c2fc661dd6f76aa344c49129");
+        ids.add("f14de51884ef5a0e36ee86c7f5535c84");
+
+        List<SysMenu> sysMenus = sysMenuDao.selectBatchIds(ids);
+        for (SysMenu sysMenu : sysMenus) {
+            System.out.println(sysMenu.toString());
+        }
 
     }
 }

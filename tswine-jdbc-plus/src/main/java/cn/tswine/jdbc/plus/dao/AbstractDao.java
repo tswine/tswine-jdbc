@@ -2,11 +2,15 @@ package cn.tswine.jdbc.plus.dao;
 
 import cn.tswine.jdbc.common.rules.IDBLabel;
 import cn.tswine.jdbc.common.toolkit.ArrayUtils;
+import cn.tswine.jdbc.common.toolkit.CollectionUtils;
+import cn.tswine.jdbc.common.toolkit.ReflectionUtils;
 import cn.tswine.jdbc.plus.builder.SchemaBuilder;
 import cn.tswine.jdbc.plus.conditions.Wrapper;
 import cn.tswine.jdbc.plus.converts.IResultConvert;
 import cn.tswine.jdbc.plus.converts.ResultConvertEntity;
+import cn.tswine.jdbc.plus.converts.ResultConvertList;
 import cn.tswine.jdbc.plus.injector.IMethod;
+import cn.tswine.jdbc.plus.injector.methods.SelectBatchIds;
 import cn.tswine.jdbc.plus.injector.methods.SelectById;
 import cn.tswine.jdbc.plus.metadata.IPage;
 import cn.tswine.jdbc.plus.sql.SqlSource;
@@ -84,19 +88,18 @@ public abstract class AbstractDao<T> implements Dao<T> {
     }
 
     @Override
-    public T selectById(Serializable... ids) {
+    public T selectByIds(Serializable... ids) {
         ArrayList<Object> params = ArrayUtils.asList(ids);
-        IMethod method = new SelectById(getDbLabel(), tClass, params);
-        SqlSource sqlSource = method.execute();
-        List<Map<String, Object>> resultSelect = sqlSource.getResultSelect();
-        IResultConvert convert = new ResultConvertEntity();
-        Object obj = convert.convertTo(SchemaBuilder.buildEntity(tClass, getDbLabel().getDbType()), resultSelect);
-        return obj != null ? (T) obj : null;
+        SqlSource<T> sqlSource = execute(SelectById.class, params,
+                new ResultConvertEntity());
+        return sqlSource.getResult();
     }
 
     @Override
     public List<T> selectBatchIds(Collection<? extends Serializable> idList) {
-        return null;
+        SqlSource<T> sqlSource = execute(SelectBatchIds.class, CollectionUtils.toList(idList),
+                new ResultConvertList());
+        return sqlSource.getResultList();
     }
 
     @Override
@@ -134,5 +137,14 @@ public abstract class AbstractDao<T> implements Dao<T> {
         return null;
     }
 
+
+    private SqlSource execute(Class<? extends IMethod> clazzMethod, List<Object> params, IResultConvert resultConvert) {
+        IMethod method = ReflectionUtils.newInstance(clazzMethod,
+                new Class<?>[]{IDBLabel.class, Class.class, ArrayList.class},
+                new Object[]{getDbLabel(), tClass, params});
+        SqlSource<T> sqlSource = method.execute();
+        resultConvert.convertTo(SchemaBuilder.buildEntity(tClass, getDbLabel().getDbType()), sqlSource);
+        return sqlSource;
+    }
 
 }

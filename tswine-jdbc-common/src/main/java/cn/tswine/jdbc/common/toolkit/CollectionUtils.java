@@ -1,6 +1,8 @@
 package cn.tswine.jdbc.common.toolkit;
 
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -12,7 +14,7 @@ import java.util.Map;
  * @Desc
  */
 public class CollectionUtils {
-    
+
     /**
      * 校验集合是否为空
      *
@@ -51,5 +53,16 @@ public class CollectionUtils {
      */
     public static boolean isNotEmpty(Map<?, ?> map) {
         return !isEmpty(map);
+    }
+
+    /**
+     * 转换为list
+     *
+     * @param coll
+     * @return
+     */
+    public static List<Object> toList(Collection<?> coll) {
+        List<Object> list = new ArrayList(coll);
+        return list;
     }
 }

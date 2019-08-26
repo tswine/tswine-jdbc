@@ -2,6 +2,7 @@ package cn.tswine.jdbc.plus.injector;
 
 import cn.tswine.jdbc.common.rules.IDBLabel;
 import cn.tswine.jdbc.common.toolkit.ReflectionUtils;
+import cn.tswine.jdbc.common.toolkit.StringUtils;
 import cn.tswine.jdbc.plus.builder.SchemaBuilder;
 import cn.tswine.jdbc.plus.builder.schema.EntitySchema;
 import cn.tswine.jdbc.plus.executor.Executor;
@@ -32,13 +33,13 @@ public abstract class AbstractMethod<E extends Executor> implements IMethod {
     /**
      * 执行的参数
      */
-    protected ArrayList<Object> params;
+    protected List<Object> params;
 
-    public AbstractMethod(IDBLabel dbLabel, Class<?> eClazz,ArrayList<Object> params) {
+    public AbstractMethod(IDBLabel dbLabel, Class<?> eClazz, List<Object> params) {
         setExecutorClass();
         this.dbLabel = dbLabel;
         this.entitySchema = SchemaBuilder.buildEntity(eClazz, dbLabel.getDbType());
-        this.params =params;
+        this.params = params;
     }
 
     public abstract SqlSource injectSqlSource();
@@ -52,6 +53,16 @@ public abstract class AbstractMethod<E extends Executor> implements IMethod {
                 this.executorClass = (Class<E>) clazz;
             }
         }
+    }
+
+
+    /**
+     * 获取列名
+     *
+     * @return
+     */
+    protected String getColumns() {
+        return StringUtils.join(entitySchema.getColumns().toArray(), ",");
     }
 
     @Override
