@@ -6,7 +6,7 @@ import cn.tswine.jdbc.plus.injector.AbstractMethod;
 import cn.tswine.jdbc.plus.sql.SqlSource;
 
 /**
- * 自定义查询条件
+ * 查询
  *
  * @Author: silly
  * @Date: 2019/8/22 21:30

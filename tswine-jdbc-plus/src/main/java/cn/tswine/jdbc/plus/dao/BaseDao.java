@@ -2,8 +2,8 @@ package cn.tswine.jdbc.plus.dao;
 
 import cn.tswine.jdbc.common.rules.IDBLabel;
 import cn.tswine.jdbc.plus.injector.IMethod;
-import cn.tswine.jdbc.plus.injector.methods.Insert;
 import cn.tswine.jdbc.plus.injector.methods.Select;
+import cn.tswine.jdbc.plus.injector.methods.Update;
 import cn.tswine.jdbc.plus.sql.SqlSource;
 
 import java.util.List;
@@ -21,21 +21,19 @@ public abstract class BaseDao implements Dao {
 
     @Override
     public int insert(String sql, Object[] params) {
-        IMethod method = new Insert(getDbLabel(), sql, params);
-        SqlSource sqlSource = method.execute();
-        return sqlSource.getUpdate();
+        return update(sql, params);
     }
-
-
 
     @Override
     public int delete(String sql, Object[] params) {
-        return 0;
+        return update(sql, params);
     }
 
     @Override
     public int update(String sql, Object[] params) {
-        return 0;
+        IMethod method = new Update(getDbLabel(), sql, params);
+        SqlSource sqlSource = method.execute();
+        return sqlSource.getUpdate();
     }
 
     @Override

@@ -94,6 +94,7 @@ public class FactoryTest {
         sysMenu.setType("test");
         sysMenu.setProjectId("-1");
 
+
         int insert = sysMenuDao.insert(sysMenu);
         System.out.println(insert);
     }
