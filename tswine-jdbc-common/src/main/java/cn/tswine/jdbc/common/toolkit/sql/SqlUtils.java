@@ -4,7 +4,8 @@ import cn.tswine.jdbc.common.enums.SQLSentenceType;
 import cn.tswine.jdbc.common.toolkit.Assert;
 import cn.tswine.jdbc.common.toolkit.StringPool;
 
-import java.util.List;
+import java.util.Collection;
+import java.util.Iterator;
 
 /**
  * sql工具类
@@ -23,15 +24,18 @@ public class SqlUtils implements StringPool {
      * @param columns 条件列
      * @return user_name = ? AND password = ?
      */
-    public static String getWhere(List<String> columns) {
+    public static String getWhere(Collection<String> columns) {
         Assert.isNotNull(columns, "条件列不能为空");
         int size = columns.size() - 1;
         if (size == -1) {
             return "";
         }
         StringBuilder sb = new StringBuilder();
-        for (int i = 0; ; i++) {
-            sb.append(columns.get(i));
+        int i = 0;
+        Iterator<String> iterator = columns.iterator();
+        while (iterator.hasNext()) {
+            String column = iterator.next();
+            sb.append(column);
             sb.append(SPACE);
             sb.append(EQUALS);
             sb.append(SPACE);
@@ -43,8 +47,11 @@ public class SqlUtils implements StringPool {
             sb.append(SPACE);
             sb.append(SQLSentenceType.AND);
             sb.append(SPACE);
+            i++;
         }
+        return "";
     }
+
 
     /**
      * 获取in条件sql

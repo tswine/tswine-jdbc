@@ -76,6 +76,16 @@ public interface Dao<T> {
      */
     int update(T entity, Wrapper<T> updateWrapper);
 
+
+    /**
+     * 通过where条件查询
+     *
+     * @param whereSql
+     * @param params
+     * @return
+     */
+    List<T> selectByWhere(String whereSql, List<Object> params);
+
     /**
      * 根据ID查询:支持多主键
      *

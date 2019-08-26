@@ -3,6 +3,8 @@ package cn.tswine.jdbc.plus.sql;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
 import java.util.List;
 import java.util.Map;
 
@@ -38,9 +40,28 @@ public class SqlSource<T> {
      */
     private int resultUpdate;
 
+    /**
+     * 实体类型
+     */
+    @Getter
+    private Class<T> classEntity;
+
+    public void setClazzEntity() {
+        Type type = getClass().getGenericSuperclass();
+        if (type instanceof ParameterizedType) {
+            ParameterizedType pType = (ParameterizedType) type;
+            Type clazz = pType.getActualTypeArguments()[0];
+            if (clazz instanceof Class) {
+                this.classEntity = (Class<T>) clazz;
+            }
+        }
+    }
+
+
     public SqlSource(String sql, List<Object> parameter) {
         this.sql = sql;
         this.parameters = parameter;
+        this.setClazzEntity();
     }
 
     public SqlSource setResultSelect(List<Map<String, Object>> resultSelect) {

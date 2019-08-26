@@ -4,24 +4,24 @@ import cn.tswine.jdbc.common.rules.IDBLabel;
 import cn.tswine.jdbc.common.toolkit.ArrayUtils;
 import cn.tswine.jdbc.common.toolkit.CollectionUtils;
 import cn.tswine.jdbc.common.toolkit.ReflectionUtils;
+import cn.tswine.jdbc.common.toolkit.sql.SqlUtils;
 import cn.tswine.jdbc.plus.builder.SchemaBuilder;
 import cn.tswine.jdbc.plus.conditions.Wrapper;
 import cn.tswine.jdbc.plus.converts.IResultConvert;
 import cn.tswine.jdbc.plus.converts.ResultConvertEntity;
 import cn.tswine.jdbc.plus.converts.ResultConvertList;
 import cn.tswine.jdbc.plus.injector.IMethod;
+import cn.tswine.jdbc.plus.injector.methods.Select;
 import cn.tswine.jdbc.plus.injector.methods.SelectBatchIds;
 import cn.tswine.jdbc.plus.injector.methods.SelectById;
+import cn.tswine.jdbc.plus.injector.methods.SelectByWhere;
 import cn.tswine.jdbc.plus.metadata.IPage;
 import cn.tswine.jdbc.plus.sql.SqlSource;
 
 import java.io.Serializable;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * 抽象dao操作
@@ -87,6 +87,27 @@ public abstract class AbstractDao<T> implements Dao<T> {
         return 0;
     }
 
+
+    /**
+     * 自定义查询
+     *
+     * @param sqlSource
+     * @return
+     */
+    protected List<T> select(SqlSource sqlSource) {
+        IMethod method = new Select(getDbLabel(), sqlSource);
+        SqlSource<T> execute = execute(method, new ResultConvertList());
+        return execute.getResultList();
+    }
+
+    @Override
+    public List<T> selectByWhere(String whereSql, List<Object> params) {
+        params.add(whereSql);
+        SqlSource<T> sqlSource = execute(SelectByWhere.class, params,
+                new ResultConvertList());
+        return sqlSource.getResultList();
+    }
+
     @Override
     public T selectByIds(Serializable... ids) {
         ArrayList<Object> params = ArrayUtils.asList(ids);
@@ -97,14 +118,16 @@ public abstract class AbstractDao<T> implements Dao<T> {
 
     @Override
     public List<T> selectBatchIds(Collection<? extends Serializable> idList) {
-        SqlSource<T> sqlSource = execute(SelectBatchIds.class, CollectionUtils.toList(idList),
+        SqlSource<T> sqlSource = execute(SelectBatchIds.class, CollectionUtils.asList(idList),
                 new ResultConvertList());
         return sqlSource.getResultList();
     }
 
     @Override
     public List<T> selectByMap(Map<String, Object> columnMap) {
-        return null;
+        Set<String> keys = columnMap.keySet();
+        String whereSql = SqlUtils.getWhere(keys);
+        return selectByWhere(whereSql, CollectionUtils.asList(columnMap.values()));
     }
 
     @Override
@@ -138,13 +161,33 @@ public abstract class AbstractDao<T> implements Dao<T> {
     }
 
 
+    /**
+     * 执行
+     *
+     * @param clazzMethod   执行方法类名
+     * @param params        执行参数
+     * @param resultConvert 结果转换器
+     * @return
+     */
     private SqlSource execute(Class<? extends IMethod> clazzMethod, List<Object> params, IResultConvert resultConvert) {
         IMethod method = ReflectionUtils.newInstance(clazzMethod,
-                new Class<?>[]{IDBLabel.class, Class.class, ArrayList.class},
+                new Class<?>[]{IDBLabel.class, Class.class, List.class},
                 new Object[]{getDbLabel(), tClass, params});
+        return execute(method, resultConvert);
+    }
+
+    /**
+     * 执行：重载
+     *
+     * @param method        执行方法对象
+     * @param resultConvert 结果转换器
+     * @return
+     */
+    private SqlSource execute(IMethod method, IResultConvert resultConvert) {
         SqlSource<T> sqlSource = method.execute();
         resultConvert.convertTo(SchemaBuilder.buildEntity(tClass, getDbLabel().getDbType()), sqlSource);
         return sqlSource;
     }
+
 
 }

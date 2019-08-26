@@ -30,9 +30,11 @@ public enum SqlMethod {
     /**
      * 查找
      */
+    SELECT_BY_WHERE("selectByWhere", "根据where条件通用查询", "SELECT %s FROM %s WHERE %s"),
+
     SELECT_BY_ID("selectByIds", "根据ID查找一条数据:多主键", "SELECT %s FROM %s WHERE %s"),
     SELECT_BATCH_IDS("selectBatchIds", "根据ID集合，批量查询数据", "SELECT %s FROM %s WHERE %s"),
-    selectByMap("selectByMap", "插入一条数据", ""),
+    SELECT_BY_MAP("selectByMap", "根据columnMap查询一条数据", "SELECT %s FROM %s WHERE %s"),
     selectOne("selectOne", "插入一条数据", ""),
     selectCount("selectCount", "插入一条数据", ""),
     selectList("selectList", "插入一条数据", ""),

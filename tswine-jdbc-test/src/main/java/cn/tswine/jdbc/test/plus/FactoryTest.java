@@ -10,7 +10,9 @@ import org.junit.Before;
 import org.junit.Test;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @Author: silly
@@ -61,6 +63,17 @@ public class FactoryTest {
         for (SysMenu sysMenu : sysMenus) {
             System.out.println(sysMenu.toString());
         }
+    }
 
+
+    @Test
+    public void selectByMap() {
+        Map<String, Object> params = new HashMap<>();
+        params.put(SysMenu.FIELD_ID, "1e69489fd9ce31559ba69e3978357127");
+        params.put(SysMenu.FIELD_NAME, "菜单管理");
+        List<SysMenu> sysMenus = sysMenuDao.selectByMap(params);
+        for (SysMenu sysMenu : sysMenus) {
+            System.out.println(sysMenu.toString());
+        }
     }
 }
