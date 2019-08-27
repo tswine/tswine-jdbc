@@ -21,7 +21,7 @@ public enum SqlMethod {
     /**
      * 更新
      */
-    UPDATE("update", "更新", "UPDATE %s SET % WHERE %s"),
+    UPDATE("update", "更新", "UPDATE %s SET %s WHERE %s"),
     /**
      * 查找
      */

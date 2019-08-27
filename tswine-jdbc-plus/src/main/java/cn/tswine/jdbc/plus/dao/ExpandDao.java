@@ -66,7 +66,7 @@ public interface ExpandDao<T> {
      * @param ids
      * @return
      */
-    T selectByIds(Serializable... ids);
+    T selectById(Serializable... ids);
 
     /**
      * 查询（根据主键批量查询；不支持多主键）
@@ -94,7 +94,7 @@ public interface ExpandDao<T> {
      * @param ids
      * @return
      */
-    int deleteByIds(Serializable... ids);
+    int deleteById(Serializable... ids);
 
     /**
      * 删除（根据主键批量删除；不支持多主键）

@@ -61,7 +61,7 @@ public class SqlUtils implements StringPool {
      * @return
      */
     public static String getUpdateSql(String tableName, String setSql, String whereSql) {
-        //UPDATE %s SET % WHERE %s
+        //UPDATE %s SET %s WHERE %s
         SqlMethod sqlMethod = SqlMethod.UPDATE;
         return String.format(sqlMethod.getSql(), tableName, setSql, whereSql);
     }

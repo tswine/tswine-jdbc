@@ -120,7 +120,8 @@ public abstract class AbstractDao<T> extends BaseDao implements ExpandDao<T> {
     }
 
     @Override
-    public T selectByIds(Serializable... ids) {
+    public T selectById(Serializable... ids) {
+        Assert.notEmpty(ids, "ids not empty");
         String sqlWhere = SqlUtils.getWhere(entitySchema.getIds());
         List<T> list = selectByWhere(sqlWhere, ids);
         return list != null ? list.get(0) : null;
@@ -137,9 +138,11 @@ public abstract class AbstractDao<T> extends BaseDao implements ExpandDao<T> {
     }
 
     @Override
-    public int deleteByIds(Serializable... ids) {
-        //DELETE FROM %s WHERE %s
+    public int deleteById(Serializable... ids) {
         Assert.notEmpty(ids, "ids not empty");
+        if (ids.length != entitySchema.getIds().size()) {
+            throw ExceptionUtils.tse("ids length is not equal key size");
+        }
         String sqlWhere = SqlUtils.getWhere(entitySchema.getIds());
         return deleteByWhere(entitySchema.getTableName(), sqlWhere, ids);
     }
@@ -190,7 +193,7 @@ public abstract class AbstractDao<T> extends BaseDao implements ExpandDao<T> {
         Assert.notEmpty(where, "where not empty");
         List<Object> params = new ArrayList<>();
         String setSql = SqlUtils.getSet(update.keySet());
-        String whereSql = SqlUtils.getSet(where.keySet());
+        String whereSql = SqlUtils.getWhere(where.keySet());
         params.addAll(update.values());
         params.addAll(where.values());
         String sql = SqlUtils.getUpdateSql(tableName, setSql, whereSql);
