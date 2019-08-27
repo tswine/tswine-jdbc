@@ -13,24 +13,19 @@ public enum SqlMethod {
     /**
      * 插入
      */
-    INSERT("insert", "插入一条数据", "INSERT INTO %s ( %s ) VALUES ( %s )"),
+    INSERT("insert", "插入", "INSERT INTO %s ( %s ) VALUES ( %s )"),
     /**
      * 删除
      */
-    deleteById("deleteById", "插入一条数据", ""),
-    deleteByMap("deleteByMap", "插入一条数据", ""),
-    delete("", "插入一条数据", ""),
-    deleteBatchIds("deleteBatchIds", "插入一条数据", ""),
-
+    DELETE("delete", "删除", "DELETE FROM %s WHERE %s"),
     /**
      * 更新
      */
-    updateById("updateById", "插入一条数据", ""),
-    update("update", "插入一条数据", ""),
+    UPDATE("update", "更新", "UPDATE %s SET % WHERE %s"),
     /**
      * 查找
      */
-    SELECT("select", "根据where条件通用查询", "SELECT %s FROM %s WHERE %s");
+    SELECT("select", "查找", "SELECT %s FROM %s WHERE %s");
 
     /**
      * 方法名

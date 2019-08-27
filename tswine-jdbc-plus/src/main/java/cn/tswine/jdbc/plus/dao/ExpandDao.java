@@ -77,4 +77,55 @@ public interface ExpandDao<T> {
     List<T> selectBatchIds(Collection<? extends Serializable> idList);
 
 
+    /***********删除***********/
+    /**
+     * 通过where条件删除
+     *
+     * @param tableName 表名
+     * @param sqlWhere  where条件
+     * @param params    参数
+     * @return
+     */
+    int deleteByWhere(String tableName, String sqlWhere, Object[] params);
+
+    /**
+     * 删除（根据主键：支持多主键）
+     *
+     * @param ids
+     * @return
+     */
+    int deleteByIds(Serializable... ids);
+
+    /**
+     * 删除（根据主键批量删除；不支持多主键）
+     *
+     * @param idList
+     * @return
+     */
+    int deleteBatchIds(Collection<? extends Serializable> idList);
+
+
+    /**
+     * 删除（根据 columnMap 条件）
+     *
+     * @param columnMap 表字段 map 对象
+     */
+    int deleteByMap(Map<String, Object> columnMap);
+
+    /**
+     * 更新（根据ID）
+     *
+     * @param entity 实体对象
+     */
+    int updateById(T entity);
+
+    /**
+     * 更新（指定列和条件更新）
+     *
+     * @param tableName 表名
+     * @param update    更新数据
+     * @param where     条件数据
+     * @return
+     */
+    int update(String tableName, Map<String, Object> update, Map<String, Object> where);
 }

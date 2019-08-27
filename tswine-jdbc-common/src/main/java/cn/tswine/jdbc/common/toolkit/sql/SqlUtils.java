@@ -23,7 +23,7 @@ public class SqlUtils implements StringPool {
 
 
     /**
-     * 获取Insert sql
+     * 获取Insert SQL
      *
      * @param dbType     数据库类型
      * @param tableName  表名
@@ -40,39 +40,51 @@ public class SqlUtils implements StringPool {
 
 
     /**
-     * 获取where条件 sql
+     * 获取 Delete SQL
+     *
+     * @param tableName 表名
+     * @param whereSql  where条件sql
+     * @return
+     */
+    public static String getDeleteSql(String tableName, String whereSql) {
+        //DELETE FROM %s WHERE %s
+        SqlMethod sqlMethod = SqlMethod.DELETE;
+        return String.format(sqlMethod.getSql(), tableName, whereSql);
+    }
+
+    /**
+     * 获取 Update SQL
+     *
+     * @param tableName 表名
+     * @param setSql    set SQL
+     * @param whereSql  where条件sql
+     * @return
+     */
+    public static String getUpdateSql(String tableName, String setSql, String whereSql) {
+        //UPDATE %s SET % WHERE %s
+        SqlMethod sqlMethod = SqlMethod.UPDATE;
+        return String.format(sqlMethod.getSql(), tableName, setSql, whereSql);
+    }
+
+    /**
+     * 获取where条件 SQL
      *
      * @param columns 条件列
      * @return user_name = ? AND password = ?
      */
     public static String getWhere(Collection<String> columns) {
-        Assert.isNotNull(columns, "条件列不能为空");
-        int size = columns.size() - 1;
-        if (size == -1) {
-            return "";
-        }
-        StringBuilder sb = new StringBuilder();
-        int i = 0;
-        Iterator<String> iterator = columns.iterator();
-        while (iterator.hasNext()) {
-            String column = iterator.next();
-            sb.append(column);
-            sb.append(SPACE);
-            sb.append(EQUALS);
-            sb.append(SPACE);
-            sb.append(QUESTION_MARK);
-            sb.append(SPACE);
-            if (i == size) {
-                return sb.toString();
-            }
-            sb.append(SPACE);
-            sb.append(SQLSentenceType.AND);
-            sb.append(SPACE);
-            i++;
-        }
-        return "";
+        return getColumnJoin(columns, SQLSentenceType.AND.getValue());
     }
 
+    /**
+     * 获取set SQL
+     *
+     * @param columns 列
+     * @return user_name = ? , password = ?
+     */
+    public static String getSet(Collection<String> columns) {
+        return getColumnJoin(columns, COMMA);
+    }
 
     /**
      * 获取in条件sql
@@ -138,5 +150,40 @@ public class SqlUtils implements StringPool {
             sb.append(COMMA);
         }
     }
+
+    /**
+     * 获取列获取连接 SQL
+     *
+     * @param columns 条件列
+     * @return user_name = ? joiner password = ?
+     */
+    private static String getColumnJoin(Collection<String> columns, String joiner) {
+        Assert.isNotNull(columns, "条件列不能为空");
+        int size = columns.size() - 1;
+        if (size == -1) {
+            return "";
+        }
+        StringBuilder sb = new StringBuilder();
+        int i = 0;
+        Iterator<String> iterator = columns.iterator();
+        while (iterator.hasNext()) {
+            String column = iterator.next();
+            sb.append(column);
+            sb.append(SPACE);
+            sb.append(EQUALS);
+            sb.append(SPACE);
+            sb.append(QUESTION_MARK);
+            sb.append(SPACE);
+            if (i == size) {
+                return sb.toString();
+            }
+            sb.append(SPACE);
+            sb.append(joiner);
+            sb.append(SPACE);
+            i++;
+        }
+        return "";
+    }
+
 
 }

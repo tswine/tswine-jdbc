@@ -58,9 +58,7 @@ public abstract class AbstractDao<T> extends BaseDao implements ExpandDao<T> {
 
     @Override
     public int insert(T entity) {
-        if (entity == null) {
-            throw ExceptionUtils.tse("entity is empty");
-        }
+        Assert.isNotNull(entity, "entity is empty");
         //获取所有字段
         Map<String, Field> fields = entitySchema.getFields();
         //处理主键
@@ -116,7 +114,7 @@ public abstract class AbstractDao<T> extends BaseDao implements ExpandDao<T> {
 
     @Override
     public List<T> selectByMap(Map<String, Object> columnMap) {
-        MapUtils.isNotEmpty(columnMap, "columnMap不能为空");
+        Assert.notEmpty(columnMap, "columnMap not empty");
         String sqlWhere = SqlUtils.getWhere(columnMap.keySet());
         return selectByWhere(sqlWhere, columnMap.values().toArray());
     }
@@ -136,6 +134,77 @@ public abstract class AbstractDao<T> extends BaseDao implements ExpandDao<T> {
         }
         String sqlIn = SqlUtils.getIn(ids.get(0), idList.size());
         return selectByWhere(sqlIn, idList.toArray());
+    }
+
+    @Override
+    public int deleteByIds(Serializable... ids) {
+        //DELETE FROM %s WHERE %s
+        Assert.notEmpty(ids, "ids not empty");
+        String sqlWhere = SqlUtils.getWhere(entitySchema.getIds());
+        return deleteByWhere(entitySchema.getTableName(), sqlWhere, ids);
+    }
+
+    @Override
+    public int deleteBatchIds(Collection<? extends Serializable> idList) {
+        Assert.notEmpty(idList, "idList not empty");
+        List<String> ids = entitySchema.getIds();
+        if (ids.size() != 1) {
+            throw ExceptionUtils.tse("The primary key only supports one");
+        }
+        String sqlIn = SqlUtils.getIn(entitySchema.getIds().get(0), idList.size());
+        return deleteByWhere(entitySchema.getTableName(), sqlIn, idList.toArray());
+    }
+
+    @Override
+    public int deleteByMap(Map<String, Object> columnMap) {
+        Assert.notEmpty(columnMap, "columnMap not empty");
+        Set<String> columns = columnMap.keySet();
+        String sqlWhere = SqlUtils.getWhere(columns);
+        return deleteByWhere(entitySchema.getTableName(), sqlWhere, columnMap.values().toArray());
+    }
+
+    @Override
+    public int updateById(T entity) {
+        //获取所有字段
+        Map<String, Field> fields = entitySchema.getFields();
+        //获取所有字段值
+        Map<String, Object> methodValue = ReflectionUtils.getAllMethodValue(entity, fields);
+        if (methodValue == null) {
+            throw ExceptionUtils.tse("reflection not get entity values");
+        }
+        Map<String, Object> whereIds = new HashMap<>();
+        //排除主键数据
+        List<String> ids = entitySchema.getIds();
+        ids.forEach(k -> {
+            Object o = whereIds.get(ids);
+            whereIds.put(k, o);
+            methodValue.remove(k);
+        });
+        return update(entitySchema.getTableName(), methodValue, whereIds);
+    }
+
+    @Override
+    public int update(String tableName, Map<String, Object> update, Map<String, Object> where) {
+        Assert.notEmpty(tableName, "tableName not empty");
+        Assert.notEmpty(update, "update not empty");
+        Assert.notEmpty(where, "where not empty");
+        List<Object> params = new ArrayList<>();
+        String setSql = SqlUtils.getSet(update.keySet());
+        String whereSql = SqlUtils.getSet(where.keySet());
+        params.addAll(update.values());
+        params.addAll(where.values());
+        String sql = SqlUtils.getUpdateSql(tableName, setSql, whereSql);
+        return update(sql, params.toArray());
+    }
+
+    @Override
+    public int deleteByWhere(String tableName, String where, Object[] params) {
+        Assert.isNotNull(tableName, "tableName not null");
+        Assert.isNotNull(where, "where not null");
+        Assert.notEmpty(params, "params not null");
+        String sql = SqlUtils.getDeleteSql(entitySchema.getTableName(), where);
+        return delete(sql, params);
+
     }
 
     /**
@@ -208,4 +277,5 @@ public abstract class AbstractDao<T> extends BaseDao implements ExpandDao<T> {
         });
         return values;
     }
+
 }
