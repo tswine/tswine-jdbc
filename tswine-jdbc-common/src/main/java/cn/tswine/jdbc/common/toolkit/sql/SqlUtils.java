@@ -1,6 +1,8 @@
 package cn.tswine.jdbc.common.toolkit.sql;
 
+import cn.tswine.jdbc.common.annotation.DbType;
 import cn.tswine.jdbc.common.enums.SQLSentenceType;
+import cn.tswine.jdbc.common.enums.SqlMethod;
 import cn.tswine.jdbc.common.toolkit.Assert;
 import cn.tswine.jdbc.common.toolkit.StringPool;
 import cn.tswine.jdbc.common.toolkit.StringUtils;
@@ -18,6 +20,23 @@ import java.util.Iterator;
  * @Desc
  */
 public class SqlUtils implements StringPool {
+
+
+    /**
+     * 获取Insert sql
+     *
+     * @param dbType     数据库类型
+     * @param tableName  表名
+     * @param columnList 列名集合
+     * @return
+     */
+    public static String getInsertSql(DbType dbType, String tableName, Collection<String> columnList) {
+        //INSERT INTO %s ( %s ) VALUES ( %s )
+        SqlMethod sqlMethod = SqlMethod.INSERT;
+        String columns = getColumns(columnList, dbType.getDbType().getPlaceholder());
+        String questionMark = getQuestionMark(columnList.size());
+        return String.format(sqlMethod.getSql(), tableName, columns, questionMark);
+    }
 
 
     /**

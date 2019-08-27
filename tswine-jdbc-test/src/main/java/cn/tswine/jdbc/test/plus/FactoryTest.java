@@ -119,9 +119,10 @@ public class FactoryTest {
             list.add(sysMenu);
         }
 
-
         int[] insert = sysMenuDao.insert(list);
-        System.out.println(insert);
+        for (int i : insert) {
+            System.out.println(i);
+        }
     }
 
 }

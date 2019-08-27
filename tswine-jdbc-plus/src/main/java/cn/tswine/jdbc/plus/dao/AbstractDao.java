@@ -1,24 +1,22 @@
 package cn.tswine.jdbc.plus.dao;
 
 import cn.tswine.jdbc.common.annotation.TableId;
+import cn.tswine.jdbc.common.enums.SqlMethod;
 import cn.tswine.jdbc.common.enums.generator.UUIDGenerator;
-import cn.tswine.jdbc.common.toolkit.ExceptionUtils;
-import cn.tswine.jdbc.common.toolkit.MapUtils;
-import cn.tswine.jdbc.common.toolkit.ReflectionUtils;
-import cn.tswine.jdbc.common.toolkit.StringUtils;
+import cn.tswine.jdbc.common.rules.IDBLabel;
+import cn.tswine.jdbc.common.toolkit.*;
 import cn.tswine.jdbc.common.toolkit.sql.SqlUtils;
 import cn.tswine.jdbc.plus.builder.SchemaBuilder;
 import cn.tswine.jdbc.plus.builder.schema.EntitySchema;
-import cn.tswine.jdbc.plus.sql.SqlMethod;
+import cn.tswine.jdbc.plus.injector.IMethod;
+import cn.tswine.jdbc.plus.injector.methods.UpdateBatch;
+import cn.tswine.jdbc.plus.sql.SqlSource;
 
 import java.io.Serializable;
 import java.lang.reflect.Field;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * 抽象dao操作
@@ -34,12 +32,28 @@ public abstract class AbstractDao<T> extends BaseDao implements ExpandDao<T> {
 
     protected EntitySchema entitySchema;
 
+    protected IDBLabel dbLabel;
+
     /**
      * 不允许该类通过new创建
      */
     protected AbstractDao() {
+        this.dbLabel = getDbLabel();
         this.setClassEntity();
         this.entitySchema = SchemaBuilder.buildEntity(classEntity, getDbLabel().getDbType());
+    }
+
+    @Override
+    public int insert(String tableName, Map<String, Object> columnValues) {
+        //将列值分开
+        List<String> columnsList = new ArrayList<>();
+        List<Object> valuesList = new ArrayList<>();
+        columnValues.forEach((k, v) -> {
+            columnsList.add(k);
+            valuesList.add(v);
+        });
+        String sql = SqlUtils.getInsertSql(getDbLabel().getDbType(), entitySchema.getTableName(), columnsList);
+        return insert(sql, valuesList.toArray());
     }
 
     @Override
@@ -50,7 +64,7 @@ public abstract class AbstractDao<T> extends BaseDao implements ExpandDao<T> {
         //获取所有字段
         Map<String, Field> fields = entitySchema.getFields();
         //处理主键
-        Map<String, Object> methodValue = dispsoseIds(ReflectionUtils.getAllMethodValue(entity, fields), entitySchema.getIdsAnno());
+        Map<String, Object> methodValue = disposeIds(ReflectionUtils.getAllMethodValue(entity, fields), entitySchema.getIdsAnno());
         if (methodValue == null) {
             throw ExceptionUtils.tse("reflection not get entity values");
         }
@@ -58,30 +72,38 @@ public abstract class AbstractDao<T> extends BaseDao implements ExpandDao<T> {
     }
 
     @Override
-    public int insert(String tableName, Map<String, Object> columnValues) {
-        //INSERT INTO %s ( %s ) VALUES %s
-        SqlMethod sqlMethod = SqlMethod.INSERT;
-        //将列值分开
-        List<String> columnsList = new ArrayList<>();
-        List<Object> valuesList = new ArrayList<>();
-        columnValues.forEach((k, v) -> {
-            columnsList.add(k);
-            valuesList.add(v);
-        });
-        String columns = SqlUtils.getColumns(columnsList, getDbLabel().getDbType().getPlaceholder());
-        String questionMark = SqlUtils.getQuestionMark(valuesList.size());
-        String sql = String.format(sqlMethod.getSql(), tableName, columns, questionMark);
-        return insert(sql, valuesList.toArray());
-    }
-
-
-    @Override
     public int[] insert(List<T> listEntity) {
-        //
-//        IMethod method = new UpdateBatch(getDbLabel(),listEntity)
-        return new int[0];
+        Assert.notEmpty(listEntity, "List entity is empty");
+        List<Map<String, Object>> listValue = new ArrayList<>();
+        //遍历每个对象，获取每个对象的值
+        for (T t : listEntity) {
+            //获取所有字段
+            Map<String, Field> fields = entitySchema.getFields();
+            //处理主键
+            Map<String, Object> methodValue = disposeIds(
+                    ReflectionUtils.getAllMethodValue(t, fields), entitySchema.getIdsAnno());
+            listValue.add(methodValue);
+        }
+        List<Object[]> params = new ArrayList<>();
+        //以第一个对象为标准，依次获取值参数
+        Map<String, Object> firstT = listValue.get(0);
+        Set<String> columns = firstT.keySet();
+        int columnSize = columns.size();
+        for (Map<String, Object> mapValue : listValue) {
+            Object[] param = new Object[columnSize];
+            Iterator<String> iterator = columns.iterator();
+            int i = 0;
+            while (iterator.hasNext()) {
+                param[i] = mapValue.get(iterator.next());
+                i++;
+            }
+            params.add(param);
+        }
+        String sql = SqlUtils.getInsertSql(dbLabel.getDbType(), entitySchema.getTableName(), columns);
+        IMethod method = new UpdateBatch(getDbLabel(), sql, params);
+        SqlSource sqlSource = method.execute();
+        return sqlSource.getBatchUpdate();
     }
-
 
     @Override
     public List<T> selectByWhere(String whereSql, Object... params) {
@@ -99,7 +121,6 @@ public abstract class AbstractDao<T> extends BaseDao implements ExpandDao<T> {
         return selectByWhere(sqlWhere, columnMap.values().toArray());
     }
 
-
     @Override
     public T selectByIds(Serializable... ids) {
         String sqlWhere = SqlUtils.getWhere(entitySchema.getIds());
@@ -116,7 +137,6 @@ public abstract class AbstractDao<T> extends BaseDao implements ExpandDao<T> {
         String sqlIn = SqlUtils.getIn(ids.get(0), idList.size());
         return selectByWhere(sqlIn, idList.toArray());
     }
-
 
     /**
      * 实体对象类型
@@ -167,7 +187,7 @@ public abstract class AbstractDao<T> extends BaseDao implements ExpandDao<T> {
      * @param values
      * @param ids
      */
-    private Map<String, Object> dispsoseIds(Map<String, Object> values, Map<String, TableId> ids) {
+    private Map<String, Object> disposeIds(Map<String, Object> values, Map<String, TableId> ids) {
         if (MapUtils.isEmpty(ids)) {
             return values;
         }
@@ -188,5 +208,4 @@ public abstract class AbstractDao<T> extends BaseDao implements ExpandDao<T> {
         });
         return values;
     }
-
 }

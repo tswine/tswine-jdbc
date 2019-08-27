@@ -1,4 +1,4 @@
-package cn.tswine.jdbc.plus.sql;
+package cn.tswine.jdbc.common.enums;
 
 /**
  * 支持的sql方法
