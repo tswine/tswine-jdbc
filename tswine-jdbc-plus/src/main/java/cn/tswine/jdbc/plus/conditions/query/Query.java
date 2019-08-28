@@ -3,12 +3,14 @@ package cn.tswine.jdbc.plus.conditions.query;
 import java.io.Serializable;
 
 /**
+ * 查询器
+ *
  * @Author: silly
  * @Date: 2019/8/16 15:41
  * @Version 1.0
  * @Desc
  */
-public interface Query<Children, R> extends Serializable {
+public interface Query<Children, T, R> extends Serializable {
     /**
      * 设置查询的字段
      *

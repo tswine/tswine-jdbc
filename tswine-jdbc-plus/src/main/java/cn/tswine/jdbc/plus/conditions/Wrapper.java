@@ -1,5 +1,7 @@
 package cn.tswine.jdbc.plus.conditions;
 
+import cn.tswine.jdbc.plus.conditions.segments.MergeSegments;
+
 /**
  * 条件构造抽象类
  *
@@ -17,5 +19,10 @@ public abstract class Wrapper<T> implements ISqlSegment {
      */
     public abstract T getEntity();
 
-
+    /**
+     * 获取MergeSegments
+     *
+     * @return
+     */
+    public abstract MergeSegments getExpression();
 }

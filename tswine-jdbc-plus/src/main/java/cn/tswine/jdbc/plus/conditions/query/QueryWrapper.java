@@ -6,7 +6,7 @@ package cn.tswine.jdbc.plus.conditions.query;
  *
  * @param <T> 实体对象
  */
-public class QueryWrapper<T> {
+public class QueryWrapper<T>  implements  Query<QueryWrapper<T>,T,String>{
 
 
 }

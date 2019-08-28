@@ -1,5 +1,7 @@
 package cn.tswine.jdbc.common.enums;
 
+import cn.tswine.jdbc.common.toolkit.StringPool;
+
 /**
  * sql保留关键字枚举
  *
@@ -14,11 +16,20 @@ public enum SQLSentenceType {
     DELETE("DELETE"),
     UPDATE("UPDATE"),
 
+    EQ(StringPool.EQ),
+    NE(StringPool.NE),
+    GT(StringPool.GT),
+    GE(StringPool.GE),
+    LT(StringPool.LT),
+    LN(StringPool.LN),
+
     AND("AND"),
     OR("OR"),
     IN("IN"),
+    NOT_IN("NOT IN"),
     NOT("NOT"),
     LIKE("LIKE"),
+    NOT_LIKE("NOT LIKE"),
     IS_NULL("IS NULL"),
     IS_NOT_NULL("IS NOT NULL"),
     GROUP_BY("GROUP BY"),
@@ -29,11 +40,11 @@ public enum SQLSentenceType {
     ASC("ASC"),
     DESC("DESC");
 
+
     /**
      * 值
      */
     private final String value;
-
 
     SQLSentenceType(final String value) {
         this.value = value;
