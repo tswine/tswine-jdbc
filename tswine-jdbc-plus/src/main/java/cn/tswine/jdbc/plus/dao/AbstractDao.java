@@ -11,6 +11,8 @@ import cn.tswine.jdbc.plus.builder.schema.EntitySchema;
 import cn.tswine.jdbc.plus.injector.IMethod;
 import cn.tswine.jdbc.plus.injector.methods.UpdateBatch;
 import cn.tswine.jdbc.plus.sql.SqlSource;
+import cn.tswine.jdbc.plus.transaction.Transaction;
+import cn.tswine.jdbc.plus.transaction.jdbc.JdbcTransactionFactory;
 
 import java.io.Serializable;
 import java.lang.reflect.Field;
@@ -208,6 +210,16 @@ public abstract class AbstractDao<T> extends BaseDao implements ExpandDao<T> {
         String sql = SqlUtils.getDeleteSql(entitySchema.getTableName(), where);
         return delete(sql, params);
 
+    }
+
+
+    /**
+     * 暴露数据库操作对象
+     *
+     * @return
+     */
+    protected Transaction transaction() {
+        return JdbcTransactionFactory.getInstance().newTransaction(dbLabel);
     }
 
     /**

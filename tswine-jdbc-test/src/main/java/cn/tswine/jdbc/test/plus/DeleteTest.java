@@ -13,7 +13,7 @@ import java.util.Map;
  * @Version 1.0
  * @Desc
  */
-public class DeleteTest  extends BaseTest{
+public class DeleteTest extends BaseTest {
 
     @Test
     public void delete() {

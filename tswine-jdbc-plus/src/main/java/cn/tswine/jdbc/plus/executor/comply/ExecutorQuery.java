@@ -8,6 +8,8 @@ import java.util.List;
 import java.util.Map;
 
 /**
+ * 查询执行器
+ *
  * @Author: silly
  * @Date: 2019/8/23 20:55
  * @Version 1.0

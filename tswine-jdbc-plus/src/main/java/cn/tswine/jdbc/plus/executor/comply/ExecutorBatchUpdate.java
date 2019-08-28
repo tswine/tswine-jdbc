@@ -11,6 +11,8 @@ import java.sql.SQLException;
 import java.util.List;
 
 /**
+ * 批量更新执行器器
+ *
  * @Author: silly
  * @Date: 2019/8/23 20:55
  * @Version 1.0
@@ -43,7 +45,5 @@ public class ExecutorBatchUpdate extends BaseExecutor {
             close(null, ps);
             transaction.close();
         }
-
-
     }
 }

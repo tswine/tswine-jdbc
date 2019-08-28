@@ -5,6 +5,8 @@ import cn.tswine.jdbc.plus.sql.SqlSource;
 import cn.tswine.jdbc.plus.transaction.Transaction;
 
 /**
+ * 更新执行器
+ *
  * @Author: silly
  * @Date: 2019/8/23 20:55
  * @Version 1.0

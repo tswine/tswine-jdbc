@@ -87,8 +87,6 @@ public abstract class BaseExecutor implements Executor {
         return results;
     }
 
-
-
     /**
      * ResultSet  转成map
      *
