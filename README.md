@@ -15,5 +15,5 @@ tswine jdbc基于jdbc封装的数据库操作
 ## 模块
 - tswine-jdbc-common：基础公共封装
 - tswine-jdbc-generator：代码生成器  https://github.com/tswine/tswine-jdbc/blob/master/tswine-jdbc-generator/README.md
-- tswine-jdbc-plus：基于jdbc操作通用封装,自动实现单表CRUD功能 
+- tswine-jdbc-plus：基于jdbc操作通用封装,自动实现单表CRUD功能  https://github.com/tswine/tswine-jdbc/blob/master/tswine-jdbc-plus/README.md
 
