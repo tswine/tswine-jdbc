@@ -67,10 +67,16 @@ public abstract class AbstractDao<T> extends BaseDao implements ExpandDao<T> {
             throw ExceptionUtils.tse("wrapper type must QueryWrapper");
         }
         QueryWrapper queryWrapper = (QueryWrapper) wrapper;
+        //TODO
+        // 1.列名转义
+        // 2.distinct 作用域
+        EntitySchema entitySchema = SchemaBuilder.buildEntity(this.classEntity, this.dbLabel.getDbType());
         String[] columns = queryWrapper.getSelectColumns();
+        if (ArrayUtils.isEmpty(columns)) {
+            columns = CollectionUtils.asArray(entitySchema.getColumns(), String.class);
+        }
         String sqlWhere = queryWrapper.getSqlSegment();
         Object[] params = queryWrapper.getParams();
-        EntitySchema entitySchema = SchemaBuilder.buildEntity(this.classEntity, this.dbLabel.getDbType());
         String tableName = entitySchema.getTableName();
         return select(StringUtils.join(columns, ","), tableName, sqlWhere, params);
     }

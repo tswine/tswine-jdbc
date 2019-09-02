@@ -16,7 +16,7 @@ import java.util.List;
 public class InsertTest extends BaseTest {
 
     @Test
-    public void insert() {
+    public void insert1() {
         SysMenu sysMenu = new SysMenu();
         sysMenu.setId(System.currentTimeMillis() + "");
         sysMenu.setName("测试");
@@ -34,6 +34,10 @@ public class InsertTest extends BaseTest {
 
         int insert = sysMenuDao.insert(sysMenu);
         System.out.println(insert);
+    }
+
+    public void insert2() {
+//        sysMenuDao.insert
     }
 
     @Test

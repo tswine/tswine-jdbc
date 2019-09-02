@@ -12,9 +12,17 @@ public class QueryWrapper<T> extends AbstractWrapper<T, String, QueryWrapper<T>>
 
     String[] selectColumn;
 
+    boolean distinct = false;
+
     @Override
     public QueryWrapper<T> select(String... columns) {
         this.selectColumn = columns;
+        return this;
+    }
+
+    @Override
+    public QueryWrapper<T> distinct(boolean distinct) {
+        this.distinct = distinct;
         return this;
     }
 

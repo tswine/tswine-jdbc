@@ -20,6 +20,14 @@ public interface Query<Children, T, R> extends Serializable {
     Children select(R... columns);
 
     /**
+     * 是否去除重复值
+     *
+     * @param isDsistinct
+     * @return
+     */
+    Children distinct(boolean distinct);
+
+    /**
      * 获取查询列
      *
      * @return

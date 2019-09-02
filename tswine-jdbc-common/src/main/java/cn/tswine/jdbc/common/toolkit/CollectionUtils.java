@@ -1,9 +1,7 @@
 package cn.tswine.jdbc.common.toolkit;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
+import java.lang.reflect.Array;
+import java.util.*;
 
 /**
  * 集合工具类
@@ -65,6 +63,27 @@ public class CollectionUtils {
     public static <T> List<T> asList(Collection<T> coll) {
         List<T> list = new ArrayList(coll);
         return list;
+    }
+
+
+    /**
+     * 转为Array
+     * @param coll
+     * @param tClass
+     * @param <T>
+     * @return
+     */
+    public static <T> T[] asArray(Collection<T> coll, Class<T> tClass) {
+        if (isEmpty(coll)) {
+            return null;
+        }
+        T[] values = (T[]) Array.newInstance(tClass, coll.size());
+        Iterator<T> iterator = coll.iterator();
+        int i = 0;
+        while (iterator.hasNext()) {
+            values[i++] = iterator.next();
+        }
+        return values;
     }
 
     public static <T> void add(Collection<T> params, T[] value) {

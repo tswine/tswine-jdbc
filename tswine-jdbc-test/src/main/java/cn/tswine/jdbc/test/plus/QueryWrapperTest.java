@@ -21,8 +21,8 @@ public class QueryWrapperTest extends BaseTest {
     @Test
     public void query() {
         QueryWrapper<SysMenu> wrapper = new QueryWrapper<>();
-        wrapper.select(SysMenu.FIELD_ID, SysMenu.FIELD_PARENT_ID, SysMenu.FIELD_NAME,
-                SysMenu.FIELD_PARENT_ID, SysMenu.FIELD_ICON, SysMenu.FIELD_REMARKS);
+//        wrapper.select(SysMenu.FIELD_ID, SysMenu.FIELD_PARENT_ID, SysMenu.FIELD_NAME,
+//                SysMenu.FIELD_PARENT_ID, SysMenu.FIELD_ICON, SysMenu.FIELD_REMARKS);
         wrapper.eq("parent_id", "/admin/test1").eq("icon", "home")
                 .notLike("name", "测试1")
                 .orderByAsc("sort").orderByDesc("id");
