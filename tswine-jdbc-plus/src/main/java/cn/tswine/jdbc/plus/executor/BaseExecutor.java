@@ -67,6 +67,7 @@ public abstract class BaseExecutor implements Executor {
      * @return 查询到的数据
      */
     public List<Map<String, Object>> executeQuery(String sql, Object[] args) {
+        System.out.println(sql);
         PreparedStatement ps = null;
         ResultSet rs = null;
         List<Map<String, Object>> results = new ArrayList<>();

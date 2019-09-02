@@ -17,11 +17,11 @@ public enum SQLSentenceType {
     UPDATE("UPDATE"),
 
     EQ(StringPool.EQ),
-    NE(StringPool.NE),
+    NQ(StringPool.NQ),
     GT(StringPool.GT),
     GE(StringPool.GE),
     LT(StringPool.LT),
-    LN(StringPool.LN),
+    LE(StringPool.LE),
 
     AND("AND"),
     OR("OR"),

@@ -1,5 +1,8 @@
 package cn.tswine.jdbc.plus.conditions.segments;
 
+import cn.tswine.jdbc.plus.conditions.OrderBy;
+
+import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
@@ -16,7 +19,12 @@ public class MergeSegments {
     /**
      * 普通查询条件
      */
-    private final Map<String, Object> normal = new LinkedHashMap<>();
+    private final Map<String, Object[]> normal = new LinkedHashMap<>();
+
+    /**
+     * orderBy
+     */
+    private final ArrayList<OrderBy> orderBy = new ArrayList<>();
 
 
     /**
@@ -27,6 +35,23 @@ public class MergeSegments {
      */
     public void add(String sql, Object[] params) {
         normal.put(sql, params);
+    }
+
+    /**
+     * 排序
+     *
+     * @param sql
+     */
+    public void addOrderBy(OrderBy sql) {
+        orderBy.add(sql);
+    }
+
+    public Map<String, Object[]> getNormal() {
+        return normal;
+    }
+
+    public ArrayList<OrderBy> getOrderBy() {
+        return orderBy;
     }
 
 }

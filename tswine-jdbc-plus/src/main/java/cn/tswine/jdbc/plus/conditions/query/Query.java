@@ -18,4 +18,11 @@ public interface Query<Children, T, R> extends Serializable {
      * @return
      */
     Children select(R... columns);
+
+    /**
+     * 获取查询列
+     *
+     * @return
+     */
+    R[] getSelectColumns();
 }

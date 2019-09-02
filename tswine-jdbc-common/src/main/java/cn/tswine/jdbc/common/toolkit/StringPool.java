@@ -23,11 +23,11 @@ public interface StringPool {
     String DOT_XML = ".xml";
     String EMPTY = "";
     String EQ = "=";
-    String NE = "!=";
+    String NQ = "!=";
     String GT = ">";
     String GE = ">=";
     String LT = "<";
-    String LN = "<=";
+    String LE = "<=";
     String FALSE = "false";
     String SLASH = "/";
     String HASH = "#";

@@ -1,6 +1,7 @@
 package cn.tswine.jdbc.plus.dao;
 
 import cn.tswine.jdbc.common.rules.IDBLabel;
+import cn.tswine.jdbc.common.toolkit.ExceptionUtils;
 import cn.tswine.jdbc.plus.injector.IMethod;
 import cn.tswine.jdbc.plus.injector.methods.Select;
 import cn.tswine.jdbc.plus.injector.methods.Update;
@@ -26,11 +27,19 @@ public abstract class BaseDao implements Dao {
 
     @Override
     public int delete(String sql, Object[] params) {
+        //sql审计判断：params不能为空
+        if (params == null || params.length > 0) {
+            throw ExceptionUtils.tse("sql审计：参数不能为空（不允许执行删除sql，不加条件）");
+        }
         return update(sql, params);
     }
 
     @Override
     public int update(String sql, Object[] params) {
+        //sql审计判断：params不能为空
+        if (params == null || params.length > 0) {
+            throw ExceptionUtils.tse("sql审计：参数不能为空（不允许执行更新sql，不加条件）");
+        }
         IMethod method = new Update(getDbLabel(), sql, params);
         SqlSource sqlSource = method.execute();
         return sqlSource.getUpdate();

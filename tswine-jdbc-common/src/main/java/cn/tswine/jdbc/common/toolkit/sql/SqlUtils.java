@@ -170,7 +170,7 @@ public class SqlUtils implements StringPool {
             String column = iterator.next();
             sb.append(column);
             sb.append(SPACE);
-            sb.append(EQUALS);
+            sb.append(EQ);
             sb.append(SPACE);
             sb.append(QUESTION_MARK);
             sb.append(SPACE);

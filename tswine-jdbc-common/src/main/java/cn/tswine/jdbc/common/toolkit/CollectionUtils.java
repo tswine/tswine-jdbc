@@ -55,6 +55,7 @@ public class CollectionUtils {
         return !isEmpty(map);
     }
 
+
     /**
      * 转换为list
      *
@@ -64,5 +65,12 @@ public class CollectionUtils {
     public static <T> List<T> asList(Collection<T> coll) {
         List<T> list = new ArrayList(coll);
         return list;
+    }
+
+    public static <T> void add(Collection<T> params, T[] value) {
+        Assert.isNotNull(params, "params is null");
+        for (T obj : value) {
+            params.add(obj);
+        }
     }
 }

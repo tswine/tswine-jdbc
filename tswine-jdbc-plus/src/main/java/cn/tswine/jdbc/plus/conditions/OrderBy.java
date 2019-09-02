@@ -9,7 +9,7 @@ import lombok.Setter;
  * @Version 1.0
  * @Desc
  */
-public class OrderBy<R> {
+public class OrderBy<R> implements ISqlSegment {
 
     /**
      * 列
@@ -31,6 +31,12 @@ public class OrderBy<R> {
         this.mode = mode;
     }
 
+    @Override
+    public String getSqlSegment() {
+        String exprSql = "%s %s";
+        return String.format(exprSql, column, mode);
+    }
+
 
     /**
      * 排序方式
@@ -44,6 +50,5 @@ public class OrderBy<R> {
          * 从大到小
          */
         DESC;
-
     }
 }

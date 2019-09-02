@@ -8,6 +8,8 @@ import cn.tswine.jdbc.common.toolkit.*;
 import cn.tswine.jdbc.common.toolkit.sql.SqlUtils;
 import cn.tswine.jdbc.plus.builder.SchemaBuilder;
 import cn.tswine.jdbc.plus.builder.schema.EntitySchema;
+import cn.tswine.jdbc.plus.conditions.Wrapper;
+import cn.tswine.jdbc.plus.conditions.query.QueryWrapper;
 import cn.tswine.jdbc.plus.injector.IMethod;
 import cn.tswine.jdbc.plus.injector.methods.UpdateBatch;
 import cn.tswine.jdbc.plus.sql.SqlSource;
@@ -59,6 +61,26 @@ public abstract class AbstractDao<T> extends BaseDao implements ExpandDao<T> {
     }
 
     @Override
+    public List<T> select(Wrapper<T> wrapper) {
+        Assert.isNotNull(wrapper, "wrapper is null");
+        if (!(wrapper instanceof QueryWrapper)) {
+            throw ExceptionUtils.tse("wrapper type must QueryWrapper");
+        }
+        QueryWrapper queryWrapper = (QueryWrapper) wrapper;
+        String[] columns = queryWrapper.getSelectColumns();
+        String sqlWhere = queryWrapper.getSqlSegment();
+        Object[] params = queryWrapper.getParams();
+        EntitySchema entitySchema = SchemaBuilder.buildEntity(this.classEntity, this.dbLabel.getDbType());
+        String tableName = entitySchema.getTableName();
+        return select(StringUtils.join(columns, ","), tableName, sqlWhere, params);
+    }
+
+    @Override
+    public T selectOne(Wrapper<T> wrapper) {
+        return null;
+    }
+
+    @Override
     public int insert(T entity) {
         Assert.isNotNull(entity, "entity is empty");
         //获取所有字段
@@ -107,9 +129,13 @@ public abstract class AbstractDao<T> extends BaseDao implements ExpandDao<T> {
 
     @Override
     public List<T> selectByWhere(String whereSql, Object... params) {
+        return select(getColumns(), entitySchema.getTableName(), whereSql, params);
+    }
+
+    protected List<T> select(String columns, String tableName, String whereSql, Object... params) {
         //SELECT %s FROM %s WHERE %s
         SqlMethod sqlMethod = SqlMethod.SELECT;
-        String sql = String.format(sqlMethod.getSql(), getColumns(), entitySchema.getTableName(), whereSql);
+        String sql = String.format(sqlMethod.getSql(), columns, tableName, whereSql);
         List<Map<String, Object>> maps = select(sql, params);
         return mapToObject(maps);
     }
@@ -140,6 +166,11 @@ public abstract class AbstractDao<T> extends BaseDao implements ExpandDao<T> {
     }
 
     @Override
+    public Integer selectCount(Wrapper<T> wrapper) {
+        return null;
+    }
+
+    @Override
     public int deleteById(Serializable... ids) {
         Assert.notEmpty(ids, "ids not empty");
         if (ids.length != entitySchema.getIds().size()) {
@@ -166,6 +197,15 @@ public abstract class AbstractDao<T> extends BaseDao implements ExpandDao<T> {
         Set<String> columns = columnMap.keySet();
         String sqlWhere = SqlUtils.getWhere(columns);
         return deleteByWhere(entitySchema.getTableName(), sqlWhere, columnMap.values().toArray());
+    }
+
+    @Override
+    public int delete(Wrapper<T> wrapper) {
+        if (wrapper == null) {
+            throw ExceptionUtils.tse("wrapper is not null");
+        }
+        //TODO 逻辑实现
+        return 0;
     }
 
     @Override
@@ -292,5 +332,4 @@ public abstract class AbstractDao<T> extends BaseDao implements ExpandDao<T> {
         });
         return values;
     }
-
 }

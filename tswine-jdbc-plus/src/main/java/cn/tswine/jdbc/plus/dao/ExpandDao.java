@@ -1,5 +1,7 @@
 package cn.tswine.jdbc.plus.dao;
 
+import cn.tswine.jdbc.plus.conditions.Wrapper;
+
 import java.io.Serializable;
 import java.util.Collection;
 import java.util.List;
@@ -43,6 +45,23 @@ public interface ExpandDao<T> {
     int insert(String tableName, Map<String, Object> columnValues);
 
     /***********查找***********/
+
+    /**
+     * 查询：根据条件构造器
+     *
+     * @param wrapper 条件构造器
+     * @return
+     */
+    List<T> select(Wrapper<T> wrapper);
+
+    /**
+     * 查询：根据条件构造器查询一个
+     *
+     * @param wrapper
+     * @return
+     */
+    T selectOne(Wrapper<T> wrapper);
+
     /**
      * 查询（根据where条件查询）
      *
@@ -76,7 +95,13 @@ public interface ExpandDao<T> {
      */
     List<T> selectBatchIds(Collection<? extends Serializable> idList);
 
-
+    /**
+     * 根据条件构造器：查询总记录
+     *
+     * @param wrapper
+     * @return
+     */
+    Integer selectCount(Wrapper<T> wrapper);
     /***********删除***********/
     /**
      * 通过where条件删除
@@ -112,6 +137,15 @@ public interface ExpandDao<T> {
      */
     int deleteByMap(Map<String, Object> columnMap);
 
+    /**
+     * 删除
+     *
+     * @param wrapper 条件构造器
+     * @return 删除的行数
+     */
+    int delete(Wrapper<T> wrapper);
+
+    /***********更新***********/
     /**
      * 更新（根据ID）
      *
