@@ -18,7 +18,7 @@ public class UpdateTest extends BaseTest {
 
     @Test
     public void update() {
-        String sql = "UPDATE sys_menu SET project_id = ? WHERE id = ? ";
+        String sql = "UPDATE.md sys_menu SET project_id = ? WHERE id = ? ";
         int update = sysMenuDao.update(sql, new Object[]{2, id});
         System.out.println(update);
     }

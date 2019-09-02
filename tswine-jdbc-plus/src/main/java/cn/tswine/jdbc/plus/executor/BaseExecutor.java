@@ -35,7 +35,7 @@ public abstract class BaseExecutor implements Executor {
     }
 
     /**
-     * 执行更新:INSERT,DELETE,UPDATE
+     * 执行更新:INSERT,DELETE,UPDATE.md
      *
      * @param sql  执行的sql
      * @param args 参数
