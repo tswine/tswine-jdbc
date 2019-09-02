@@ -37,3 +37,13 @@ public IDBLabel getDbLabel() {
   return DbType.MYSQL;
 }
 ```
+
+##### 配置完成，可使用基础功能CRUD 
+ INSERT 插入：
+ SELECT 查询：
+ DELETE 删除：
+ UPDATE 更新
+***
+
+
+  
