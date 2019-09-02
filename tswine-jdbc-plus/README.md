@@ -19,7 +19,7 @@ GlobalConfig globalConfig = new GlobalConfig();
 ```
 
 
-##### 2.配置多数据源
+#### 2.配置多数据源
 > 数据源根据自己需要设置不同的数据源，然后将数据源加入全局配置类：
 ```java
 globalConfig.addDataSource(DbType.MYSQL, dataSource);
@@ -29,7 +29,7 @@ globalConfig.addDataSource(DbType.MYSQL, dataSource);
   <br/>DataSource：新建的数据源
 
 
-##### 3.自建Dao实体类实现AbstractDao<T>抽象类
+#### 3.自建Dao实体类实现AbstractDao<T>抽象类
 >泛型T：Dao层所对应的实体对象-->实体对象对应的表或者视图<br/>
 >泛型接口：需要返回该操作类对应的数据库标签（操作使用的数据源）
 ```java
@@ -38,11 +38,12 @@ public IDBLabel getDbLabel() {
 }
 ```
 
-##### 配置完成，可使用基础功能CRUD 
- INSERT 插入：
- SELECT 查询：
- DELETE 删除：
- UPDATE 更新
+#### 配置完成，可使用基础功能CRUD 
+ <h4> INSERT插入： https://github.com/tswine/tswine-jdbc/blob/master/tswine-jdbc-plus/INSERT.md  </h4>
+ <h4> SELECT查询： https://github.com/tswine/tswine-jdbc/blob/master/tswine-jdbc-plus/SELECT.md  </h4>
+ <h4> DELETE删除： https://github.com/tswine/tswine-jdbc/blob/master/tswine-jdbc-plus/DELETE.md  </h4>
+ <h4> UPDATE更新： https://github.com/tswine/tswine-jdbc/blob/master/tswine-jdbc-plus/UPDATE.md  </h4>
+ 
 ***
 
 
