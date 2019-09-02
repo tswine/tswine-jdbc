@@ -1,4 +1,4 @@
-jdbc-plus INSERT 语句操作API 
+jdbc-plus INSERT 语句API 
 =====
 
 ## 主键注解 @TableId
