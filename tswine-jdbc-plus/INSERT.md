@@ -83,3 +83,32 @@ int insert = userDao.insert("user", columns);
 Assert.assertEquals(insert, 1);
 ```
 
+***
+###  int[] insert(List\<T\> listEntity)
+#### 请求参数
+|参数|类型|描述 |
+| :---:|:---:|:---:|
+|listEntity|List<T>|批量插入的实体对象|
+#### 返回参数
+|类型|描述| 
+| :---:|:---:|
+|int[]|  插入的结果集| 
+#### 样例
+```java
+List<User> list = new ArrayList<>();
+for (int i = 0; i < 10; i++) {
+  User user = new User();
+  user.setUserName("tswine" + i);
+  user.setPassWord("密码" + i);
+  user.setIsDelete(0);
+  user.setCreateTime(LocalDateTime.now());
+  user.setSex(1);
+
+  list.add(user);
+}
+int[] insert = userDao.insert(list);
+Assert.assertEquals(insert.length, 10);
+```
+
+
+
