@@ -28,7 +28,7 @@ public abstract class BaseDao implements Dao {
     @Override
     public int delete(String sql, Object[] params) {
         //sql审计判断：params不能为空
-        if (params == null || params.length > 0) {
+        if (params == null || params.length < 0) {
             throw ExceptionUtils.tse("sql审计：参数不能为空（不允许执行删除sql，不加条件）");
         }
         return update(sql, params);
@@ -37,7 +37,7 @@ public abstract class BaseDao implements Dao {
     @Override
     public int update(String sql, Object[] params) {
         //sql审计判断：params不能为空
-        if (params == null || params.length > 0) {
+        if (params == null || params.length < 0) {
             throw ExceptionUtils.tse("sql审计：参数不能为空（不允许执行更新sql，不加条件）");
         }
         IMethod method = new Update(getDbLabel(), sql, params);

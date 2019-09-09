@@ -62,6 +62,7 @@ public interface ExpandDao<T> {
      */
     T selectOne(Wrapper<T> wrapper);
 
+
     /**
      * 查询（根据where条件查询）
      *

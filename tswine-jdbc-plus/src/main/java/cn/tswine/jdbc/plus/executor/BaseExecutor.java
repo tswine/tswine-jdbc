@@ -6,6 +6,8 @@ import cn.tswine.jdbc.common.toolkit.ExceptionUtils;
 import cn.tswine.jdbc.common.toolkit.StringUtils;
 import cn.tswine.jdbc.plus.sql.SqlSource;
 import cn.tswine.jdbc.plus.transaction.Transaction;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.sql.*;
 import java.util.ArrayList;
@@ -21,8 +23,9 @@ import java.util.Map;
  */
 public abstract class BaseExecutor implements Executor {
 
-    protected Transaction transaction;
+    private final Logger LOG = LoggerFactory.getLogger(BaseExecutor.class);
 
+    protected Transaction transaction;
 
     public BaseExecutor(Transaction transaction) {
         this.transaction = transaction;
@@ -43,6 +46,9 @@ public abstract class BaseExecutor implements Executor {
      * @throws SQLException
      */
     public int executeUpdate(String sql, Object[] args) throws TswineJdbcException {
+        if (LOG.isDebugEnabled()) {
+            LOG.debug("executeUpdate sql:{},params:{}", sql, args);
+        }
         int count;
         PreparedStatement ps = null;
         try (Connection conn = transaction.getConnection()) {
@@ -67,7 +73,9 @@ public abstract class BaseExecutor implements Executor {
      * @return 查询到的数据
      */
     public List<Map<String, Object>> executeQuery(String sql, Object[] args) {
-        System.out.println(sql);
+        if (LOG.isDebugEnabled()) {
+            LOG.debug("executeQuery sql:{},params:{}", sql, args);
+        }
         PreparedStatement ps = null;
         ResultSet rs = null;
         List<Map<String, Object>> results = new ArrayList<>();

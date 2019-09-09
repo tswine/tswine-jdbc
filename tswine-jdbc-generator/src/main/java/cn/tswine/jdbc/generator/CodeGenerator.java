@@ -10,7 +10,6 @@ import cn.tswine.jdbc.generator.engine.AbstractTemplateEngine;
 import cn.tswine.jdbc.generator.engine.BeetlTemplateEngine;
 import lombok.Data;
 import lombok.experimental.Accessors;
-import org.apache.log4j.Logger;
 
 
 /**
@@ -24,7 +23,6 @@ import org.apache.log4j.Logger;
 @Data
 @Accessors(chain = true)
 public class CodeGenerator {
-    protected static final Logger logger = Logger.getLogger(CodeGenerator.class);
 
 
     /**
@@ -55,7 +53,6 @@ public class CodeGenerator {
      * 执行生成
      */
     public void execute() {
-        logger.info("开始生成代码");
         if (dataSourceConfig == null) {
             throw new TswineJdbcException("数据源配置不能为空:DataSourceConfig");
         }
@@ -71,7 +68,6 @@ public class CodeGenerator {
         ConfigBuilder configBuilder = new ConfigBuilder(dataSourceConfig, globalConfig, strategyConfig, templateConfig);
         templateEngine = new BeetlTemplateEngine();
         templateEngine.init(configBuilder).mkdirs().batchGenerator();
-        logger.info("代码生成完毕");
     }
 
 }

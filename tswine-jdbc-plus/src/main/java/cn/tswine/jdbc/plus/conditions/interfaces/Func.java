@@ -3,10 +3,6 @@ package cn.tswine.jdbc.plus.conditions.interfaces;
 import cn.tswine.jdbc.plus.conditions.OrderBy;
 
 import java.io.Serializable;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Optional;
-import java.util.stream.Collectors;
 
 /**
  * 查询条件封装
@@ -16,7 +12,7 @@ import java.util.stream.Collectors;
  * @Version 1.0
  * @Desc
  */
-public interface Func<Children, R> extends Serializable {
+public interface Func<Children> extends Serializable {
 
     /**
      * 是空值
@@ -24,7 +20,7 @@ public interface Func<Children, R> extends Serializable {
      * @param column
      * @return
      */
-    Children isNull(R column);
+    Children isNull(String column);
 
     /**
      * 不是空值
@@ -32,49 +28,25 @@ public interface Func<Children, R> extends Serializable {
      * @param column
      * @return
      */
-    Children isNotNull(R column);
+    Children isNotNull(String column);
 
     /**
      * in
      *
      * @param column
-     * @param values
+     * @param params
      * @return
      */
-    default Children in(R column, Object... values) {
-        return in(column, Arrays.stream(Optional.ofNullable(values).orElseGet(() -> new Object[]{}))
-                .collect(Collectors.toList()));
-    }
-
-    /**
-     * in
-     *
-     * @param column
-     * @param coll
-     * @return
-     */
-    Children in(R column, Collection<?> coll);
+    Children in(String column, Object[] params);
 
     /**
      * not in
      *
      * @param column
-     * @param values
+     * @param params
      * @return
      */
-    default Children notIn(R column, Object... values) {
-        return notIn(column, Arrays.stream(Optional.ofNullable(values).orElseGet(() -> new Object[]{}))
-                .collect(Collectors.toList()));
-    }
-
-    /**
-     * not in
-     *
-     * @param column
-     * @param coll
-     * @return
-     */
-    Children notIn(R column, Collection<?> coll);
+    Children notIn(String column, Object[] params);
 
 
     /**
@@ -84,7 +56,7 @@ public interface Func<Children, R> extends Serializable {
      * @param columns 排序字段
      * @return
      */
-    Children orderBy(boolean isAsc, R... columns);
+    Children orderBy(boolean isAsc, String... columns);
 
     /**
      * 排序
@@ -100,7 +72,7 @@ public interface Func<Children, R> extends Serializable {
      * @param columns
      * @return
      */
-    default Children orderByAsc(R... columns) {
+    default Children orderByAsc(String... columns) {
         return orderBy(true, columns);
     }
 
@@ -110,7 +82,7 @@ public interface Func<Children, R> extends Serializable {
      * @param columns
      * @return
      */
-    default Children orderByDesc(R... columns) {
+    default Children orderByDesc(String... columns) {
         return orderBy(false, columns);
     }
 

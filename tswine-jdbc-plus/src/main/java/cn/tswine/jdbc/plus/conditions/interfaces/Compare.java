@@ -10,7 +10,7 @@ import java.io.Serializable;
  * @Version 1.0
  * @Desc
  */
-public interface Compare<Children, R> extends Serializable {
+public interface Compare<Children> extends Serializable {
 
     /**
      * 等于 =
@@ -19,7 +19,7 @@ public interface Compare<Children, R> extends Serializable {
      * @param value  值
      * @return column = ？
      */
-    Children eq(R column, Object value);
+    Children eq(String column, Object value);
 
     /**
      * 不等于 !=
@@ -28,7 +28,7 @@ public interface Compare<Children, R> extends Serializable {
      * @param value  值
      * @return column ！= ？
      */
-    Children nq(R column, Object value);
+    Children nq(String column, Object value);
 
     /**
      * 小于
@@ -37,7 +37,7 @@ public interface Compare<Children, R> extends Serializable {
      * @param value
      * @return column < ?
      */
-    Children lt(R column, Object value);
+    Children lt(String column, Object value);
 
     /**
      * 小于等于
@@ -46,7 +46,7 @@ public interface Compare<Children, R> extends Serializable {
      * @param value
      * @return column <= ?
      */
-    Children le(R column, Object value);
+    Children le(String column, Object value);
 
     /**
      * 大于
@@ -55,7 +55,7 @@ public interface Compare<Children, R> extends Serializable {
      * @param value
      * @return column > ?
      */
-    Children gt(R column, Object value);
+    Children gt(String column, Object value);
 
     /**
      * 大于等于
@@ -64,7 +64,7 @@ public interface Compare<Children, R> extends Serializable {
      * @param value
      * @return column >= ?
      */
-    Children ge(R column, Object value);
+    Children ge(String column, Object value);
 
     /**
      * like
@@ -73,7 +73,7 @@ public interface Compare<Children, R> extends Serializable {
      * @param value
      * @return username like '%value%'
      */
-    Children like(R column, Object value);
+    Children like(String column, Object value);
 
     /**
      * like left
@@ -82,7 +82,7 @@ public interface Compare<Children, R> extends Serializable {
      * @param value
      * @return username like '%value'
      */
-    Children likeLeft(R column, Object value);
+    Children likeLeft(String column, Object value);
 
     /**
      * like right
@@ -91,7 +91,7 @@ public interface Compare<Children, R> extends Serializable {
      * @param value
      * @return username like  'value%'
      */
-    Children likeRight(R column, Object value);
+    Children likeRight(String column, Object value);
 
     /**
      * not like
@@ -100,7 +100,7 @@ public interface Compare<Children, R> extends Serializable {
      * @param value
      * @return username not like '%value%'
      */
-    Children notLike(R column, Object value);
+    Children notLike(String column, Object value);
 
     /**
      * not like left
@@ -109,7 +109,7 @@ public interface Compare<Children, R> extends Serializable {
      * @param value
      * @return username not like '%value'
      */
-    Children notLikeLeft(R column, Object value);
+    Children notLikeLeft(String column, Object value);
 
     /**
      * not like right
@@ -118,7 +118,7 @@ public interface Compare<Children, R> extends Serializable {
      * @param value
      * @return username not like  'value%'
      */
-    Children notLikeRight(R column, Object value);
+    Children notLikeRight(String column, Object value);
 
 
 }

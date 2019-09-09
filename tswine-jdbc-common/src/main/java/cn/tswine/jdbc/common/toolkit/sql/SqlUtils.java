@@ -155,7 +155,7 @@ public class SqlUtils implements StringPool {
      * 获取列获取连接 SQL
      *
      * @param columns 条件列
-     * @return user_name = ? joiner password = ?
+     * @return user_name = ? connector password = ?
      */
     private static String getColumnJoin(Collection<String> columns, String joiner) {
         Assert.isNotNull(columns, "条件列不能为空");

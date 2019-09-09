@@ -8,7 +8,6 @@ package cn.tswine.jdbc.common.toolkit;
  */
 public interface StringPool {
     String AMPERSAND = "&";
-    String AND = "and";
     String AT = "@";
     String ASTERISK = "*";
     String BACK_SLASH = "\\";
@@ -28,6 +27,8 @@ public interface StringPool {
     String GE = ">=";
     String LT = "<";
     String LE = "<=";
+    String OR = "OR";
+    String AND = "AND";
     String FALSE = "false";
     String SLASH = "/";
     String HASH = "#";

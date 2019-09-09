@@ -6,7 +6,6 @@ import cn.tswine.jdbc.generator.builder.ConfigBuilder;
 import cn.tswine.jdbc.generator.config.StrategyConfig;
 import cn.tswine.jdbc.generator.config.pojo.TableInfo;
 import lombok.Getter;
-import org.apache.log4j.Logger;
 
 import java.io.File;
 import java.util.*;
@@ -20,7 +19,6 @@ import java.util.*;
  * @Desc
  */
 public abstract class AbstractTemplateEngine {
-    protected static final Logger logger = Logger.getLogger(AbstractTemplateEngine.class);
 
     @Getter
     private ConfigBuilder configBuilder;
@@ -97,7 +95,6 @@ public abstract class AbstractTemplateEngine {
      */
     private AbstractTemplateEngine generatorMapper(TableInfo tableInfo, Map<String, Object> paramsMap) {
         if (!configBuilder.getStrategyConfig().configMapper().isGenerator()) {
-            logger.info("配置不需要生成mapper文件");
             return this;
         }
         StrategyConfig.MapperConfig mapperConfig = configBuilder.getStrategyConfig().configMapper();
@@ -109,7 +106,6 @@ public abstract class AbstractTemplateEngine {
         String xmlOutputFile = configBuilder.getGlobalConfig().getOutputDir()
                 + File.separator + mapperConfig.getXmlPath()
                 + File.separator + entityName + ".xml";
-        logger.info("生成mapper xml:" + xmlOutputFile);
         if (isExists(xmlOutputFile)) {
             if (!configBuilder.getGlobalConfig().isOverrideExistFile()) {
                 throw new TswineJdbcException(String.format("mapper文件已经存在,全局配置不允许覆盖存在文件,%s", xmlOutputFile));
@@ -120,7 +116,6 @@ public abstract class AbstractTemplateEngine {
         String mapperOutputFile = configBuilder.getGlobalConfig().getOutputDir()
                 + File.separator + mapperConfig.getPackageName()
                 + File.separator + mapperInterfaceName + ".java";
-        logger.info("生成mapper接口:" + mapperOutputFile);
         if (isExists(mapperOutputFile)) {
             if (!configBuilder.getGlobalConfig().isOverrideExistFile()) {
                 throw new TswineJdbcException(String.format("mapper接口文件已经存在,全局配置不允许覆盖存在文件,%s", mapperOutputFile));
@@ -145,7 +140,6 @@ public abstract class AbstractTemplateEngine {
             String entityOutputFile = configBuilder.getGlobalConfig().getOutputDir()
                     + File.separator + configBuilder.getStrategyConfig().configEntity().getPackageName()
                     + File.separator + entityName + ".java";
-            logger.info("生成实体:" + entityOutputFile);
             if (isExists(entityOutputFile)) {
                 if (!configBuilder.getGlobalConfig().isOverrideExistFile()) {
                     throw new TswineJdbcException(String.format("实体文件已经存在,全局配置不允许覆盖存在文件,%s", entityOutputFile));
@@ -177,7 +171,7 @@ public abstract class AbstractTemplateEngine {
             paramsMap.put("entityImportPackages", entityImportPackages);
             writer(configBuilder.getTemplateConfig().getEntity() + templateSuffix(), entityOutputFile, paramsMap);
         } else {
-            logger.info("配置不需要生成实体文件");
+//            logger.info("配置不需要生成实体文件");
         }
         return this;
 

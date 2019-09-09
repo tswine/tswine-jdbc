@@ -30,8 +30,8 @@ public class CodeGeneratorMySQLTest extends BaseCodeGeneratorTest {
         //数据源配置
         dsConfig = new DataSourceConfig();
         dsConfig.setDbType(DbType.MYSQL);
-        dsConfig.setUrl("jdbc:mysql://192.168.47.100:3306/tswine_boot?characterEncoding=UTF-8&useUnicode=true&useSSL=false");
-        dsConfig.setUsername("tswine_boot");
+        dsConfig.setUrl("jdbc:mysql://192.168.47.100:3306/tswine_jdbc?characterEncoding=UTF-8&useUnicode=true&useSSL=false");
+        dsConfig.setUsername("tswine_jdbc");
         dsConfig.setPassword("123456");
         dsConfig.setDriverName("com.mysql.jdbc.Driver");
 

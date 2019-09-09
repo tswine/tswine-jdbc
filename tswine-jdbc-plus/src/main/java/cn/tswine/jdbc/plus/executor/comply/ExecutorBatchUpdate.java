@@ -4,6 +4,8 @@ import cn.tswine.jdbc.common.toolkit.ExceptionUtils;
 import cn.tswine.jdbc.plus.executor.BaseExecutor;
 import cn.tswine.jdbc.plus.sql.SqlSource;
 import cn.tswine.jdbc.plus.transaction.Transaction;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -19,6 +21,7 @@ import java.util.List;
  * @Desc
  */
 public class ExecutorBatchUpdate extends BaseExecutor {
+    private final static Logger LOG = LoggerFactory.getLogger(ExecutorBatchUpdate.class);
 
     public ExecutorBatchUpdate(Transaction transaction) {
         super(transaction);
@@ -28,6 +31,9 @@ public class ExecutorBatchUpdate extends BaseExecutor {
     public void execute(SqlSource sqlSource) {
         String sql = sqlSource.getSql();
         List<Object[]> args = sqlSource.getParameters();
+        if (LOG.isDebugEnabled()) {
+            LOG.debug("sql:{},size:{}", sql, args.size());
+        }
         PreparedStatement ps = null;
         try (Connection conn = transaction.getConnection()) {
             ps = conn.prepareStatement(sql);

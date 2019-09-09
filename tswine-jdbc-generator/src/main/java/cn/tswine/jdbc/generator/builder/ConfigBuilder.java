@@ -8,7 +8,6 @@ import cn.tswine.jdbc.generator.config.pojo.TableField;
 import cn.tswine.jdbc.generator.config.pojo.TableInfo;
 import cn.tswine.jdbc.generator.config.rules.NameStrategy;
 import lombok.Data;
-import org.apache.log4j.Logger;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -26,7 +25,6 @@ import java.util.List;
  */
 @Data
 public class ConfigBuilder {
-    protected static final Logger logger = Logger.getLogger(ConfigBuilder.class);
 
     /**
      * 数据库表信息
@@ -95,7 +93,6 @@ public class ConfigBuilder {
             }
             tablesSql = String.format(tablesSql, schema);
         }
-        logger.info("表查询语句:" + tablesSql);
         try (PreparedStatement ps = connection.prepareStatement(tablesSql)) {
             ResultSet rs = ps.executeQuery();
             while (rs.next()) {
@@ -205,7 +202,6 @@ public class ConfigBuilder {
         } else {
             tableFiledSql = String.format(tableFiledSql, dataSourceConfig.getSchemaName(), tableName);
         }
-        logger.info("字段查询语句:" + tableFiledSql);
         try (PreparedStatement ps = connection.prepareStatement(tableFiledSql)) {
             ResultSet rs = ps.executeQuery();
             while (rs.next()) {

@@ -83,6 +83,10 @@ public abstract class AbstractDao<T> extends BaseDao implements ExpandDao<T> {
 
     @Override
     public T selectOne(Wrapper<T> wrapper) {
+        List<T> select = select(wrapper);
+        if (select != null && select.size() > 0) {
+            return select.get(0);
+        }
         return null;
     }
 

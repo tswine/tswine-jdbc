@@ -8,7 +8,7 @@ import cn.tswine.jdbc.plus.conditions.AbstractWrapper;
  *
  * @param <T> 实体对象
  */
-public class QueryWrapper<T> extends AbstractWrapper<T, String, QueryWrapper<T>> implements Query<QueryWrapper<T>, T, String> {
+public class QueryWrapper<T> extends AbstractWrapper<T, QueryWrapper<T>> implements Query<QueryWrapper<T>, T, String> {
 
     String[] selectColumn;
 

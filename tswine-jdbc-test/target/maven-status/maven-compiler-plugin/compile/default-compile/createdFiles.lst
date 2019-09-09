@@ -1,0 +1,8 @@
+cn\tswine\jdbc\test\plus\entity\User.class
+cn\tswine\jdbc\test\generator\CodeGeneratorMySQLTest.class
+cn\tswine\jdbc\test\generator\BaseCodeGeneratorTest.class
+cn\tswine\jdbc\test\plus\dao\UserDao.class
+cn\tswine\jdbc\test\plus\BaseTest.class
+cn\tswine\jdbc\test\plus\crud\InsertTest.class
+cn\tswine\jdbc\test\plus\crud\SelectTest.class
+cn\tswine\jdbc\test\generator\CodeGeneratorPostgresTest.class

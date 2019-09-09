@@ -22,7 +22,7 @@ public interface Query<Children, T, R> extends Serializable {
     /**
      * 是否去除重复值
      *
-     * @param isDsistinct
+     * @param distinct
      * @return
      */
     Children distinct(boolean distinct);
