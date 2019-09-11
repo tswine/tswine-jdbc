@@ -14,72 +14,72 @@ public enum WhereType implements ISqlSegment {
     /**
      * 等于
      */
-    EQ(" {} = ? "),
+    EQ(" {0} = ? "),
     /**
      * 不等于
      */
-    NQ(" {} != ? "),
+    NQ(" {0} != ? "),
     /**
      * 大于
      */
-    GT(" {} > ? "),
+    GT(" {0} > ? "),
     /**
      * 大于等于
      */
-    GE(" {} >= ? "),
+    GE(" {0} >= ? "),
     /**
      * 小于
      */
-    LT(" {} < ? "),
+    LT(" {0} < ? "),
     /**
      * 小于等于
      */
-    LE(" {} <= ? "),
+    LE(" {0} <= ? "),
     /**
      * like
      */
-    LIKE(" LIKE '%{}%' "),
+    LIKE(" LIKE '%{0}%' "),
     /**
      * 左like
      */
-    LIKE_LEFT(" LIKE '%{}' "),
+    LIKE_LEFT(" LIKE '%{0}' "),
     /**
      * 右like
      */
-    LIKE_RIGHT(" LIKE '{}%' "),
+    LIKE_RIGHT(" LIKE '{0}%' "),
     /**
      * not like
      */
-    LIKE_NOT(" NOT LIKE '%{}%' "),
+    LIKE_NOT(" NOT LIKE '%{0}%' "),
     /**
      * not 左like
      */
-    LIKE_LEFT_NOT(" NOT LIKE '%{}' "),
+    LIKE_LEFT_NOT(" NOT LIKE '%{0}' "),
     /**
      * not 右like
      */
-    LIKE_RIGHT_NOT(" NOT LIKE '{}%' "),
+    LIKE_RIGHT_NOT(" NOT LIKE '{0}%' "),
     /**
      * 为空
      */
-    IS_NULL(" {} IS NULL "),
+    IS_NULL(" {0} IS NULL "),
     /**
      * 不能为空
      */
-    IS_NOT_NULL(" {} IS NOT NULL "),
+    IS_NOT_NULL(" {0} IS NOT NULL "),
     /**
      * IN
      */
-    IN(" {} IN {} "),
+    IN(" {0} IN {0} "),
     /**
      * NOT IN
      */
-    IN_NOT(" {} NOT IN {} "),
+    IN_NOT(" {0} NOT IN {0} "),
 
     /**
      * between
      */
-    BETWEEN(" {} BETWEEN ? AND ? ");
+    BETWEEN(" {0} BETWEEN ? AND ? ");
 
     String sql;
 

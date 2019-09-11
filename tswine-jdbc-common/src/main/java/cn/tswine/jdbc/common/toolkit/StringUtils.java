@@ -1,5 +1,6 @@
 package cn.tswine.jdbc.common.toolkit;
 
+import java.text.MessageFormat;
 import java.util.Arrays;
 
 /**
@@ -51,6 +52,7 @@ public class StringUtils implements StringPool {
      * @param target 目标字符串
      * @param params 参数
      * @return 格式化后的字符串
+     * @desc %s %s %s
      */
     public static String format(String target, Object... params) {
         if (target.contains("%s") && ArrayUtils.isNotEmpty(params)) {
@@ -59,6 +61,23 @@ public class StringUtils implements StringPool {
         return target;
     }
 
+    /**
+     * 格式化字符串
+     *
+     * @param target 目标字符串
+     * @param params 参数
+     * @return 格式化后的字符串
+     * @desc {0} {1} {2}
+     */
+    public static String formatBrackets(String target, Object... params) {
+        if (StringUtils.isEmpty(target)) {
+            return StringPool.EMPTY;
+        }
+        if (ArrayUtils.isEmpty(params)) {
+            return target;
+        }
+        return MessageFormat.format(target, params);
+    }
 
     /**
      * 判断字符串是否为空
@@ -192,7 +211,6 @@ public class StringUtils implements StringPool {
         return changeFirstCharacterCase(underlineToCamelCase(name), true);
     }
 
-
     /**
      * <p>
      * 拼接字符串第二个字符串第一个字母大写
@@ -222,4 +240,6 @@ public class StringUtils implements StringPool {
         sb.append(str.substring(1));
         return sb.toString();
     }
+
+
 }

@@ -1,13 +1,19 @@
 package cn.tswine.jdbc.plus.conditions;
 
+import cn.tswine.jdbc.common.toolkit.ArrayUtils;
 import cn.tswine.jdbc.common.toolkit.StringPool;
+import cn.tswine.jdbc.common.toolkit.StringUtils;
+import cn.tswine.jdbc.common.toolkit.sql.SqlUtils;
+import cn.tswine.jdbc.plus.conditions.connector.LogicType;
 import cn.tswine.jdbc.plus.conditions.connector.WhereConnector;
 import cn.tswine.jdbc.plus.conditions.connector.WhereType;
 import cn.tswine.jdbc.plus.conditions.interfaces.Compare;
 import cn.tswine.jdbc.plus.conditions.interfaces.Func;
+import cn.tswine.jdbc.plus.conditions.interfaces.Logic;
 import cn.tswine.jdbc.plus.conditions.segments.MergeSegments;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import static cn.tswine.jdbc.common.enums.SQLSentenceType.ORDER_BY;
@@ -20,7 +26,7 @@ import static cn.tswine.jdbc.common.enums.SQLSentenceType.ORDER_BY;
  * @Desc
  */
 public class AbstractWrapper<T, Children extends AbstractWrapper<T, Children>> extends Wrapper<T>
-        implements Compare<Children>, Func<Children> {
+        implements Compare<Children>, Func<Children>, Logic<Children> {
     protected final Children _this = (Children) this;
     /**
      * 数据库表映射实体类
@@ -28,7 +34,7 @@ public class AbstractWrapper<T, Children extends AbstractWrapper<T, Children>> e
     protected T entity;
     protected MergeSegments expression;
 
-    private final List<Object> params = new ArrayList<>();
+    private final List<Object> whereParams = new ArrayList<>();
     /**
      * 实体类型
      */
@@ -238,6 +244,16 @@ public class AbstractWrapper<T, Children extends AbstractWrapper<T, Children>> e
         return _this;
     }
 
+    @Override
+    public Children and() {
+        return addLogicConnector(LogicType.AND);
+    }
+
+    @Override
+    public Children or() {
+        return addLogicConnector(LogicType.OR);
+    }
+
 
     /**
      * 添加条件连接器
@@ -253,10 +269,51 @@ public class AbstractWrapper<T, Children extends AbstractWrapper<T, Children>> e
         return _this;
     }
 
+    /**
+     * 条件条件逻辑构造器
+     *
+     * @param logicType
+     * @return
+     */
+    private Children addLogicConnector(LogicType logicType) {
+        WhereConnector connector = new WhereConnector(logicType);
+        expression.add(connector);
+        return _this;
+    }
+
     @Override
     public String getSqlSegment() {
         StringBuilder sb = new StringBuilder();
-        //TODO 拼接where条件
+        //拼接where条件
+        ArrayList<WhereConnector> whereConnectors = expression.getWhereConnector();
+        if (whereConnectors != null && whereConnectors.size() > 0) {
+            for (WhereConnector whereConnector : whereConnectors) {
+                ISqlSegment operator = whereConnector.getOperator();
+                if (operator instanceof LogicType) {
+                    LogicType logicType = (LogicType) operator;
+                    sb.append(logicType.getSqlSegment());
+                } else if (operator instanceof WhereType) {
+                    WhereType whereType = (WhereType) operator;
+                    String[] columns = whereConnector.getColumns();
+                    //将{}替换成column
+                    if (WhereType.IN == whereType || WhereType.IN_NOT == whereType) {
+                        //获取列的?占位符: ?,?,?
+                        int size = columns.length;
+                        String questionMark = SqlUtils.getQuestionMark(size);
+                        String[] columnsNew = new String[size + 1];
+                        System.arraycopy(columns, 0, columnsNew, 0, size);
+                        columnsNew[size + 1] = questionMark;
+                        columns = columnsNew;
+                    }
+                    String where = StringUtils.formatBrackets(whereType.getSqlSegment(), columns);
+                    sb.append(where);
+                }
+                Object[] params = whereConnector.getParams();
+                if (ArrayUtils.isNotEmpty(params)) {
+                    whereParams.addAll(Arrays.asList(params));
+                }
+            }
+        }
 
         //拼接orderBY
         ArrayList<OrderBy> orderByCondition = expression.getOrderBy();
@@ -280,6 +337,8 @@ public class AbstractWrapper<T, Children extends AbstractWrapper<T, Children>> e
     }
 
     public Object[] getParams() {
-        return params.toArray();
+        return whereParams.toArray();
     }
+
+
 }
