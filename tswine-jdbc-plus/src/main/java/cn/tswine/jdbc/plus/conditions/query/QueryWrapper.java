@@ -12,10 +12,8 @@ import java.util.ArrayList;
 
 /**
  * 查询条件封装
- *
- * @param <T> 实体对象
  */
-public class QueryWrapper<T> extends AbstractWrapper<T, QueryWrapper<T>> implements Query<QueryWrapper<T>> {
+public class QueryWrapper extends AbstractWrapper<QueryWrapper> implements Query<QueryWrapper> {
 
     /**
      * 需要查询的列
@@ -23,13 +21,13 @@ public class QueryWrapper<T> extends AbstractWrapper<T, QueryWrapper<T>> impleme
     String[] columns = null;
 
     @Override
-    public QueryWrapper<T> select(String... columns) {
+    public QueryWrapper select(String... columns) {
         this.columns = columns;
         return this;
     }
 
     @Override
-    public QueryWrapper<T> distinct(boolean distinct) {
+    public QueryWrapper distinct(boolean distinct) {
         //TODO 实现逻辑
         return this;
     }
@@ -42,7 +40,7 @@ public class QueryWrapper<T> extends AbstractWrapper<T, QueryWrapper<T>> impleme
      * @return
      */
     @Override
-    public QueryWrapper<T> orderBy(boolean isAsc, String... columns) {
+    public QueryWrapper orderBy(boolean isAsc, String... columns) {
         if (columns != null || columns.length > 0) {
             OrderBy.Mode mode = OrderBy.Mode.DESC;
             if (isAsc) {
@@ -58,7 +56,7 @@ public class QueryWrapper<T> extends AbstractWrapper<T, QueryWrapper<T>> impleme
     }
 
     @Override
-    public QueryWrapper<T> orderBy(OrderBy[] columns) {
+    public QueryWrapper orderBy(OrderBy[] columns) {
         if (columns != null && columns.length > 0) {
             for (OrderBy column : columns) {
                 expression.addOrderBy(column);
@@ -75,7 +73,6 @@ public class QueryWrapper<T> extends AbstractWrapper<T, QueryWrapper<T>> impleme
     public String[] getColumns() {
         if (ArrayUtils.isEmpty(columns)) {
             //从实体对象获取
-            //TODO 获取到的对象为空
             return super.entitySchema.getColumns(null);
         } else {
             return columns;
@@ -89,7 +86,7 @@ public class QueryWrapper<T> extends AbstractWrapper<T, QueryWrapper<T>> impleme
         if (StringUtils.isNotEmpty(orderBySql)) {
             return String.format("%s %s", super.getSqlSegment(), orderBySql);
         } else {
-            return orderBySql;
+            return super.getSqlSegment();
         }
     }
 

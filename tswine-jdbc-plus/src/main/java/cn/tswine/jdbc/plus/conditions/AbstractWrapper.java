@@ -1,14 +1,11 @@
 package cn.tswine.jdbc.plus.conditions;
 
-import cn.tswine.jdbc.common.annotation.DbType;
 import cn.tswine.jdbc.common.enums.SQLSentenceType;
 import cn.tswine.jdbc.common.exception.TswineJdbcException;
-import cn.tswine.jdbc.common.standard.IGeneric;
 import cn.tswine.jdbc.common.toolkit.ArrayUtils;
 import cn.tswine.jdbc.common.toolkit.StringPool;
 import cn.tswine.jdbc.common.toolkit.StringUtils;
 import cn.tswine.jdbc.common.toolkit.sql.SqlUtils;
-import cn.tswine.jdbc.plus.builder.SchemaBuilder;
 import cn.tswine.jdbc.plus.builder.schema.EntitySchema;
 import cn.tswine.jdbc.plus.conditions.connector.LogicType;
 import cn.tswine.jdbc.plus.conditions.connector.WhereConnector;
@@ -29,8 +26,8 @@ import java.util.List;
  * @Version 1.0
  * @Desc
  */
-public abstract class AbstractWrapper<T, Children extends AbstractWrapper<T, Children>> extends Wrapper<T>
-        implements Compare<Children>, Func<Children>, Logic<Children>, IGeneric<T> {
+public class AbstractWrapper<Children extends AbstractWrapper<Children>>
+        implements Wrapper, Compare<Children>, Func<Children>, Logic<Children> {
     protected final Children _this = (Children) this;
     /**
      * 数据库表映射实体类
@@ -43,14 +40,11 @@ public abstract class AbstractWrapper<T, Children extends AbstractWrapper<T, Chi
 
     public AbstractWrapper() {
         expression = new MergeSegments();
-        buildEntitySchema();
     }
 
-    private void buildEntitySchema() {
-        Class<T> clazz = clazz();
-        if (clazz != null) {
-            this.entitySchema = SchemaBuilder.buildEntity(clazz, null);
-        }
+    @Override
+    public void setEntitySchema(EntitySchema entitySchema) {
+        this.entitySchema = entitySchema;
     }
 
 
@@ -233,5 +227,6 @@ public abstract class AbstractWrapper<T, Children extends AbstractWrapper<T, Chi
     public Object[] getParams() {
         return whereParams.toArray();
     }
+
 
 }

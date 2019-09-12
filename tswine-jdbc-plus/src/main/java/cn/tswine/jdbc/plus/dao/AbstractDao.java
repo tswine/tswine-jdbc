@@ -2,10 +2,12 @@ package cn.tswine.jdbc.plus.dao;
 
 import cn.tswine.jdbc.common.annotation.TableId;
 import cn.tswine.jdbc.common.enums.SQLSentenceType;
-import cn.tswine.jdbc.common.enums.SqlMethod;
 import cn.tswine.jdbc.common.enums.generator.UUIDGenerator;
 import cn.tswine.jdbc.common.rules.IDBLabel;
-import cn.tswine.jdbc.common.toolkit.*;
+import cn.tswine.jdbc.common.toolkit.Assert;
+import cn.tswine.jdbc.common.toolkit.ExceptionUtils;
+import cn.tswine.jdbc.common.toolkit.MapUtils;
+import cn.tswine.jdbc.common.toolkit.ReflectionUtils;
 import cn.tswine.jdbc.common.toolkit.sql.SqlUtils;
 import cn.tswine.jdbc.plus.builder.SchemaBuilder;
 import cn.tswine.jdbc.plus.builder.schema.EntitySchema;
@@ -151,11 +153,12 @@ public abstract class AbstractDao<T> extends BaseDao implements ExpandDao<T> {
     }
 
     @Override
-    public List<T> select(Wrapper<T> wrapper) {
+    public List<T> select(Wrapper wrapper) {
         Assert.isNotNull(wrapper, "wrapper is null");
         if (!(wrapper instanceof QueryWrapper)) {
             throw ExceptionUtils.tse("wrapper type must QueryWrapper");
         }
+        wrapper.setEntitySchema(entitySchema);
         QueryWrapper queryWrapper = (QueryWrapper) wrapper;
         String whereSql = queryWrapper.getSqlSegment();
         return selectList(entitySchema.getTableName(), queryWrapper.getColumns(), whereSql, queryWrapper.getParams());
@@ -163,7 +166,7 @@ public abstract class AbstractDao<T> extends BaseDao implements ExpandDao<T> {
     }
 
     @Override
-    public T selectOne(Wrapper<T> wrapper) {
+    public T selectOne(Wrapper wrapper) {
         List<T> select = select(wrapper);
         if (select != null && select.size() > 0) {
             return select.get(0);
@@ -172,7 +175,7 @@ public abstract class AbstractDao<T> extends BaseDao implements ExpandDao<T> {
     }
 
     @Override
-    public int selectCount(Wrapper<T> wrapper) {
+    public int selectCount(Wrapper wrapper) {
         //TODO 未实现业务逻辑
         return 0;
     }
@@ -209,7 +212,7 @@ public abstract class AbstractDao<T> extends BaseDao implements ExpandDao<T> {
     }
 
     @Override
-    public int delete(Wrapper<T> wrapper) {
+    public int delete(Wrapper wrapper) {
         if (wrapper == null) {
             throw ExceptionUtils.tse("wrapper is not null");
         }

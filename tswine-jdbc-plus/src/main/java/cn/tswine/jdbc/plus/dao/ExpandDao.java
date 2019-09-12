@@ -100,7 +100,7 @@ public interface ExpandDao<T> {
      * @param wrapper 条件构造器
      * @return
      */
-    List<T> select(Wrapper<T> wrapper);
+    List<T> select(Wrapper wrapper);
 
     /**
      * 查询：根据条件构造器查询一个
@@ -108,7 +108,7 @@ public interface ExpandDao<T> {
      * @param wrapper
      * @return
      */
-    T selectOne(Wrapper<T> wrapper);
+    T selectOne(Wrapper wrapper);
 
     /**
      * 根据条件构造器：查询总记录
@@ -116,7 +116,7 @@ public interface ExpandDao<T> {
      * @param wrapper
      * @return
      */
-    int selectCount(Wrapper<T> wrapper);
+    int selectCount(Wrapper wrapper);
 
     /***********删除***********/
     /**
@@ -159,7 +159,7 @@ public interface ExpandDao<T> {
      * @param wrapper 条件构造器
      * @return 删除的行数
      */
-    int delete(Wrapper<T> wrapper);
+    int delete(Wrapper wrapper);
 
     /***********更新***********/
     /**

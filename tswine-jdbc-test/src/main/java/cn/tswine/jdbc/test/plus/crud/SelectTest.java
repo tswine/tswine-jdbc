@@ -43,7 +43,7 @@ public class SelectTest extends BaseTest {
         ids.add("fe4fde91818f47698d4aa8ad361cbf4c");
         List<User> list = userDao.selectBatchIds(ids);
         Assert.assertEquals(list.size(), 3);
-        System.out.println(list);
+        println(list);
     }
 
 
