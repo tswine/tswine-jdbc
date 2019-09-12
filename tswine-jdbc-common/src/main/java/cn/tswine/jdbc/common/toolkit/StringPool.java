@@ -79,6 +79,10 @@ public interface StringPool {
     String HTML_LT = "&lt;";
     String HTML_GT = "&gt;";
 
+    String BASE = "base";
+    String LIKE = "like";
+    String IN = "in";
+
     /**
      * 下划线
      */

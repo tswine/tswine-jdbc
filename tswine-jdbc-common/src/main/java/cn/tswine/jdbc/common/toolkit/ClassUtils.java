@@ -2,6 +2,8 @@ package cn.tswine.jdbc.common.toolkit;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
 
 /**
  * ClassUtils
@@ -29,4 +31,5 @@ public class ClassUtils {
             throw ExceptionUtils.tse(e, "实例化对象出错，请给%s对象添加无参的构造函数", clazz.getName());
         }
     }
+
 }

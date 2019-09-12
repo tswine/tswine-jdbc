@@ -37,6 +37,6 @@ public enum LogicType implements ISqlSegment {
 
     @Override
     public String getSqlSegment() {
-        return null;
+        return sql;
     }
 }

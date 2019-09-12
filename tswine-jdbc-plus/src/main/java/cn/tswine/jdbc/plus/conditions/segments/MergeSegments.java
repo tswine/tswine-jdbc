@@ -43,8 +43,8 @@ public class MergeSegments {
     public void add(WhereConnector connector) {
         Assert.isNotNull(connector, "connector is not null");
         if (lastConnector != null) {
-            ISqlSegment operater = connector.getOperator();
-            if (operater instanceof WhereType) {
+            ISqlSegment operator = connector.getOperator();
+            if (operator instanceof WhereType) {
                 if (lastConnector instanceof WhereType) {
                     //添加默认逻辑连接器：and
                     addAnd();

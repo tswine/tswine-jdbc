@@ -1,6 +1,5 @@
 package cn.tswine.jdbc.common.toolkit;
 
-import java.text.MessageFormat;
 import java.util.Arrays;
 
 /**
@@ -76,7 +75,10 @@ public class StringUtils implements StringPool {
         if (ArrayUtils.isEmpty(params)) {
             return target;
         }
-        return MessageFormat.format(target, params);
+        for (int i = 0; i < params.length; i++) {
+            target = target.replace("{" + i + "}", String.valueOf(params[i]));
+        }
+        return target;
     }
 
     /**

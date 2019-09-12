@@ -3,6 +3,7 @@ package cn.tswine.jdbc.common.toolkit.sql;
 import cn.tswine.jdbc.common.annotation.DbType;
 import cn.tswine.jdbc.common.enums.SQLSentenceType;
 import cn.tswine.jdbc.common.enums.SqlMethod;
+import cn.tswine.jdbc.common.toolkit.ArrayUtils;
 import cn.tswine.jdbc.common.toolkit.Assert;
 import cn.tswine.jdbc.common.toolkit.StringPool;
 import cn.tswine.jdbc.common.toolkit.StringUtils;
@@ -67,13 +68,27 @@ public class SqlUtils implements StringPool {
     }
 
     /**
+     * 获取 Select SQL
+     *
+     * @param tableName 表名
+     * @param columnSql 列 SQL
+     * @param whereSql  where SQL
+     * @return
+     */
+    public static String getSelectSql(String tableName, String columnSql, String whereSql) {
+        //SELECT %s FROM %s %s
+        SqlMethod sqlMethod = SqlMethod.SELECT;
+        return String.format(sqlMethod.getSql(), columnSql, tableName, whereSql);
+    }
+
+    /**
      * 获取where条件 SQL
      *
      * @param columns 条件列
-     * @return user_name = ? AND password = ?
+     * @return where user_name = ? AND password = ?
      */
     public static String getWhere(Collection<String> columns) {
-        return getColumnJoin(columns, SQLSentenceType.AND.getValue());
+        return String.format("%s %s", SQLSentenceType.WHERE.getValue(), getColumnJoin(columns, SQLSentenceType.AND.getValue()));
     }
 
     /**
@@ -132,6 +147,29 @@ public class SqlUtils implements StringPool {
             columns.add(k);
         });
         return StringUtils.join(columns.toArray(), ",");
+    }
+
+
+    /**
+     * 获取列字段字符串
+     *
+     * @param columns     列字段
+     * @param placeholder 转义符
+     * @return `user_name`,`password`,`status`
+     */
+    public static String getColumnSql(String[] columns, String placeholder) {
+        //列集合空：返回*
+        if (ArrayUtils.isEmpty(columns)) {
+            return StringPool.ASTERISK;
+        }
+        String[] columnNew = new String[columns.length];
+        if (StringUtils.isNotEmpty(placeholder)) {
+            for (int i = 0; i < columns.length; i++) {
+                columnNew[i] = String.format(placeholder, columns[i]);
+            }
+        }
+        return StringUtils.join(columnNew, ",");
+
     }
 
     /**

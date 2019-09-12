@@ -1,6 +1,7 @@
 package cn.tswine.jdbc.plus.dao;
 
 import cn.tswine.jdbc.common.annotation.TableId;
+import cn.tswine.jdbc.common.enums.SQLSentenceType;
 import cn.tswine.jdbc.common.enums.SqlMethod;
 import cn.tswine.jdbc.common.enums.generator.UUIDGenerator;
 import cn.tswine.jdbc.common.rules.IDBLabel;
@@ -61,36 +62,6 @@ public abstract class AbstractDao<T> extends BaseDao implements ExpandDao<T> {
     }
 
     @Override
-    public List<T> select(Wrapper<T> wrapper) {
-        Assert.isNotNull(wrapper, "wrapper is null");
-        if (!(wrapper instanceof QueryWrapper)) {
-            throw ExceptionUtils.tse("wrapper type must QueryWrapper");
-        }
-        QueryWrapper queryWrapper = (QueryWrapper) wrapper;
-        //TODO
-        // 1.列名转义
-        // 2.distinct 作用域
-        EntitySchema entitySchema = SchemaBuilder.buildEntity(this.classEntity, this.dbLabel.getDbType());
-        String[] columns = queryWrapper.getSelectColumns();
-        if (ArrayUtils.isEmpty(columns)) {
-            columns = CollectionUtils.asArray(entitySchema.getColumns(), String.class);
-        }
-        String sqlWhere = queryWrapper.getSqlSegment();
-        Object[] params = queryWrapper.getParams();
-        String tableName = entitySchema.getTableName();
-        return select(StringUtils.join(columns, ","), tableName, sqlWhere, params);
-    }
-
-    @Override
-    public T selectOne(Wrapper<T> wrapper) {
-        List<T> select = select(wrapper);
-        if (select != null && select.size() > 0) {
-            return select.get(0);
-        }
-        return null;
-    }
-
-    @Override
     public int insert(T entity) {
         Assert.isNotNull(entity, "entity is empty");
         //获取所有字段
@@ -137,31 +108,34 @@ public abstract class AbstractDao<T> extends BaseDao implements ExpandDao<T> {
         return sqlSource.getBatchUpdate();
     }
 
-    @Override
-    public List<T> selectByWhere(String whereSql, Object... params) {
-        return select(getColumns(), entitySchema.getTableName(), whereSql, params);
-    }
+    /***SELECT***/
 
-    protected List<T> select(String columns, String tableName, String whereSql, Object... params) {
-        //SELECT %s FROM %s WHERE %s
-        SqlMethod sqlMethod = SqlMethod.SELECT;
-        String sql = String.format(sqlMethod.getSql(), columns, tableName, whereSql);
+    @Override
+    public List<T> selectList(String sql, Object... params) {
         List<Map<String, Object>> maps = select(sql, params);
         return mapToObject(maps);
     }
 
     @Override
-    public List<T> selectByMap(Map<String, Object> columnMap) {
-        Assert.notEmpty(columnMap, "columnMap not empty");
-        String sqlWhere = SqlUtils.getWhere(columnMap.keySet());
-        return selectByWhere(sqlWhere, columnMap.values().toArray());
+    public List<Map<String, Object>> select(String tableName, String[] columns, String whereSql, Object... params) {
+        tableName = columnEscape(tableName);
+        String columnSql = SqlUtils.getColumnSql(columns, getDbLabel().getDbType().getPlaceholder());
+        String sql = SqlUtils.getSelectSql(tableName, columnSql, whereSql);
+        return select(sql, params);
+    }
+
+    @Override
+    public List<T> selectList(String tableName, String[] columns, String whereSql, Object... params) {
+        List<Map<String, Object>> maps = select(tableName, columns, whereSql, params);
+        return mapToObject(maps);
     }
 
     @Override
     public T selectById(Serializable... ids) {
         Assert.notEmpty(ids, "ids not empty");
-        String sqlWhere = SqlUtils.getWhere(entitySchema.getIds());
-        List<T> list = selectByWhere(sqlWhere, ids);
+        String[] columns = entitySchema.getColumns(null);
+        String whereSql = SqlUtils.getWhere(entitySchema.getIds());
+        List<T> list = selectList(entitySchema.getTableName(), columns, whereSql, ids);
         return list != null ? list.get(0) : null;
     }
 
@@ -172,13 +146,38 @@ public abstract class AbstractDao<T> extends BaseDao implements ExpandDao<T> {
             throw ExceptionUtils.tse("The primary key only supports one");
         }
         String sqlIn = SqlUtils.getIn(ids.get(0), idList.size());
-        return selectByWhere(sqlIn, idList.toArray());
+        String whereSql = String.format("%s %s", SQLSentenceType.WHERE.getValue(), sqlIn);
+        return selectList(entitySchema.getTableName(), entitySchema.getColumns(null), whereSql, idList.toArray());
     }
 
     @Override
-    public Integer selectCount(Wrapper<T> wrapper) {
+    public List<T> select(Wrapper<T> wrapper) {
+        Assert.isNotNull(wrapper, "wrapper is null");
+        if (!(wrapper instanceof QueryWrapper)) {
+            throw ExceptionUtils.tse("wrapper type must QueryWrapper");
+        }
+        QueryWrapper queryWrapper = (QueryWrapper) wrapper;
+        String whereSql = queryWrapper.getSqlSegment();
+        return selectList(entitySchema.getTableName(), queryWrapper.getColumns(), whereSql, queryWrapper.getParams());
+
+    }
+
+    @Override
+    public T selectOne(Wrapper<T> wrapper) {
+        List<T> select = select(wrapper);
+        if (select != null && select.size() > 0) {
+            return select.get(0);
+        }
         return null;
     }
+
+    @Override
+    public int selectCount(Wrapper<T> wrapper) {
+        //TODO 未实现业务逻辑
+        return 0;
+    }
+
+    /***DELETE***/
 
     @Override
     public int deleteById(Serializable... ids) {
@@ -287,13 +286,15 @@ public abstract class AbstractDao<T> extends BaseDao implements ExpandDao<T> {
     }
 
     /**
-     * 获取列名
+     * 数据库字段转义
      *
      * @return
      */
-    protected String getColumns() {
-        return StringUtils.join(entitySchema.getColumns().toArray(), ",");
+    protected String columnEscape(String column) {
+        String placeholder = getDbLabel().getDbType().getPlaceholder();
+        return String.format(placeholder.replace(placeholder, column));
     }
+
 
     /**
      * 集合Map转换为集合Object对象

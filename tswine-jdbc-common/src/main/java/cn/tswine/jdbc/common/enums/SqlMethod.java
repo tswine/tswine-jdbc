@@ -10,22 +10,10 @@ package cn.tswine.jdbc.common.enums;
  */
 public enum SqlMethod {
 
-    /**
-     * 插入
-     */
     INSERT("insert", "插入", "INSERT INTO %s ( %s ) VALUES ( %s )"),
-    /**
-     * 删除
-     */
     DELETE("delete", "删除", "DELETE FROM %s WHERE %s"),
-    /**
-     * 更新
-     */
     UPDATE("update", "更新", "UPDATE %s SET %s WHERE %s"),
-    /**
-     * 查找
-     */
-    SELECT("select", "查找", "SELECT %s FROM %s WHERE %s");
+    SELECT("select", "查找", "SELECT %s FROM %s %s");
 
     /**
      * 方法名

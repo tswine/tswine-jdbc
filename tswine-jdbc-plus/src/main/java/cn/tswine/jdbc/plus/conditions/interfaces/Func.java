@@ -49,42 +49,4 @@ public interface Func<Children> extends Serializable {
     Children notIn(String column, Object[] params);
 
 
-    /**
-     * 排序：Order By 字段
-     *
-     * @param isAsc   是否ASC排序
-     * @param columns 排序字段
-     * @return
-     */
-    Children orderBy(boolean isAsc, String... columns);
-
-    /**
-     * 排序
-     *
-     * @param columns
-     * @return
-     */
-    Children orderBy(OrderBy[] columns);
-
-    /**
-     * 排序: Order By 字段... ASC
-     *
-     * @param columns
-     * @return
-     */
-    default Children orderByAsc(String... columns) {
-        return orderBy(true, columns);
-    }
-
-    /**
-     * 排序: Order By 字段... DESC
-     *
-     * @param columns
-     * @return
-     */
-    default Children orderByDesc(String... columns) {
-        return orderBy(false, columns);
-    }
-
-
 }

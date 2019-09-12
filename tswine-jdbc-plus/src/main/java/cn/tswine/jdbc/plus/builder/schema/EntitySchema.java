@@ -33,6 +33,7 @@ public class EntitySchema implements ISchema {
     /**
      * 数据库类型
      */
+    //TODO 需要后期删除
     DbType dbType;
 
     /**
@@ -55,9 +56,10 @@ public class EntitySchema implements ISchema {
     @Override
     public void build(Class<?> clazz, Object[] params) {
         Assert.isNotNull(clazz, "Class<?> clazz");
-        Assert.isNotNull(params, "params");
         this.clazz = clazz;
-        this.dbType = (DbType) params[0];
+        if (ArrayUtils.isNotEmpty(params)) {
+            this.dbType = (DbType) params[0];
+        }
         tableName().fields();
     }
 
@@ -165,23 +167,22 @@ public class EntitySchema implements ISchema {
         return this.tableName;
     }
 
-
     /**
-     * 获取数据库表字段
+     * 获取实体对象对应的数据库表列字段
      *
      * @param excludeColumns 排除的列名
      * @return
      */
-    public List<String> getColumns(String... excludeColumns) {
-        Map<String, Field> newFileds = MapUtils.copy(fields);
+    public String[] getColumns(String... excludeColumns) {
+        Map<String, Field> fieldsNew = MapUtils.copy(fields);
         if (excludeColumns != null) {
             for (String column : excludeColumns) {
-                if (newFileds.containsKey(column)) {
-                    newFileds.remove(newFileds);
+                if (fieldsNew.containsKey(column)) {
+                    fieldsNew.remove(fieldsNew);
                 }
             }
         }
-        return fieldToColumnList(newFileds.keySet());
+        return CollectionUtils.asArray(fieldsNew.keySet(), String.class);
     }
 
     /**

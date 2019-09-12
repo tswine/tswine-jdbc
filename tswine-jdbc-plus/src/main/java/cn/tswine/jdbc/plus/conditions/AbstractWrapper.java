@@ -1,9 +1,15 @@
 package cn.tswine.jdbc.plus.conditions;
 
+import cn.tswine.jdbc.common.annotation.DbType;
+import cn.tswine.jdbc.common.enums.SQLSentenceType;
+import cn.tswine.jdbc.common.exception.TswineJdbcException;
+import cn.tswine.jdbc.common.standard.IGeneric;
 import cn.tswine.jdbc.common.toolkit.ArrayUtils;
 import cn.tswine.jdbc.common.toolkit.StringPool;
 import cn.tswine.jdbc.common.toolkit.StringUtils;
 import cn.tswine.jdbc.common.toolkit.sql.SqlUtils;
+import cn.tswine.jdbc.plus.builder.SchemaBuilder;
+import cn.tswine.jdbc.plus.builder.schema.EntitySchema;
 import cn.tswine.jdbc.plus.conditions.connector.LogicType;
 import cn.tswine.jdbc.plus.conditions.connector.WhereConnector;
 import cn.tswine.jdbc.plus.conditions.connector.WhereType;
@@ -16,8 +22,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import static cn.tswine.jdbc.common.enums.SQLSentenceType.ORDER_BY;
-
 
 /**
  * @Author: silly
@@ -25,126 +29,61 @@ import static cn.tswine.jdbc.common.enums.SQLSentenceType.ORDER_BY;
  * @Version 1.0
  * @Desc
  */
-public class AbstractWrapper<T, Children extends AbstractWrapper<T, Children>> extends Wrapper<T>
-        implements Compare<Children>, Func<Children>, Logic<Children> {
+public abstract class AbstractWrapper<T, Children extends AbstractWrapper<T, Children>> extends Wrapper<T>
+        implements Compare<Children>, Func<Children>, Logic<Children>, IGeneric<T> {
     protected final Children _this = (Children) this;
     /**
      * 数据库表映射实体类
      */
-    protected T entity;
+    protected EntitySchema entitySchema;
     protected MergeSegments expression;
 
+
     private final List<Object> whereParams = new ArrayList<>();
-    /**
-     * 实体类型
-     */
-    protected Class<T> entityClass;
-
-    @Override
-    public T getEntity() {
-        return entity;
-    }
-
-    @Override
-    public MergeSegments getExpression() {
-        return null;
-    }
-
-    public Children setEntity(T entity) {
-        this.entity = entity;
-        this.initEntityClass();
-        return _this;
-    }
-
-    protected void initEntityClass() {
-        if (this.entityClass == null && this.entity != null) {
-            this.entityClass = (Class<T>) entity.getClass();
-        }
-    }
 
     public AbstractWrapper() {
         expression = new MergeSegments();
+        buildEntitySchema();
     }
 
-    /**
-     * =
-     *
-     * @param column 字段
-     * @param param  参数
-     * @return
-     */
+    private void buildEntitySchema() {
+        Class<T> clazz = clazz();
+        if (clazz != null) {
+            this.entitySchema = SchemaBuilder.buildEntity(clazz, null);
+        }
+    }
+
+
     @Override
     public Children eq(String column, Object param) {
         return addWhereConnector(new String[]{column}, WhereType.EQ, new Object[]{param});
     }
 
-    /**
-     * !=
-     *
-     * @param column 字段
-     * @param param  参数
-     * @return
-     */
     @Override
     public Children nq(String column, Object param) {
         return addWhereConnector(new String[]{column}, WhereType.NQ, new Object[]{param});
     }
 
-    /**
-     * <
-     *
-     * @param column
-     * @param param
-     * @return
-     */
     @Override
     public Children lt(String column, Object param) {
         return addWhereConnector(new String[]{column}, WhereType.LT, new Object[]{param});
     }
 
-    /**
-     * <=
-     *
-     * @param column
-     * @param param
-     * @return
-     */
     @Override
     public Children le(String column, Object param) {
         return addWhereConnector(new String[]{column}, WhereType.LE, new Object[]{param});
     }
 
-    /**
-     * >
-     *
-     * @param column
-     * @param param
-     * @return
-     */
     @Override
     public Children gt(String column, Object param) {
         return addWhereConnector(new String[]{column}, WhereType.GT, new Object[]{param});
     }
 
-    /**
-     * >=
-     *
-     * @param column
-     * @param param
-     * @return
-     */
     @Override
     public Children ge(String column, Object param) {
         return addWhereConnector(new String[]{column}, WhereType.GE, new Object[]{param});
     }
 
-    /**
-     * like '%value%'
-     *
-     * @param column user_name like "%value%"
-     * @param param
-     * @return
-     */
     @Override
     public Children like(String column, Object param) {
         return addWhereConnector(new String[]{column}, WhereType.LIKE, new Object[]{param});
@@ -176,6 +115,17 @@ public class AbstractWrapper<T, Children extends AbstractWrapper<T, Children>> e
     }
 
     @Override
+    public Children between(String column, Object value1, Object value2) {
+        return addWhereConnector(new String[]{column}, WhereType.BETWEEN, new Object[]{value1, value2});
+    }
+
+    @Override
+    public Children notBetween(String column, Object value1, Object value2) {
+        return addWhereConnector(new String[]{column}, WhereType.BETWEEN_NOT, new Object[]{value1, value2});
+
+    }
+
+    @Override
     public Children isNull(String column) {
         return addWhereConnector(new String[]{column}, WhereType.IS_NULL, null);
     }
@@ -185,63 +135,14 @@ public class AbstractWrapper<T, Children extends AbstractWrapper<T, Children>> e
         return addWhereConnector(new String[]{column}, WhereType.IS_NOT_NULL, null);
     }
 
-    /**
-     * user_name in (?,?,?,?)
-     *
-     * @param column
-     * @param params
-     * @return
-     */
     @Override
     public Children in(String column, Object[] params) {
         return addWhereConnector(new String[]{column}, WhereType.IN, params);
     }
 
-
-    /**
-     * user_name not in (?,?,?,?)
-     *
-     * @param column
-     * @param params
-     * @return
-     */
     @Override
     public Children notIn(String column, Object[] params) {
         return addWhereConnector(new String[]{column}, WhereType.IN_NOT, params);
-    }
-
-
-    /**
-     * order by user_name password desc
-     *
-     * @param isAsc   是否ASC排序
-     * @param columns 排序字段
-     * @return
-     */
-    @Override
-    public Children orderBy(boolean isAsc, String... columns) {
-        if (columns != null || columns.length > 0) {
-            OrderBy.Mode mode = OrderBy.Mode.DESC;
-            if (isAsc) {
-                mode = OrderBy.Mode.ASC;
-            }
-            for (String r : columns) {
-                OrderBy<String> orderBy = new OrderBy<>(r, mode);
-                expression.addOrderBy(orderBy);
-            }
-        }
-
-        return _this;
-    }
-
-    @Override
-    public Children orderBy(OrderBy[] columns) {
-        if (columns != null && columns.length > 0) {
-            for (OrderBy column : columns) {
-                expression.addOrderBy(column);
-            }
-        }
-        return _this;
     }
 
     @Override
@@ -253,7 +154,6 @@ public class AbstractWrapper<T, Children extends AbstractWrapper<T, Children>> e
     public Children or() {
         return addLogicConnector(LogicType.OR);
     }
-
 
     /**
      * 添加条件连接器
@@ -283,10 +183,14 @@ public class AbstractWrapper<T, Children extends AbstractWrapper<T, Children>> e
 
     @Override
     public String getSqlSegment() {
+        //清空参数列表：防止该函数被多次调用参数列表被迭代
+        whereParams.clear();
         StringBuilder sb = new StringBuilder();
         //拼接where条件
         ArrayList<WhereConnector> whereConnectors = expression.getWhereConnector();
         if (whereConnectors != null && whereConnectors.size() > 0) {
+            sb.append(SQLSentenceType.WHERE);
+            sb.append(StringPool.SPACE);
             for (WhereConnector whereConnector : whereConnectors) {
                 ISqlSegment operator = whereConnector.getOperator();
                 if (operator instanceof LogicType) {
@@ -296,14 +200,22 @@ public class AbstractWrapper<T, Children extends AbstractWrapper<T, Children>> e
                     WhereType whereType = (WhereType) operator;
                     String[] columns = whereConnector.getColumns();
                     //将{}替换成column
-                    if (WhereType.IN == whereType || WhereType.IN_NOT == whereType) {
+                    if (whereType.getType().equalsIgnoreCase(StringPool.IN)) {
+                        //处理in
                         //获取列的?占位符: ?,?,?
-                        int size = columns.length;
-                        String questionMark = SqlUtils.getQuestionMark(size);
-                        String[] columnsNew = new String[size + 1];
-                        System.arraycopy(columns, 0, columnsNew, 0, size);
-                        columnsNew[size + 1] = questionMark;
-                        columns = columnsNew;
+                        int paramSize = whereConnector.getParams().length;
+                        String questionMark = SqlUtils.getQuestionMark(paramSize);
+                        columns = ArrayUtils.add(columns, new String[]{questionMark});
+                    } else if (whereType.getType().equalsIgnoreCase(StringPool.LIKE)) {
+                        //处理like
+                        //{0} NOT LIKE '%{1}'
+                        Object[] params = whereConnector.getParams();
+                        if (params == null || params.length < 0) {
+                            throw new TswineJdbcException("like条件语句参数不能为空");
+                        }
+                        String param = String.valueOf(params[0]);
+                        columns = ArrayUtils.add(columns, new String[]{param});
+                        whereConnector.setParams(null);
                     }
                     String where = StringUtils.formatBrackets(whereType.getSqlSegment(), columns);
                     sb.append(where);
@@ -315,30 +227,11 @@ public class AbstractWrapper<T, Children extends AbstractWrapper<T, Children>> e
             }
         }
 
-        //拼接orderBY
-        ArrayList<OrderBy> orderByCondition = expression.getOrderBy();
-        if (orderByCondition != null && orderByCondition.size() > 0) {
-            int size = orderByCondition.size() - 1;
-            sb.append(StringPool.SPACE);
-            sb.append(ORDER_BY.getValue());
-            sb.append(StringPool.SPACE);
-            for (int i = 0; i < orderByCondition.size(); i++) {
-                OrderBy orderBy = orderByCondition.get(i);
-                sb.append(orderBy.getSqlSegment());
-                if (i == size) {
-                    break;
-                }
-                sb.append(StringPool.SPACE);
-                sb.append(StringPool.COMMA);
-                sb.append(StringPool.SPACE);
-            }
-        }
-        return sb.toString();
+        return sb.toString().trim();
     }
 
     public Object[] getParams() {
         return whereParams.toArray();
     }
-
 
 }

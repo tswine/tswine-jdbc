@@ -1,5 +1,7 @@
 package cn.tswine.jdbc.plus.conditions.query;
 
+import cn.tswine.jdbc.plus.conditions.OrderBy;
+
 import java.io.Serializable;
 
 /**
@@ -10,14 +12,16 @@ import java.io.Serializable;
  * @Version 1.0
  * @Desc
  */
-public interface Query<Children, T, R> extends Serializable {
+public interface Query<Children> extends Serializable {
+
+
     /**
      * 设置查询的字段
      *
      * @param columns 查询字段数组
      * @return
      */
-    Children select(R... columns);
+    Children select(String... columns);
 
     /**
      * 是否去除重复值
@@ -28,9 +32,41 @@ public interface Query<Children, T, R> extends Serializable {
     Children distinct(boolean distinct);
 
     /**
-     * 获取查询列
+     * 排序：Order By 字段
      *
+     * @param isAsc   是否ASC排序
+     * @param columns 排序字段
      * @return
      */
-    R[] getSelectColumns();
+    Children orderBy(boolean isAsc, String... columns);
+
+    /**
+     * 排序
+     *
+     * @param columns
+     * @return
+     */
+    Children orderBy(OrderBy[] columns);
+
+    /**
+     * 排序: Order By 字段... ASC
+     *
+     * @param columns
+     * @return
+     */
+    default Children orderByAsc(String... columns) {
+        return orderBy(true, columns);
+    }
+
+    /**
+     * 排序: Order By 字段... DESC
+     *
+     * @param columns
+     * @return
+     */
+    default Children orderByDesc(String... columns) {
+        return orderBy(false, columns);
+    }
+
+
 }

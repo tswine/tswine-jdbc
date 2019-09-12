@@ -2,7 +2,6 @@ package cn.tswine.jdbc.common.toolkit;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
 
 /**
  * 数组工具类
@@ -48,6 +47,25 @@ public class ArrayUtils {
             return null;
         }
         return new ArrayList<>(Arrays.asList(array));
+    }
+
+    /**
+     * 数组添加元素
+     *
+     * @param source
+     * @param target
+     * @return
+     */
+    public static String[] add(String[] source, String[] target) {
+        if (isEmpty(source) || isEmpty(target)) {
+            return source;
+        }
+        String[] newArr = new String[source.length + target.length];
+        System.arraycopy(source, 0, newArr, 0, source.length);
+        for (int i = 0; i < target.length; i++) {
+            newArr[source.length + i] = target[i];
+        }
+        return newArr;
     }
 
 

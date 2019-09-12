@@ -20,7 +20,7 @@ public class SchemaBuilder {
      */
     private static final Map<Class<?>, ISchema> ENTITY_SCHEMA_CACHE = new ConcurrentHashMap<>();
 
-
+    // TODO 后期删除dbType
     public synchronized static EntitySchema buildEntity(Class<?> clazz, DbType dbType) {
         ISchema schema = ENTITY_SCHEMA_CACHE.get(clazz);
         if (schema == null) {

@@ -23,6 +23,7 @@ public enum SQLSentenceType {
     LT(StringPool.LT),
     LE(StringPool.LE),
 
+    WHERE("WHERE"),
     AND("AND"),
     OR("OR"),
     IN("IN"),

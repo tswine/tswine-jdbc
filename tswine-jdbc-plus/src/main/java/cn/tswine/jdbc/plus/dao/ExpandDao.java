@@ -47,38 +47,36 @@ public interface ExpandDao<T> {
     /***********查找***********/
 
     /**
-     * 查询：根据条件构造器
+     * 查询(根据自定义sql)
      *
-     * @param wrapper 条件构造器
-     * @return
-     */
-    List<T> select(Wrapper<T> wrapper);
-
-    /**
-     * 查询：根据条件构造器查询一个
-     *
-     * @param wrapper
-     * @return
-     */
-    T selectOne(Wrapper<T> wrapper);
-
-
-    /**
-     * 查询（根据where条件查询）
-     *
-     * @param whereSql
+     * @param sql
      * @param params
      * @return
      */
-    List<T> selectByWhere(String whereSql, Object... params);
+    List<T> selectList(String sql, Object... params);
 
     /**
-     * 查询（根据columnMap 条件）
+     * 查询
      *
-     * @param columnMap 表字段 map 对象
-     * @return 查询的实体集合
+     * @param tableName 表名
+     * @param columns   列
+     * @param whereSql     where子句
+     * @param params    参数
+     * @return
      */
-    List<T> selectByMap(Map<String, Object> columnMap);
+    List<Map<String, Object>> select(String tableName, String[] columns, String whereSql, Object... params);
+
+    /**
+     * 查询
+     *
+     * @param tableName 表名
+     * @param columns   列
+     * @param where     where子句
+     * @param params    参数
+     * @return
+     */
+    List<T> selectList(String tableName, String[] columns, String where, Object... params);
+
 
     /**
      * 查询（根据主键：支持多主键）
@@ -97,12 +95,29 @@ public interface ExpandDao<T> {
     List<T> selectBatchIds(Collection<? extends Serializable> idList);
 
     /**
+     * 查询：根据条件构造器
+     *
+     * @param wrapper 条件构造器
+     * @return
+     */
+    List<T> select(Wrapper<T> wrapper);
+
+    /**
+     * 查询：根据条件构造器查询一个
+     *
+     * @param wrapper
+     * @return
+     */
+    T selectOne(Wrapper<T> wrapper);
+
+    /**
      * 根据条件构造器：查询总记录
      *
      * @param wrapper
      * @return
      */
-    Integer selectCount(Wrapper<T> wrapper);
+    int selectCount(Wrapper<T> wrapper);
+
     /***********删除***********/
     /**
      * 通过where条件删除

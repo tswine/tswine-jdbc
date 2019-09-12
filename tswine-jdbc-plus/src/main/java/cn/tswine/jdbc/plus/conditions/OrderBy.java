@@ -41,7 +41,7 @@ public class OrderBy<R> implements ISqlSegment {
     /**
      * 排序方式
      */
-    enum Mode {
+    public enum Mode {
         /**
          * 从小到大
          */

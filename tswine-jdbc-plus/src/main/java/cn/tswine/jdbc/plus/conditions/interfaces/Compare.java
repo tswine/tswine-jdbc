@@ -121,4 +121,26 @@ public interface Compare<Children> extends Serializable {
     Children notLikeRight(String column, Object value);
 
 
+    /**
+     * between
+     *
+     * @param column
+     * @param value1
+     * @param value2
+     * @return username between value1 and value2
+     */
+    Children between(String column, Object value1, Object value2);
+
+
+    /**
+     * not between
+     *
+     * @param column
+     * @param value1
+     * @param value2
+     * @return username between value1 and value2
+     */
+    Children notBetween(String column, Object value1, Object value2);
+
+
 }
