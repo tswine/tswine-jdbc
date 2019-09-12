@@ -16,7 +16,7 @@ IdType type() default IdType.AUTO
 
 ## API列表
 ### int insert(String sql, Object[] params)
-> 自定义执行的插入SQL语句
+> 执行自定义的插入SQL语句
 #### 请求参数
 |参数|类型|描述 |
 | :---:|:---:|:---:|
@@ -35,6 +35,7 @@ Assert.assertEquals(insert, 1);
 ```
 ***
 ### int insert (T entity)
+> 插入实体对象
 #### 请求参数
 |参数|类型|描述 |
 | :---:|:---:|:---:|
@@ -60,6 +61,7 @@ Assert.assertEquals(insert, 1);
 
 ***
 ###  int insert(String tableName, Map<String, Object> columnValues)
+> 插入数据
 #### 请求参数
 |参数|类型|描述 |
 | :---:|:---:|:---:|
@@ -85,6 +87,7 @@ Assert.assertEquals(insert, 1);
 
 ***
 ###  int[] insert(List\<T\> listEntity)
+> 批量插入数据
 #### 请求参数
 |参数|类型|描述 |
 | :---:|:---:|:---:|
