@@ -42,7 +42,7 @@ Assert.assertNotNull(list);
 #### 请求参数
 |参数|类型|描述 |
 | :---:|:---:|:---:|
-|ids|主键（多）|主键值：支持多主键|
+|ids|Serializable[]|主键值：支持多主键|
 #### 返回参数
 |类型|描述| 
 | :---:|:---:|
@@ -58,15 +58,19 @@ Assert.assertNotNull(user);
 #### 请求参数
 |参数|类型|描述 |
 | :---:|:---:|:---:|
-|ids|主键（多）|主键值：支持多主键|
+|idList|List|主键集合，不支持多主键批量查询|
 #### 返回参数
 |类型|描述| 
 | :---:|:---:|
-|T| 查询到的数据 | 
+|List<T>| 查询到的数据 | 
 #### 样例
 ```java
-User user = userDao.selectById("21e84e67a6a243d8ba04209d1dccca29");
-Assert.assertNotNull(user);
+List<String> ids = new ArrayList<>();
+ids.add("00fe3989a258429c9692ad450b5eac55");
+ids.add("21e84e67a6a243d8ba04209d1dccca29");
+ids.add("fe4fde91818f47698d4aa8ad361cbf4c");
+List<User> list = userDao.selectBatchIds(ids);
+Assert.assertEquals(list.size(), 3);
 ```
 ***
 
