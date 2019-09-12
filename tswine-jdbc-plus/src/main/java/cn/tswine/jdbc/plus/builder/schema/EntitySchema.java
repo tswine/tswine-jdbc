@@ -1,6 +1,5 @@
 package cn.tswine.jdbc.plus.builder.schema;
 
-import cn.tswine.jdbc.common.annotation.DbType;
 import cn.tswine.jdbc.common.annotation.TableField;
 import cn.tswine.jdbc.common.annotation.TableId;
 import cn.tswine.jdbc.common.annotation.TableName;
@@ -31,12 +30,6 @@ public class EntitySchema implements ISchema {
     String tableName;
 
     /**
-     * 数据库类型
-     */
-    //TODO 需要后期删除
-    DbType dbType;
-
-    /**
      * 所有字段
      */
     final Map<String, Field> fields = new HashMap<>();
@@ -45,8 +38,6 @@ public class EntitySchema implements ISchema {
      * 主键字段
      */
     LinkedHashMap<String, TableId> ids = new LinkedHashMap<>();
-
-    // TODO 逻辑删除
 
     public EntitySchema() {
 
@@ -57,9 +48,6 @@ public class EntitySchema implements ISchema {
     public void build(Class<?> clazz, Object[] params) {
         Assert.isNotNull(clazz, "Class<?> clazz");
         this.clazz = clazz;
-        if (ArrayUtils.isNotEmpty(params)) {
-            this.dbType = (DbType) params[0];
-        }
         tableName().fields();
     }
 
@@ -100,6 +88,78 @@ public class EntitySchema implements ISchema {
 
         }
         return obj;
+    }
+
+    /**
+     * 获取表名
+     *
+     * @return
+     */
+    public String getTableName() {
+        return this.tableName;
+    }
+
+
+    /**
+     * 获取实体对象对应的数据库表列字段
+     *
+     * @param excludeColumns 排除的列名
+     * @return
+     */
+    public String[] getColumns(String... excludeColumns) {
+        Map<String, Field> fieldsNew = MapUtils.copy(fields);
+        if (ArrayUtils.isNotEmpty(excludeColumns)) {
+            for (String column : excludeColumns) {
+                if (fieldsNew.containsKey(column)) {
+                    fieldsNew.remove(fieldsNew);
+                }
+            }
+        }
+        return CollectionUtils.asArray(fieldsNew.keySet(), String.class);
+    }
+
+    /**
+     * 获取所有的id列
+     *
+     * @return
+     */
+    public String[] getIds() {
+        if (ids == null || ids.size() <= 0) {
+            throw ExceptionUtils.tse(String.format("clazz:%s no id", clazz.getName()));
+        }
+        return CollectionUtils.asArray(ids.keySet(), String.class);
+    }
+
+    /**
+     * 获取所有的ids
+     *
+     * @return
+     */
+    public LinkedHashMap<String, TableId> getIdsAnno() {
+        return ids;
+    }
+
+
+    public Map<String, Field> getFields() {
+        return fields;
+    }
+
+
+    /**
+     * 按照注解TableId 中的index值排序
+     *
+     * @param ids
+     * @return
+     */
+    private LinkedHashMap<String, TableId> sortByTableIdIndex(Map<String, TableId> ids) {
+        List<Map.Entry<String, TableId>> list = new LinkedList<>(ids.entrySet());
+        Collections.sort(list, Comparator.comparingInt(o -> o.getValue().index()));
+        LinkedHashMap<String, TableId> result = new LinkedHashMap<>();
+        for (Map.Entry<String, TableId> entry : list) {
+            result.put(entry.getKey(), entry.getValue());
+        }
+        return result;
+
     }
 
     /**
@@ -158,87 +218,4 @@ public class EntitySchema implements ISchema {
         return this;
     }
 
-    /**
-     * 获取表名
-     *
-     * @return
-     */
-    public String getTableName() {
-        return this.tableName;
-    }
-
-    /**
-     * 获取实体对象对应的数据库表列字段
-     *
-     * @param excludeColumns 排除的列名
-     * @return
-     */
-    public String[] getColumns(String... excludeColumns) {
-        Map<String, Field> fieldsNew = MapUtils.copy(fields);
-        if (excludeColumns != null) {
-            for (String column : excludeColumns) {
-                if (fieldsNew.containsKey(column)) {
-                    fieldsNew.remove(fieldsNew);
-                }
-            }
-        }
-        return CollectionUtils.asArray(fieldsNew.keySet(), String.class);
-    }
-
-    /**
-     * 获取所有的id
-     *
-     * @return
-     */
-    public List<String> getIds() {
-        if (ids == null || ids.size() <= 0) {
-            throw ExceptionUtils.tse(String.format("clazz:%s no id", clazz.getName()));
-        }
-        return fieldToColumnList(ids.keySet());
-    }
-
-    public LinkedHashMap<String, TableId> getIdsAnno() {
-        return ids;
-    }
-
-
-    public Map<String, Field> getFields() {
-        return fields;
-    }
-
-    /**
-     * 字段转换为列集合
-     *
-     * @param fields
-     * @return
-     */
-    private List<String> fieldToColumnList(Set<String> fields) {
-        ArrayList<String> columns = new ArrayList<>();
-        String placeholder = dbType.getPlaceholder();
-        fields.forEach(k -> {
-            if (StringUtils.isNotEmpty(placeholder)) {
-                k = String.format(placeholder, k);
-            }
-            columns.add(k);
-        });
-        return columns;
-    }
-
-
-    /**
-     * 按照注解TableId 中的index值排序
-     *
-     * @param ids
-     * @return
-     */
-    private LinkedHashMap<String, TableId> sortByTableIdIndex(Map<String, TableId> ids) {
-        List<Map.Entry<String, TableId>> list = new LinkedList<>(ids.entrySet());
-        Collections.sort(list, Comparator.comparingInt(o -> o.getValue().index()));
-        LinkedHashMap<String, TableId> result = new LinkedHashMap<>();
-        for (Map.Entry<String, TableId> entry : list) {
-            result.put(entry.getKey(), entry.getValue());
-        }
-        return result;
-
-    }
 }

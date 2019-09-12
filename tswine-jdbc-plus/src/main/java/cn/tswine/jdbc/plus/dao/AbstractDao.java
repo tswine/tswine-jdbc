@@ -4,10 +4,7 @@ import cn.tswine.jdbc.common.annotation.TableId;
 import cn.tswine.jdbc.common.enums.SQLSentenceType;
 import cn.tswine.jdbc.common.enums.generator.UUIDGenerator;
 import cn.tswine.jdbc.common.rules.IDBLabel;
-import cn.tswine.jdbc.common.toolkit.Assert;
-import cn.tswine.jdbc.common.toolkit.ExceptionUtils;
-import cn.tswine.jdbc.common.toolkit.MapUtils;
-import cn.tswine.jdbc.common.toolkit.ReflectionUtils;
+import cn.tswine.jdbc.common.toolkit.*;
 import cn.tswine.jdbc.common.toolkit.sql.SqlUtils;
 import cn.tswine.jdbc.plus.builder.SchemaBuilder;
 import cn.tswine.jdbc.plus.builder.schema.EntitySchema;
@@ -52,19 +49,18 @@ public abstract class AbstractDao<T> extends BaseDao implements ExpandDao<T> {
 
     @Override
     public int insert(String tableName, Map<String, Object> columnValues) {
-        //将列值分开
-        List<String> columnsList = new ArrayList<>();
-        List<Object> valuesList = new ArrayList<>();
-        columnValues.forEach((k, v) -> {
-            columnsList.add(k);
-            valuesList.add(v);
-        });
-        String sql = SqlUtils.getInsertSql(getDbLabel().getDbType(), entitySchema.getTableName(), columnsList);
-        return insert(sql, valuesList.toArray());
+        String sql = SqlUtils.getInsertSql(getDbLabel().getDbType(), entitySchema.getTableName(),
+                CollectionUtils.asArray(columnValues.keySet(), String.class));
+        return insert(sql, columnValues.values().toArray());
     }
 
     @Override
     public int insert(T entity) {
+        return insert(entity, null);
+    }
+
+    @Override
+    public int insert(T entity, String[] excludeColumns) {
         Assert.isNotNull(entity, "entity is empty");
         //获取所有字段
         Map<String, Field> fields = entitySchema.getFields();
@@ -73,12 +69,27 @@ public abstract class AbstractDao<T> extends BaseDao implements ExpandDao<T> {
         if (methodValue == null) {
             throw ExceptionUtils.tse("reflection not get entity values");
         }
+        //处理排除列
+        if (ArrayUtils.isNotEmpty(excludeColumns)) {
+            for (String column : excludeColumns) {
+                if (methodValue.containsKey(column)) {
+                    methodValue.remove(column);
+                }
+            }
+        }
         return insert(entitySchema.getTableName(), methodValue);
     }
 
     @Override
     public int[] insert(List<T> listEntity) {
+        return insert(listEntity, null);
+    }
+
+    @Override
+    public int[] insert(List<T> listEntity, String[] excludeColumns) {
         Assert.notEmpty(listEntity, "List entity is empty");
+        //获取对象需要排除后的列
+        String[] columns = entitySchema.getColumns(excludeColumns);
         List<Map<String, Object>> listValue = new ArrayList<>();
         //遍历每个对象，获取每个对象的值
         for (T t : listEntity) {
@@ -91,16 +102,11 @@ public abstract class AbstractDao<T> extends BaseDao implements ExpandDao<T> {
         }
         List<Object[]> params = new ArrayList<>();
         //以第一个对象为标准，依次获取值参数
-        Map<String, Object> firstT = listValue.get(0);
-        Set<String> columns = firstT.keySet();
-        int columnSize = columns.size();
+        int columnSize = columns.length;
         for (Map<String, Object> mapValue : listValue) {
             Object[] param = new Object[columnSize];
-            Iterator<String> iterator = columns.iterator();
-            int i = 0;
-            while (iterator.hasNext()) {
-                param[i] = mapValue.get(iterator.next());
-                i++;
+            for (int i = 0; i < columnSize; i++) {
+                param[i] = mapValue.get(columns[i]);
             }
             params.add(param);
         }
@@ -143,11 +149,9 @@ public abstract class AbstractDao<T> extends BaseDao implements ExpandDao<T> {
 
     @Override
     public List<T> selectBatchIds(Collection<? extends Serializable> idList) {
-        List<String> ids = entitySchema.getIds();
-        if (ids.size() != 1) {
-            throw ExceptionUtils.tse("The primary key only supports one");
-        }
-        String sqlIn = SqlUtils.getIn(ids.get(0), idList.size());
+        String[] ids = entitySchema.getIds();
+        Assert.notEmpty(ids, "The primary key only supports one");
+        String sqlIn = SqlUtils.getIn(ids[0], idList.size());
         String whereSql = String.format("%s %s", SQLSentenceType.WHERE.getValue(), sqlIn);
         return selectList(entitySchema.getTableName(), entitySchema.getColumns(null), whereSql, idList.toArray());
     }
@@ -184,31 +188,37 @@ public abstract class AbstractDao<T> extends BaseDao implements ExpandDao<T> {
 
     @Override
     public int deleteById(Serializable... ids) {
-        Assert.notEmpty(ids, "ids not empty");
-        if (ids.length != entitySchema.getIds().size()) {
-            throw ExceptionUtils.tse("ids length is not equal key size");
-        }
-        String sqlWhere = SqlUtils.getWhere(entitySchema.getIds());
-        return deleteByWhere(entitySchema.getTableName(), sqlWhere, ids);
+        //TODO
+        return 0;
+//        Assert.notEmpty(ids, "ids not empty");
+//        if (ids.length != entitySchema.getIds().size()) {
+//            throw ExceptionUtils.tse("ids length is not equal key size");
+//        }
+//        String sqlWhere = SqlUtils.getWhere(entitySchema.getIds());
+//        return deleteByWhere(entitySchema.getTableName(), sqlWhere, ids);
     }
 
     @Override
     public int deleteBatchIds(Collection<? extends Serializable> idList) {
-        Assert.notEmpty(idList, "idList not empty");
-        List<String> ids = entitySchema.getIds();
-        if (ids.size() != 1) {
-            throw ExceptionUtils.tse("The primary key only supports one");
-        }
-        String sqlIn = SqlUtils.getIn(entitySchema.getIds().get(0), idList.size());
-        return deleteByWhere(entitySchema.getTableName(), sqlIn, idList.toArray());
+        //TODO
+        return 0;
+//        Assert.notEmpty(idList, "idList not empty");
+//        List<String> ids = entitySchema.getIds();
+//        if (ids.size() != 1) {
+//            throw ExceptionUtils.tse("The primary key only supports one");
+//        }
+//        String sqlIn = SqlUtils.getIn(entitySchema.getIds().get(0), idList.size());
+//        return deleteByWhere(entitySchema.getTableName(), sqlIn, idList.toArray());
     }
 
     @Override
     public int deleteByMap(Map<String, Object> columnMap) {
-        Assert.notEmpty(columnMap, "columnMap not empty");
-        Set<String> columns = columnMap.keySet();
-        String sqlWhere = SqlUtils.getWhere(columns);
-        return deleteByWhere(entitySchema.getTableName(), sqlWhere, columnMap.values().toArray());
+        //TODO
+        return 0;
+//        Assert.notEmpty(columnMap, "columnMap not empty");
+//        Set<String> columns = columnMap.keySet();
+//        String sqlWhere = SqlUtils.getWhere(columns);
+//        return deleteByWhere(entitySchema.getTableName(), sqlWhere, columnMap.values().toArray());
     }
 
     @Override
@@ -222,46 +232,51 @@ public abstract class AbstractDao<T> extends BaseDao implements ExpandDao<T> {
 
     @Override
     public int updateById(T entity) {
-        //获取所有字段
-        Map<String, Field> fields = entitySchema.getFields();
-        //获取所有字段值
-        Map<String, Object> methodValue = ReflectionUtils.getAllMethodValue(entity, fields);
-        if (methodValue == null) {
-            throw ExceptionUtils.tse("reflection not get entity values");
-        }
-        Map<String, Object> whereIds = new HashMap<>();
-        //排除主键数据
-        List<String> ids = entitySchema.getIds();
-        ids.forEach(k -> {
-            Object o = whereIds.get(ids);
-            whereIds.put(k, o);
-            methodValue.remove(k);
-        });
-        return update(entitySchema.getTableName(), methodValue, whereIds);
+        //TODO
+        return 0;
+//        //获取所有字段
+//        Map<String, Field> fields = entitySchema.getFields();
+//        //获取所有字段值
+//        Map<String, Object> methodValue = ReflectionUtils.getAllMethodValue(entity, fields);
+//        if (methodValue == null) {
+//            throw ExceptionUtils.tse("reflection not get entity values");
+//        }
+//        Map<String, Object> whereIds = new HashMap<>();
+//        //排除主键数据
+//        List<String> ids = entitySchema.getIds();
+//        ids.forEach(k -> {
+//            Object o = whereIds.get(ids);
+//            whereIds.put(k, o);
+//            methodValue.remove(k);
+//        });
+//        return update(entitySchema.getTableName(), methodValue, whereIds);
     }
 
     @Override
     public int update(String tableName, Map<String, Object> update, Map<String, Object> where) {
-        Assert.notEmpty(tableName, "tableName not empty");
-        Assert.notEmpty(update, "update not empty");
-        Assert.notEmpty(where, "where not empty");
-        List<Object> params = new ArrayList<>();
-        String setSql = SqlUtils.getSet(update.keySet());
-        String whereSql = SqlUtils.getWhere(where.keySet());
-        params.addAll(update.values());
-        params.addAll(where.values());
-        String sql = SqlUtils.getUpdateSql(tableName, setSql, whereSql);
-        return update(sql, params.toArray());
+        //TODO
+        return 0;
+//        Assert.notEmpty(tableName, "tableName not empty");
+//        Assert.notEmpty(update, "update not empty");
+//        Assert.notEmpty(where, "where not empty");
+//        List<Object> params = new ArrayList<>();
+//        String setSql = SqlUtils.getSet(update.keySet());
+//        String whereSql = SqlUtils.getWhere(where.keySet());
+//        params.addAll(update.values());
+//        params.addAll(where.values());
+//        String sql = SqlUtils.getUpdateSql(tableName, setSql, whereSql);
+//        return update(sql, params.toArray());
     }
 
     @Override
     public int deleteByWhere(String tableName, String where, Object[] params) {
-        Assert.isNotNull(tableName, "tableName not null");
-        Assert.isNotNull(where, "where not null");
-        Assert.notEmpty(params, "params not null");
-        String sql = SqlUtils.getDeleteSql(entitySchema.getTableName(), where);
-        return delete(sql, params);
-
+        //TODO
+        return 0;
+//        Assert.isNotNull(tableName, "tableName not null");
+//        Assert.isNotNull(where, "where not null");
+//        Assert.notEmpty(params, "params not null");
+//        String sql = SqlUtils.getDeleteSql(entitySchema.getTableName(), where);
+//        return delete(sql, params);
     }
 
 

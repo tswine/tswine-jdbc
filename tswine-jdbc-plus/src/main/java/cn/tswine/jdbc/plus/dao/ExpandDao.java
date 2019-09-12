@@ -20,22 +20,6 @@ public interface ExpandDao<T> {
 
     /***********插入***********/
     /**
-     * 插入（一条记录）
-     *
-     * @param entity 实体对象
-     * @return 插入的条数
-     */
-    int insert(T entity);
-
-    /**
-     * 插入（插入多条记录）
-     *
-     * @param listEntity 批量实体对象
-     * @return 插入的条数
-     */
-    int[] insert(List<T> listEntity);
-
-    /**
      * 插入
      *
      * @param tableName    表名
@@ -43,6 +27,41 @@ public interface ExpandDao<T> {
      * @return 插入的条数
      */
     int insert(String tableName, Map<String, Object> columnValues);
+
+    /**
+     * 插入
+     *
+     * @param entity 实体对象
+     * @return 插入的条数
+     */
+    int insert(T entity);
+
+    /**
+     * 插入
+     *
+     * @param entity         实体对象
+     * @param excludeColumns 插入时排除列
+     * @return
+     */
+    int insert(T entity, String[] excludeColumns);
+
+    /**
+     * 批量插入多条记录
+     *
+     * @param listEntity 批量实体对象
+     * @return 插入的条数
+     */
+    int[] insert(List<T> listEntity);
+
+    /**
+     * 批量插入多条记录
+     *
+     * @param listEntity     批量实体对象
+     * @param excludeColumns 插入时排除列
+     * @return 插入的条数
+     */
+    int[] insert(List<T> listEntity, String[] excludeColumns);
+
 
     /***********查找***********/
 
@@ -60,7 +79,7 @@ public interface ExpandDao<T> {
      *
      * @param tableName 表名
      * @param columns   列
-     * @param whereSql     where子句
+     * @param whereSql  where子句
      * @param params    参数
      * @return
      */
