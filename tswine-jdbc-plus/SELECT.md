@@ -32,6 +32,8 @@ Assert.assertNotNull(select);
 |List<T>| 数据集合 | 
 #### 样例
 ```java
-
+String whereSql = "user_name = ? AND sex = ? AND create_time >= ?";
+List<User> list = userDao.selectByWhere(whereSql, new Object[]{"tswine", 1, "2019-09-02"});
+Assert.assertNotNull(list);
 ```
 ***
