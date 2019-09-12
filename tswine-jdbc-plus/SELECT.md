@@ -19,3 +19,19 @@ List<Map<String, Object>> select = userDao.select(sql, new Object[]{"2019-09-02"
 Assert.assertNotNull(select);
 ```
 ***
+### List<T> selectByWhere(String whereSql, Object... params) 
+> 根据条件语句和参数查询
+#### 请求参数
+|参数|类型|描述 |
+| :---:|:---:|:---:|
+|whereSql| String|where条件SQL语句|
+|params|Object[]|条件子句中的参数|
+#### 返回参数
+|类型|描述| 
+| :---:|:---:|
+|List<T>| 数据集合 | 
+#### 样例
+```java
+
+```
+***
