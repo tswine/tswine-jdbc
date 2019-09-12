@@ -53,3 +53,20 @@ User user = userDao.selectById("21e84e67a6a243d8ba04209d1dccca29");
 Assert.assertNotNull(user);
 ```
 ***
+### List<T> selectBatchIds(Collection<? extends Serializable> idList)
+> 根据主键集合
+#### 请求参数
+|参数|类型|描述 |
+| :---:|:---:|:---:|
+|ids|主键（多）|主键值：支持多主键|
+#### 返回参数
+|类型|描述| 
+| :---:|:---:|
+|T| 查询到的数据 | 
+#### 样例
+```java
+User user = userDao.selectById("21e84e67a6a243d8ba04209d1dccca29");
+Assert.assertNotNull(user);
+```
+***
+
