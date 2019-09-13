@@ -130,9 +130,9 @@ for (int i = 0; i < 10; i++) {
   user.setIsDelete(0);
   user.setCreateTime(LocalDateTime.now());
   user.setSex(1);
-
   list.add(user);
 }
+
 int[] insert = userDao.insert(list);
 Assert.assertEquals(insert.length, 10);
 ```
@@ -160,6 +160,7 @@ List<User> list = new ArrayList<>();
     user.setIsDelete(0);
     list.add(user);
   }
+
 int[] insert = userDao.insert(list, new String[]{User.FIELD_SEX});
 Assert.assertEquals(insert.length, 10);
 ```
