@@ -4,6 +4,7 @@ import cn.tswine.jdbc.common.annotation.TableId;
 import cn.tswine.jdbc.common.enums.SQLSentenceType;
 import cn.tswine.jdbc.common.enums.generator.UUIDGenerator;
 import cn.tswine.jdbc.common.rules.IDBLabel;
+import cn.tswine.jdbc.common.standard.IGeneric;
 import cn.tswine.jdbc.common.toolkit.*;
 import cn.tswine.jdbc.common.toolkit.sql.SqlUtils;
 import cn.tswine.jdbc.plus.builder.SchemaBuilder;
@@ -18,9 +19,10 @@ import cn.tswine.jdbc.plus.transaction.jdbc.JdbcTransactionFactory;
 
 import java.io.Serializable;
 import java.lang.reflect.Field;
-import java.lang.reflect.ParameterizedType;
-import java.lang.reflect.Type;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+import java.util.Map;
 
 /**
  * 抽象dao操作
@@ -30,9 +32,7 @@ import java.util.*;
  * @Version 1.0
  * @Desc
  */
-public abstract class AbstractDao<T> extends BaseDao implements ExpandDao<T> {
-
-    protected Class<T> classEntity;
+public abstract class AbstractDao<T> extends BaseDao implements ExpandDao<T>, IGeneric<T> {
 
     protected EntitySchema entitySchema;
 
@@ -43,8 +43,7 @@ public abstract class AbstractDao<T> extends BaseDao implements ExpandDao<T> {
      */
     protected AbstractDao() {
         this.dbLabel = getDbLabel();
-        this.setClassEntity();
-        this.entitySchema = SchemaBuilder.buildEntity(classEntity, getDbLabel().getDbType());
+        this.entitySchema = SchemaBuilder.buildEntity(clazz());
     }
 
     @Override
@@ -126,7 +125,7 @@ public abstract class AbstractDao<T> extends BaseDao implements ExpandDao<T> {
 
     @Override
     public List<Map<String, Object>> select(String tableName, String[] columns, String whereSql, Object... params) {
-        tableName = columnEscape(tableName);
+        tableName = SqlUtils.columnEscape(tableName, getDbLabel().getDbType().getPlaceholder());
         String columnSql = SqlUtils.getColumnSql(columns, getDbLabel().getDbType().getPlaceholder());
         String sql = SqlUtils.getSelectSql(tableName, columnSql, whereSql);
         return select(sql, params);
@@ -289,30 +288,6 @@ public abstract class AbstractDao<T> extends BaseDao implements ExpandDao<T> {
         return JdbcTransactionFactory.getInstance().newTransaction(dbLabel);
     }
 
-    /**
-     * 实体对象类型
-     */
-    private void setClassEntity() {
-        Type type = getClass().getGenericSuperclass();
-        if (type instanceof ParameterizedType) {
-            ParameterizedType pType = (ParameterizedType) type;
-            Type clazz = pType.getActualTypeArguments()[0];
-            if (clazz instanceof Class) {
-                this.classEntity = (Class<T>) clazz;
-            }
-        }
-    }
-
-    /**
-     * 数据库字段转义
-     *
-     * @return
-     */
-    protected String columnEscape(String column) {
-        String placeholder = getDbLabel().getDbType().getPlaceholder();
-        return String.format(placeholder.replace(placeholder, column));
-    }
-
 
     /**
      * 集合Map转换为集合Object对象
@@ -356,6 +331,7 @@ public abstract class AbstractDao<T> extends BaseDao implements ExpandDao<T> {
                     values.remove(k);
                 case ID_WORKER:
                     //TODO 实现全局唯一逻辑
+                    //TODO 实现自定义主键生成方法
 
             }
         });

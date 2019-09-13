@@ -45,7 +45,7 @@ public class EntitySchema implements ISchema {
 
 
     @Override
-    public void build(Class<?> clazz, Object[] params) {
+    public void build(Class<?> clazz) {
         Assert.isNotNull(clazz, "Class<?> clazz");
         this.clazz = clazz;
         tableName().fields();
@@ -111,7 +111,7 @@ public class EntitySchema implements ISchema {
         if (ArrayUtils.isNotEmpty(excludeColumns)) {
             for (String column : excludeColumns) {
                 if (fieldsNew.containsKey(column)) {
-                    fieldsNew.remove(fieldsNew);
+                    fieldsNew.remove(column);
                 }
             }
         }

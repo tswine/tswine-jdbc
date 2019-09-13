@@ -10,7 +10,6 @@ public interface ISchema {
     /**
      * 初始化参数
      * @param clazz
-     * @param params
      */
-    void build(Class<?> clazz, Object[] params);
+    void build(Class<?> clazz);
 }

@@ -16,6 +16,7 @@ import java.util.*;
  */
 public class InsertTest extends BaseTest {
 
+    //    int insert(String sql, Object[] params);
     @Test
     public void insert1() {
         String sql = "INSERT INTO `tswine_jdbc`.`user` (  `id`,`user_name`,`pass_word`,`is_delete`,`create_time`,`sex`)" +
@@ -24,21 +25,9 @@ public class InsertTest extends BaseTest {
         Assert.assertEquals(insert, 1);
     }
 
+    //    int insert(String tableName, Map<String, Object> columnValues);
     @Test
     public void insert2() {
-        User user = new User();
-        user.setUserName("tswine");
-        user.setPassWord("123456");
-        user.setIsDelete(0);
-        user.setCreateTime(LocalDateTime.now());
-        user.setSex(1);
-
-        int insert = userDao.insert(user);
-        Assert.assertEquals(insert, 1);
-    }
-
-    @Test
-    public void insert3() {
         Map<String, Object> columns = new HashMap<>();
         columns.put("id", String.valueOf(System.currentTimeMillis()));
         columns.put("user_name", "tswine3");
@@ -51,8 +40,36 @@ public class InsertTest extends BaseTest {
         Assert.assertEquals(insert, 1);
     }
 
+    //int insert(T entity);
     @Test
-    public void insertBatch() {
+    public void insert3() {
+        User user = new User();
+        user.setUserName("tswine");
+        user.setPassWord("123456");
+        user.setIsDelete(0);
+        user.setCreateTime(LocalDateTime.now());
+        user.setSex(1);
+
+        int insert = userDao.insert(user);
+        Assert.assertEquals(insert, 1);
+    }
+
+    //int insert(T entity, String[] excludeColumns);
+    @Test
+    public void insert4() {
+        User user = new User();
+        user.setUserName("insert4");
+        user.setPassWord("123456");
+        user.setIsDelete(0);
+        user.setCreateTime(LocalDateTime.now());
+
+        int insert = userDao.insert(user, new String[]{User.FIELD_SEX});
+        Assert.assertEquals(insert, 1);
+    }
+
+    //    int[] insert(List<T> listEntity);
+    @Test
+    public void insert5() {
         List<User> list = new ArrayList<>();
         for (int i = 0; i < 10; i++) {
             User user = new User();
@@ -67,5 +84,21 @@ public class InsertTest extends BaseTest {
         int[] insert = userDao.insert(list);
         Assert.assertEquals(insert.length, 10);
 
+    }
+
+    //    int[] insert(List<T> listEntity, String[] excludeColumns);
+    @Test
+    public void insert6() {
+        List<User> list = new ArrayList<>();
+        for (int i = 0; i < 10; i++) {
+            User user = new User();
+            user.setUserName("tswine" + i);
+            user.setPassWord("密码" + i);
+            user.setCreateTime(LocalDateTime.now());
+            user.setIsDelete(0);
+            list.add(user);
+        }
+        int[] insert = userDao.insert(list, new String[]{User.FIELD_SEX});
+        Assert.assertEquals(insert.length, 10);
     }
 }

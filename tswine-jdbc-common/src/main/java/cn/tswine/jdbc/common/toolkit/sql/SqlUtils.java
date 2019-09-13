@@ -28,6 +28,9 @@ public class SqlUtils implements StringPool {
      * @return 执行的插入sql语句
      */
     public static String getInsertSql(DbType dbType, String tableName, String[] columns) {
+        Assert.notEmpty(tableName, "tableName 不能为空");
+        //转义表名
+        tableName = columnEscape(tableName, dbType.getPlaceholder());
         //INSERT INTO %s ( %s ) VALUES ( %s )
         SqlMethod sqlMethod = SqlMethod.INSERT;
         String columnSql = getColumnSql(columns, dbType.getDbType().getPlaceholder());
@@ -142,7 +145,7 @@ public class SqlUtils implements StringPool {
         String[] columnNew = new String[columns.length];
         if (StringUtils.isNotEmpty(placeholder)) {
             for (int i = 0; i < columns.length; i++) {
-                columnNew[i] = String.format(placeholder, columns[i]);
+                columnNew[i] = columnEscape(columns[i], placeholder);
             }
         }
         return StringUtils.join(columnNew, ",");
@@ -193,6 +196,24 @@ public class SqlUtils implements StringPool {
             sb.append(SPACE);
         }
         return EMPTY;
+    }
+
+    /**
+     * 数据库字段转义
+     *
+     * @param column      需要转义的字段
+     * @param placeholder 转义符
+     * @return 转义后的字段
+     */
+    public static String columnEscape(String column, String placeholder) {
+        if (StringUtils.isEmpty(column)) {
+            return EMPTY;
+        }
+        if (StringUtils.isEmpty(placeholder)) {
+            return column;
+        }
+        //TODO 判断该column 是否已经被转义
+        return String.format(placeholder, column);
     }
 
 
