@@ -110,12 +110,12 @@ Assert.assertEquals(insert, 1);
 ```
 ***
 
-###  int[] insert(List<T> listEntity)
+###  int[] insert(List\<T> listEntity)
 > 批量插入数据
 #### 请求参数
 |参数|类型|描述 |
 | :---:|:---:|:---:|
-|listEntity|List<T>|批量插入的实体对象|
+|listEntity|List\<T>|批量插入的实体对象|
 #### 返回参数
 |类型|描述| 
 | :---:|:---:|
@@ -138,12 +138,12 @@ Assert.assertEquals(insert.length, 10);
 ```
 ***
 
-###  int[] insert(List<T> listEntity,String[] excludeColumns)
+###  int[] insert(List\<T> listEntity,String[] excludeColumns)
 > 批量插入数据
 #### 请求参数
 |参数|类型|描述 |
 | :---:|:---:|:---:|
-|listEntity|List<T>|批量插入的实体对象|
+|listEntity|List\<T>|批量插入的实体对象|
 |excludeColumns|String[]|插入排除的列|
 #### 返回参数
 |类型|描述| 
