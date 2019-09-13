@@ -3,7 +3,7 @@ tswine jdbc基于jdbc封装的数据库操作
 [![License](https://img.shields.io/badge/license-Apache%202-4EB1BA.svg)](https://www.apache.org/licenses/LICENSE-2.0.html)
 
 ## 开发环境
-- jdk:Java 8
+- jdk:Java8
 - 开发工具：IDEA
 - 依赖管理：Maven
 
