@@ -19,6 +19,7 @@ import java.util.Map;
  */
 public class SelectTest extends BaseTest {
 
+    //    List<Map<String, Object>> select(String sql, Object[] params);
     @Test
     public void select1() {
         String sql = "SELECT user_name FROM `user` WHERE create_time >=?  AND sex = ? GROUP BY user_name ";
@@ -28,15 +29,39 @@ public class SelectTest extends BaseTest {
     }
 
 
+    //    List<T> selectList(String sql, Object[] params);
+    @Test
+    public void select2() {
+        String sql = "SELECT user_name FROM `user` WHERE create_time >=?  AND sex = ? GROUP BY user_name ";
+        List<User> list = userDao.selectList(sql, new Object[]{"2019-09-02", 1});
+        Assert.assertNotNull(list);
+        println(list);
+    }
+
+    //    List<Map<String, Object>> select(String tableName, String[] columns, String where, Object... params);
     @Test
     public void select3() {
+
+    }
+
+    //    List<T> selectList(String tableName, String[] columns, String where, Object... params);
+    @Test
+    public void select4() {
+
+    }
+
+
+    //    T selectById(Serializable... ids);
+    @Test
+    public void select5() {
         User user = userDao.selectById("21e84e67a6a243d8ba04209d1dccca29");
         Assert.assertNotNull(user);
         System.out.println(user);
     }
 
+    //    List<T> selectBatchIds(Collection<? extends Serializable> idList);
     @Test
-    public void select4() {
+    public void select6() {
         List<String> ids = new ArrayList<>();
         ids.add("00fe3989a258429c9692ad450b5eac55");
         ids.add("21e84e67a6a243d8ba04209d1dccca29");
@@ -44,6 +69,24 @@ public class SelectTest extends BaseTest {
         List<User> list = userDao.selectBatchIds(ids);
         Assert.assertEquals(list.size(), 3);
         println(list);
+    }
+
+    //    List<T> select(Wrapper<T> wrapper);
+    @Test
+    public void select7() {
+
+    }
+
+    //    T selectOne(Wrapper<T> wrapper);
+    @Test
+    public void select8() {
+
+    }
+
+    //    Integer selectCount(Wrapper<T> wrapper);
+    @Test
+    public void select9() {
+
     }
 
 
