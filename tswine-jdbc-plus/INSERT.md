@@ -58,32 +58,6 @@ columns.put("sex", 1);
 int insert = userDao.insert("user", columns);
 Assert.assertEquals(insert, 1);
 ```
-***
-### int insert (T entity,String[] excludeColumns)
-> 插入实体对象(排除指定列)
-#### 请求参数
-|参数|类型|描述 |
-| :---:|:---:|:---:|
-|T|  泛型T实体对象|插入的实体对象 |
-|excludeColumns|String[]|排除的列集合 |
-#### 返回参数
-|类型|描述| 
-| :---:|:---:|
-|int|  插入的行数| 
-#### 样例
-```java
-User user = new User();
-user.setUserName("tswine2");
-user.setPassWord("密码");
-user.setIsDelete(0);
-user.setCreateTime(LocalDateTime.now());
-user.setSex(1);
-
-int insert = userDao.insert(user);
-Assert.assertEquals(insert, 1);
-```
->  此处,将id注解：@TableId(value = "id", type = IdType.UUID)，则插入的时候会自动用UUID字符串填充ID列
-
 
 ***
 ### int insert (T entity)
@@ -109,9 +83,34 @@ int insert = userDao.insert(user);
 Assert.assertEquals(insert, 1);
 ```
 >  此处,将id注解：@TableId(value = "id", type = IdType.UUID)，则插入的时候会自动用UUID字符串填充ID列
-
-
 ***
+
+
+### int insert (T entity,String[] excludeColumns)
+> 插入实体对象(排除指定列)
+#### 请求参数
+|参数|类型|描述 |
+| :---:|:---:|:---:|
+|T|  泛型T实体对象|插入的实体对象 |
+|excludeColumns|String[]|排除的列集合 |
+#### 返回参数
+|类型|描述| 
+| :---:|:---:|
+|int|  插入的行数| 
+#### 样例
+```java
+User user = new User();
+user.setUserName("tswine2");
+user.setPassWord("密码");
+user.setIsDelete(0);
+user.setCreateTime(LocalDateTime.now());
+user.setSex(1);
+
+int insert = userDao.insert(user);
+Assert.assertEquals(insert, 1);
+```
+***
+
 
 ###  int[] insert(List\<T\> listEntity)
 > 批量插入数据
