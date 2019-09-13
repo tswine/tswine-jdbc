@@ -100,19 +100,17 @@ Assert.assertEquals(insert, 1);
 #### 样例
 ```java
 User user = new User();
-user.setUserName("tswine2");
-user.setPassWord("密码");
+user.setUserName("insert4");
+user.setPassWord("123456");
 user.setIsDelete(0);
 user.setCreateTime(LocalDateTime.now());
-user.setSex(1);
 
-int insert = userDao.insert(user);
+int insert = userDao.insert(user, new String[]{User.FIELD_SEX});
 Assert.assertEquals(insert, 1);
 ```
 ***
 
-
-###  int[] insert(List\<T\> listEntity)
+###  int[] insert(List<T> listEntity)
 > 批量插入数据
 #### 请求参数
 |参数|类型|描述 |
@@ -136,6 +134,33 @@ for (int i = 0; i < 10; i++) {
   list.add(user);
 }
 int[] insert = userDao.insert(list);
+Assert.assertEquals(insert.length, 10);
+```
+***
+
+###  int[] insert(List<T> listEntity,String[] excludeColumns)
+> 批量插入数据
+#### 请求参数
+|参数|类型|描述 |
+| :---:|:---:|:---:|
+|listEntity|List<T>|批量插入的实体对象|
+|excludeColumns|String[]|插入排除的列|
+#### 返回参数
+|类型|描述| 
+| :---:|:---:|
+|int[]|  插入的结果集| 
+#### 样例
+```java
+List<User> list = new ArrayList<>();
+  for (int i = 0; i < 10; i++) {
+    User user = new User();
+    user.setUserName("tswine" + i);
+    user.setPassWord("密码" + i);
+    user.setCreateTime(LocalDateTime.now());
+    user.setIsDelete(0);
+    list.add(user);
+  }
+int[] insert = userDao.insert(list, new String[]{User.FIELD_SEX});
 Assert.assertEquals(insert.length, 10);
 ```
 
