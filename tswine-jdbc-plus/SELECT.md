@@ -38,24 +38,48 @@ Assert.assertNotNull(list);
 ```
 ***
 
-### List<T> selectByWhere(String whereSql, Object... params) 
-> 根据条件语句和参数查询
+### List<Map<String, Object>> select(String tableName, String[] columns, String where, Object... params)
+> 根据条件语句查询
 #### 请求参数
 |参数|类型|描述 |
 | :---:|:---:|:---:|
-|whereSql| String|where条件SQL语句|
-|params|Object[]|条件子句中的参数|
+|tableName| String|查询的表名|
+|columns|String[]|查询列集合，查询所有的话为NULL|
+|where |String |查询子条件|
+|params|Object[]|查询条件参数|
 #### 返回参数
 |类型|描述| 
 | :---:|:---:|
-|List<T>| 数据集合 | 
+|List<Map<String, Object>> | 数据集合 | 
 #### 样例
 ```java
-String whereSql = "user_name = ? AND sex = ? AND create_time >= ?";
-List<User> list = userDao.selectByWhere(whereSql, new Object[]{"tswine", 1, "2019-09-02"});
+String where = "where create_time >= ?  AND sex = ?";
+List<Map<String, Object>> list = userDao.select(User.TABLE_NAME, new String[]{"id","user_name"}, where, new Object[]{"2019-09-02", 1});
 Assert.assertNotNull(list);
 ```
 ***
+
+### List\<T> selectList(String tableName, String[] columns, String where, Object... params)
+> 根据条件语句查询
+#### 请求参数
+|参数|类型|描述 |
+| :---:|:---:|:---:|
+|tableName| String|查询的表名|
+|columns|String[]|查询列集合，查询所有的话为NULL|
+|where |String |查询子条件|
+|params|Object[]|查询条件参数|
+#### 返回参数
+|类型|描述| 
+| :---:|:---:|
+|List\<T> | 数据集合 | 
+#### 样例
+```java
+String where = "where create_time >= ?  AND sex = ?";
+List<User> list = userDao.selectList(User.TABLE_NAME, new String[]{"id", "user_name"}, where, new Object[]{"2019-09-02", 1});
+Assert.assertNotNull(list);
+```
+***
+
 ### T selectById(Serializable... ids)
 > 根据map条件查询数据
 #### 请求参数
