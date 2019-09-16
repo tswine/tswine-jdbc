@@ -96,6 +96,7 @@ User user = userDao.selectById("21e84e67a6a243d8ba04209d1dccca29");
 Assert.assertNotNull(user);
 ```
 ***
+
 ### List<T> selectBatchIds(Collection<? extends Serializable> idList)
 > 根据主键集合
 #### 请求参数
@@ -114,6 +115,33 @@ ids.add("21e84e67a6a243d8ba04209d1dccca29");
 ids.add("fe4fde91818f47698d4aa8ad361cbf4c");
 List<User> list = userDao.selectBatchIds(ids);
 Assert.assertEquals(list.size(), 3);
+```
+***
+
+### List<T> select(Wrapper wrapper)
+> 根据主键集合
+#### 请求参数
+|参数|类型|描述 |
+| :---:|:---:|:---:|
+|wrapper|QueryWraaper|查询条件构造器|
+#### 返回参数
+|类型|描述| 
+| :---:|:---:|
+|List<T>| 查询到的数据 | 
+#### 样例
+```java
+QueryWrapper wrapper = new QueryWrapper();
+wrapper.select("id", "user_name", "sex").
+       bracketLeft().le(User.FIELD_CREATE_TIME, "2019-09-16")
+       .or().in(User.FIELD_USER_NAME, new Object[]{"tswine", "tswine1", "tswine2", "tswine3"}).bracketRight()
+       .or().eq(User.FIELD_IS_DELETE, 0);
+List<User> select = userDao.select(wrapper);
+Assert.assertNotNull(select);
+```
+
+编译后执行sql:
+```
+SELECT `id`,`user_name`,`sex` FROM `user` WHERE ( create_time <= ? OR user_name IN ( ?,?,?,? ) )OR is_delete = ?
 ```
 ***
 
