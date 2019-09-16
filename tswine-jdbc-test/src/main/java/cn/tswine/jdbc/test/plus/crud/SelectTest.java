@@ -32,7 +32,7 @@ public class SelectTest extends BaseTest {
     //    List<T> selectList(String sql, Object[] params);
     @Test
     public void select2() {
-        String sql = "SELECT user_name FROM `user` WHERE create_time >=?  AND sex = ? GROUP BY user_name ";
+        String sql = "SELECT user_name FROM `user` WHERE create_time >= ?  AND sex = ? GROUP BY user_name ";
         List<User> list = userDao.selectList(sql, new Object[]{"2019-09-02", 1});
         Assert.assertNotNull(list);
         println(list);
@@ -41,13 +41,21 @@ public class SelectTest extends BaseTest {
     //    List<Map<String, Object>> select(String tableName, String[] columns, String where, Object... params);
     @Test
     public void select3() {
+        String where = "where create_time >= ?  AND sex = ?";
+//        List<Map<String, Object>> list = userDao.select(User.TABLE_NAME, null, where, new Object[]{"2019-09-02", 1});
+        List<Map<String, Object>> list = userDao.select(User.TABLE_NAME, new String[]{"id", "user_name"}, where, new Object[]{"2019-09-02", 1});
+        Assert.assertNotNull(list);
+        System.out.println(list);
 
     }
 
     //    List<T> selectList(String tableName, String[] columns, String where, Object... params);
     @Test
     public void select4() {
-
+        String where = "where create_time >= ?  AND sex = ?";
+        List<User> list = userDao.selectList(User.TABLE_NAME, new String[]{"id", "user_name"}, where, new Object[]{"2019-09-02", 1});
+        Assert.assertNotNull(list);
+        println(list);
     }
 
 
@@ -74,19 +82,50 @@ public class SelectTest extends BaseTest {
     //    List<T> select(Wrapper<T> wrapper);
     @Test
     public void select7() {
-
+        //sql: SELECT `id`,`user_name`,`sex` FROM `user` WHERE ( create_time <= ? OR user_name IN ( ?,?,?,? ) )OR is_delete = ?
+        //params:[2019-09-16, tswine, tswine1, tswine2, tswine3, 0]
+        QueryWrapper wrapper = new QueryWrapper();
+        wrapper.select("id", "user_name", "sex").
+                bracketLeft().le(User.FIELD_CREATE_TIME, "2019-09-16")
+                .or().in(User.FIELD_USER_NAME, new Object[]{"tswine", "tswine1", "tswine2", "tswine3"}).bracketRight()
+                .or().eq(User.FIELD_IS_DELETE, 0);
+        List<User> select = userDao.select(wrapper);
+        Assert.assertNotNull(select);
+        println(select);
     }
 
     //    T selectOne(Wrapper<T> wrapper);
     @Test
     public void select8() {
-
+        QueryWrapper wrapper = new QueryWrapper();
+        wrapper.le(User.FIELD_CREATE_TIME, "2018-09-16").orderByAsc(new String[]{User.FIELD_CREATE_TIME});
+        User user = userDao.selectOne(wrapper);
+        Assert.assertNotNull(user);
+        System.out.println(user.toString());
     }
 
     //    Integer selectCount(Wrapper<T> wrapper);
     @Test
     public void select9() {
 
+    }
+
+
+    @Test
+    public void wrapperOr() {
+        QueryWrapper wrapper = new QueryWrapper();
+        wrapper.eq(User.FIELD_USER_NAME, "tswine").or().eq(User.FIELD_SEX, 1).ge(User.FIELD_CREATE_TIME, "2019-09-02");
+        List<User> select = userDao.select(wrapper);
+        println(select);
+    }
+
+    @Test
+    public void queryWrapperSelect() {
+        QueryWrapper wrapper = new QueryWrapper();
+        wrapper.select("id", "user_name", "pass_word");
+        wrapper.eq(User.FIELD_USER_NAME, "tswine").eq(User.FIELD_SEX, 1).ge(User.FIELD_CREATE_TIME, "2019-09-02");
+        List<User> select = userDao.select(wrapper);
+        println(select);
     }
 
 

@@ -1,6 +1,6 @@
 package cn.tswine.jdbc.plus.injector;
 
-import cn.tswine.jdbc.plus.sql.SqlSource;
+import cn.tswine.jdbc.plus.injector.sql.SqlSource;
 
 /**
  * @Author: silly

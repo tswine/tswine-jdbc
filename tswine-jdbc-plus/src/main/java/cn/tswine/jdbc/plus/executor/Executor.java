@@ -1,6 +1,6 @@
 package cn.tswine.jdbc.plus.executor;
 
-import cn.tswine.jdbc.plus.sql.SqlSource;
+import cn.tswine.jdbc.plus.injector.sql.SqlSource;
 
 /**
  * 执行器

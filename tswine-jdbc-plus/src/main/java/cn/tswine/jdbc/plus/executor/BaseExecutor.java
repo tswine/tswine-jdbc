@@ -4,7 +4,7 @@ import cn.tswine.jdbc.common.exception.TswineJdbcException;
 import cn.tswine.jdbc.common.toolkit.ArrayUtils;
 import cn.tswine.jdbc.common.toolkit.ExceptionUtils;
 import cn.tswine.jdbc.common.toolkit.StringUtils;
-import cn.tswine.jdbc.plus.sql.SqlSource;
+import cn.tswine.jdbc.plus.injector.sql.SqlSource;
 import cn.tswine.jdbc.plus.transaction.Transaction;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -108,7 +108,7 @@ public abstract class BaseExecutor implements Executor {
         Map<String, Object> rsData = new HashMap<>(columnCount);
         for (int i = 1; i <= columnCount; i++) {
             String columnName = metaData.getColumnName(i);
-            rsData.put(columnName, rs.getObject(i));
+            rsData.put(columnName, rs.getObject(columnName));
         }
         return rsData;
     }

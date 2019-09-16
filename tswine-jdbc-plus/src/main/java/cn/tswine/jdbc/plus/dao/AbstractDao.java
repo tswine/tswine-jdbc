@@ -13,7 +13,7 @@ import cn.tswine.jdbc.plus.conditions.Wrapper;
 import cn.tswine.jdbc.plus.conditions.query.QueryWrapper;
 import cn.tswine.jdbc.plus.injector.IMethod;
 import cn.tswine.jdbc.plus.injector.methods.UpdateBatch;
-import cn.tswine.jdbc.plus.sql.SqlSource;
+import cn.tswine.jdbc.plus.injector.sql.SqlSource;
 import cn.tswine.jdbc.plus.transaction.Transaction;
 import cn.tswine.jdbc.plus.transaction.jdbc.JdbcTransactionFactory;
 
@@ -149,7 +149,7 @@ public abstract class AbstractDao<T> extends BaseDao implements ExpandDao<T>, IG
     @Override
     public List<T> selectBatchIds(Collection<? extends Serializable> idList) {
         String[] ids = entitySchema.getIds();
-        Assert.notEmpty(ids, "The primary key only supports one");
+        Assert.notEmpty(ids, "The primary key only support one");
         String sqlIn = SqlUtils.getIn(ids[0], idList.size());
         String whereSql = String.format("%s %s", SQLSentenceType.WHERE.getValue(), sqlIn);
         return selectList(entitySchema.getTableName(), entitySchema.getColumns(null), whereSql, idList.toArray());
@@ -170,6 +170,7 @@ public abstract class AbstractDao<T> extends BaseDao implements ExpandDao<T>, IG
 
     @Override
     public T selectOne(Wrapper wrapper) {
+        //TODO 采用分页思想
         List<T> select = select(wrapper);
         if (select != null && select.size() > 0) {
             return select.get(0);

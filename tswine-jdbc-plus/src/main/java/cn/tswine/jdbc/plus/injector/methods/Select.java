@@ -3,7 +3,6 @@ package cn.tswine.jdbc.plus.injector.methods;
 import cn.tswine.jdbc.common.rules.IDBLabel;
 import cn.tswine.jdbc.plus.executor.comply.ExecutorQuery;
 import cn.tswine.jdbc.plus.injector.AbstractMethod;
-import cn.tswine.jdbc.plus.sql.SqlSource;
 
 /**
  * 查询

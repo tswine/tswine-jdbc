@@ -13,13 +13,30 @@ import java.io.Serializable;
 public interface Logic<Children> extends Serializable {
     /**
      * AND连接符
+     *
      * @return
      */
     Children and();
 
     /**
      * OR连接符
+     *
      * @return
      */
     Children or();
+
+    /**
+     * 左括号
+     *
+     * @return
+     */
+    Children bracketLeft();
+
+
+    /**
+     * 右括号
+     *
+     * @return
+     */
+    Children bracketRight();
 }
