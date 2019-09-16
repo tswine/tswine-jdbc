@@ -2,7 +2,7 @@ package cn.tswine.jdbc.plus.executor.comply;
 
 import cn.tswine.jdbc.common.toolkit.ExceptionUtils;
 import cn.tswine.jdbc.plus.executor.BaseExecutor;
-import cn.tswine.jdbc.plus.injector.sql.SqlSource;
+import cn.tswine.jdbc.plus.metadata.SqlSource;
 import cn.tswine.jdbc.plus.transaction.Transaction;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

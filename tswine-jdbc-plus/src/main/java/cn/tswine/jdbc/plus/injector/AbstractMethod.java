@@ -3,7 +3,7 @@ package cn.tswine.jdbc.plus.injector;
 import cn.tswine.jdbc.common.rules.IDBLabel;
 import cn.tswine.jdbc.common.toolkit.ReflectionUtils;
 import cn.tswine.jdbc.plus.executor.Executor;
-import cn.tswine.jdbc.plus.injector.sql.SqlSource;
+import cn.tswine.jdbc.plus.metadata.SqlSource;
 import cn.tswine.jdbc.plus.transaction.Transaction;
 import cn.tswine.jdbc.plus.transaction.jdbc.JdbcTransactionFactory;
 

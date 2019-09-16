@@ -5,7 +5,7 @@ import cn.tswine.jdbc.common.toolkit.ExceptionUtils;
 import cn.tswine.jdbc.plus.injector.IMethod;
 import cn.tswine.jdbc.plus.injector.methods.Select;
 import cn.tswine.jdbc.plus.injector.methods.Update;
-import cn.tswine.jdbc.plus.injector.sql.SqlSource;
+import cn.tswine.jdbc.plus.metadata.SqlSource;
 
 import java.util.List;
 import java.util.Map;

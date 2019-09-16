@@ -1,6 +1,5 @@
-package cn.tswine.jdbc.plus.injector.sql;
+package cn.tswine.jdbc.plus.metadata;
 
-import cn.tswine.jdbc.plus.metadata.ISqlSource;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -14,7 +13,7 @@ import java.util.Map;
  * @Version 1.0
  * @Desc
  */
-public class SqlSource implements ISqlSource {
+public class SqlSource {
     /**
      * 执行的sql语句
      */

@@ -13,7 +13,7 @@ import cn.tswine.jdbc.plus.conditions.Wrapper;
 import cn.tswine.jdbc.plus.conditions.query.QueryWrapper;
 import cn.tswine.jdbc.plus.injector.IMethod;
 import cn.tswine.jdbc.plus.injector.methods.UpdateBatch;
-import cn.tswine.jdbc.plus.injector.sql.SqlSource;
+import cn.tswine.jdbc.plus.metadata.SqlSource;
 import cn.tswine.jdbc.plus.transaction.Transaction;
 import cn.tswine.jdbc.plus.transaction.jdbc.JdbcTransactionFactory;
 

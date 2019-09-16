@@ -3,7 +3,7 @@ package cn.tswine.jdbc.plus.injector.methods;
 import cn.tswine.jdbc.common.rules.IDBLabel;
 import cn.tswine.jdbc.plus.executor.comply.ExecutorBatchUpdate;
 import cn.tswine.jdbc.plus.injector.AbstractMethod;
-import cn.tswine.jdbc.plus.injector.sql.SqlSource;
+import cn.tswine.jdbc.plus.metadata.SqlSource;
 
 import java.util.List;
 
