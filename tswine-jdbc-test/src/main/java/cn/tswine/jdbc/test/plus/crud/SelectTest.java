@@ -2,6 +2,8 @@ package cn.tswine.jdbc.test.plus.crud;
 
 import cn.tswine.jdbc.common.toolkit.CollectionUtils;
 import cn.tswine.jdbc.plus.conditions.query.QueryWrapper;
+import cn.tswine.jdbc.plus.metadata.IPage;
+import cn.tswine.jdbc.plus.metadata.pagination.Page;
 import cn.tswine.jdbc.test.plus.BaseTest;
 import cn.tswine.jdbc.test.plus.entity.User;
 import org.junit.Assert;
@@ -94,19 +96,32 @@ public class SelectTest extends BaseTest {
         println(select);
     }
 
-    //    T selectOne(Wrapper<T> wrapper);
+    //    IPage<T> selectPage(IPage<T> page, Wrapper wrapper)
     @Test
     public void select8() {
         QueryWrapper wrapper = new QueryWrapper();
-        wrapper.le(User.FIELD_CREATE_TIME, "2018-09-16").orderByAsc(new String[]{User.FIELD_CREATE_TIME});
+        wrapper.orderBy(true, User.FIELD_SORT);
+        IPage<User> page = new Page<>();
+        page.setSize(20).setCurrent(3);
+        page = userDao.selectPage(page, wrapper);
+        Assert.assertNotNull(page);
+        println(page.getRecords());
+        System.out.println(page.offset());
+        System.out.println(page.getPages());
+    }
+
+    //    T selectOne(Wrapper<T> wrapper);
+    @Test
+    public void select9() {
+        QueryWrapper wrapper = new QueryWrapper();
+        wrapper.orderBy(false, User.FIELD_SORT);
         User user = userDao.selectOne(wrapper);
-        Assert.assertNotNull(user);
         System.out.println(user.toString());
     }
 
     //    Integer selectCount(Wrapper<T> wrapper);
     @Test
-    public void select9() {
+    public void select10() {
 
     }
 

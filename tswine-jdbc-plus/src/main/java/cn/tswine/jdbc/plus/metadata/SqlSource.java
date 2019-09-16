@@ -46,6 +46,13 @@ public class SqlSource {
     @Setter
     private int[] batchUpdate;
 
+    /**
+     * 分页信息
+     */
+    @Getter
+    @Setter
+    private IPage page;
+
     public SqlSource(String sql, Object[] parameter) {
         this.sql = sql;
         this.parameters.add(parameter);

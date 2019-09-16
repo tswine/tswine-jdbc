@@ -17,4 +17,6 @@ public interface Wrapper extends ISqlSegment {
      * @param entitySchema
      */
     void setEntitySchema(EntitySchema entitySchema);
+
+    Object[] getParams();
 }

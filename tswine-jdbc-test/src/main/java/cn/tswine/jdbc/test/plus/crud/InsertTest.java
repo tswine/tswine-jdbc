@@ -90,12 +90,13 @@ public class InsertTest extends BaseTest {
     @Test
     public void insert6() {
         List<User> list = new ArrayList<>();
-        for (int i = 0; i < 10; i++) {
+        for (int i = 1; i <= 126; i++) {
             User user = new User();
             user.setUserName("tswine" + i);
             user.setPassWord("密码" + i);
             user.setCreateTime(LocalDateTime.now());
             user.setIsDelete(0);
+            user.setSort(i);
             list.add(user);
         }
         int[] insert = userDao.insert(list, new String[]{User.FIELD_SEX});

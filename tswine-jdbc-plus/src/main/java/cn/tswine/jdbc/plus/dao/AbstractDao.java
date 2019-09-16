@@ -12,8 +12,11 @@ import cn.tswine.jdbc.plus.builder.schema.EntitySchema;
 import cn.tswine.jdbc.plus.conditions.Wrapper;
 import cn.tswine.jdbc.plus.conditions.query.QueryWrapper;
 import cn.tswine.jdbc.plus.injector.IMethod;
+import cn.tswine.jdbc.plus.injector.methods.SelectPage;
 import cn.tswine.jdbc.plus.injector.methods.UpdateBatch;
+import cn.tswine.jdbc.plus.metadata.IPage;
 import cn.tswine.jdbc.plus.metadata.SqlSource;
+import cn.tswine.jdbc.plus.metadata.pagination.Page;
 import cn.tswine.jdbc.plus.transaction.Transaction;
 import cn.tswine.jdbc.plus.transaction.jdbc.JdbcTransactionFactory;
 
@@ -125,9 +128,7 @@ public abstract class AbstractDao<T> extends BaseDao implements ExpandDao<T>, IG
 
     @Override
     public List<Map<String, Object>> select(String tableName, String[] columns, String whereSql, Object... params) {
-        tableName = SqlUtils.columnEscape(tableName, getDbLabel().getDbType().getPlaceholder());
-        String columnSql = SqlUtils.getColumnSql(columns, getDbLabel().getDbType().getPlaceholder());
-        String sql = SqlUtils.getSelectSql(tableName, columnSql, whereSql);
+        String sql = getSelectSql(tableName, columns, whereSql);
         return select(sql, params);
     }
 
@@ -169,11 +170,25 @@ public abstract class AbstractDao<T> extends BaseDao implements ExpandDao<T>, IG
     }
 
     @Override
+    public IPage<T> selectPage(IPage<T> page, Wrapper wrapper) {
+        String selectSql = getSelectSql(wrapper);
+        SqlSource sqlSource = new SqlSource(selectSql, wrapper.getParams());
+        sqlSource.setPage(page);
+        IMethod method = new SelectPage(getDbLabel(), sqlSource);
+        sqlSource = method.execute();
+        List<Map<String, Object>> results = sqlSource.getResults();
+        page.setRecords(mapToObject(results));
+        return page;
+    }
+
+    @Override
     public T selectOne(Wrapper wrapper) {
-        //TODO 采用分页思想
-        List<T> select = select(wrapper);
-        if (select != null && select.size() > 0) {
-            return select.get(0);
+        IPage<T> page = new Page<>();
+        page.setCurrent(1);
+        page.setSize(1);
+        page = selectPage(page, wrapper);
+        if (page.getRecords() != null && page.getRecords() .size() > 0) {
+            return page.getRecords() .get(0);
         }
         return null;
     }
@@ -287,6 +302,25 @@ public abstract class AbstractDao<T> extends BaseDao implements ExpandDao<T>, IG
      */
     protected Transaction transaction() {
         return JdbcTransactionFactory.getInstance().newTransaction(dbLabel);
+    }
+
+
+    private String getSelectSql(Wrapper wrapper) {
+        Assert.isNotNull(wrapper, "wrapper is null");
+        if (!(wrapper instanceof QueryWrapper)) {
+            throw ExceptionUtils.tse("wrapper type must QueryWrapper");
+        }
+        QueryWrapper queryWrapper = (QueryWrapper) wrapper;
+        wrapper.setEntitySchema(entitySchema);
+        String whereSql = queryWrapper.getSqlSegment();
+        return getSelectSql(entitySchema.getTableName(), queryWrapper.getColumns(), whereSql);
+
+    }
+
+    private String getSelectSql(String tableName, String[] columns, String whereSql) {
+        tableName = SqlUtils.columnEscape(tableName, getDbLabel().getDbType().getPlaceholder());
+        String columnSql = SqlUtils.getColumnSql(columns, getDbLabel().getDbType().getPlaceholder());
+        return SqlUtils.getSelectSql(tableName, columnSql, whereSql);
     }
 
 

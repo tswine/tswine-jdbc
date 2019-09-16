@@ -1,6 +1,7 @@
 package cn.tswine.jdbc.plus.dao;
 
 import cn.tswine.jdbc.plus.conditions.Wrapper;
+import cn.tswine.jdbc.plus.metadata.IPage;
 
 import java.io.Serializable;
 import java.util.Collection;
@@ -116,18 +117,27 @@ public interface ExpandDao<T> {
     /**
      * 查询：根据条件构造器
      *
-     * @param wrapper 条件构造器
+     * @param queryWrapper 条件构造器
      * @return
      */
-    List<T> select(Wrapper wrapper);
+    List<T> select(Wrapper queryWrapper);
+
+    /**
+     * 分页查询
+     *
+     * @param page         分页对象
+     * @param queryWrapper 条件构造器
+     * @return
+     */
+    IPage<T> selectPage(IPage<T> page, Wrapper queryWrapper);
 
     /**
      * 查询：根据条件构造器查询一个
      *
-     * @param wrapper
+     * @param queryWrapper
      * @return
      */
-    T selectOne(Wrapper wrapper);
+    T selectOne(Wrapper queryWrapper);
 
     /**
      * 根据条件构造器：查询总记录

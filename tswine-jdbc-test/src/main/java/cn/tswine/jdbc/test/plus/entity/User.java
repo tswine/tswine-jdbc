@@ -34,6 +34,7 @@ public class User {
     public static final String FIELD_IS_DELETE = "is_delete";
     public static final String FIELD_CREATE_TIME = "create_time";
     public static final String FIELD_SEX = "sex";
+    public static final String FIELD_SORT = "sort";
 
     /**
      * 主键
@@ -71,5 +72,8 @@ public class User {
     @ApiModelProperty(value = "性别:  0:未知 1:男  2:女")
     @TableField(value = "sex")
     private Integer sex;
+
+    @TableField(value = "sort")
+    private Integer sort;
 
 }

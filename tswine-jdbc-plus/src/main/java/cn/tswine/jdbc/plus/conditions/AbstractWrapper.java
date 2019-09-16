@@ -235,6 +235,7 @@ public class AbstractWrapper<Children extends AbstractWrapper<Children>>
         return sb.toString().trim();
     }
 
+    @Override
     public Object[] getParams() {
         return whereParams.toArray();
     }
