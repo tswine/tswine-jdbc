@@ -164,3 +164,21 @@ Assert.assertNotNull(user);
 ```
 ***
 
+### int selectCount(Wrapper wrapper)
+> 根据主键集合
+#### 请求参数
+|参数|类型|描述 |
+| :---:|:---:|:---:|
+|wrapper|QueryWraaper|查询条件构造器|
+#### 返回参数
+|类型|描述| 
+| :---:|:---:|
+|int| 查询到的条数 | 
+#### 样例
+```java
+QueryWrapper wrapper = new QueryWrapper();
+wrapper.eq(User.FIELD_PASS_WORD, "密码18");
+int count = userDao.selectCount(wrapper);
+Assert.assertEquals(1, count);
+```
+***
