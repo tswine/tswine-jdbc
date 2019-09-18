@@ -150,7 +150,7 @@ SELECT `id`,`user_name`,`sex` FROM `user` WHERE ( create_time <= ? OR user_name 
 #### 请求参数
 |参数|类型|描述 |
 | :---:|:---:|:---:|
-|page|IPage<T>|分页条件构造器|
+|page|IPage\<T>|分页条件构造器|
 |wrapper|QueryWraaper|查询条件构造器|
 #### 返回参数
 |类型|描述| 
