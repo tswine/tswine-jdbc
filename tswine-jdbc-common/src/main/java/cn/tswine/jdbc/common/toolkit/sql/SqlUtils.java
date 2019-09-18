@@ -83,11 +83,13 @@ public class SqlUtils implements StringPool {
     /**
      * 获取where条件 SQL
      *
-     * @param columns 条件列
+     * @param columns     条件列
+     * @param placeholder 占位符
      * @return where user_name = ? AND password = ?
      */
-    public static String getWhere(String[] columns) {
-        return String.format("%s %s", SQLSentenceType.WHERE.getValue(), getColumnJoin(columns, SQLSentenceType.AND.getValue()));
+    public static String getWhere(String[] columns, String placeholder) {
+        String[] columnNew = columnEscape(columns, placeholder);
+        return String.format("%s %s", SQLSentenceType.WHERE.getValue(), getColumnJoin(columnNew, SQLSentenceType.AND.getValue()));
     }
 
     /**
@@ -142,12 +144,7 @@ public class SqlUtils implements StringPool {
         if (ArrayUtils.isEmpty(columns)) {
             return StringPool.ASTERISK;
         }
-        String[] columnNew = new String[columns.length];
-        if (StringUtils.isNotEmpty(placeholder)) {
-            for (int i = 0; i < columns.length; i++) {
-                columnNew[i] = columnEscape(columns[i], placeholder);
-            }
-        }
+        String[] columnNew = columnEscape(columns, placeholder);
         return StringUtils.join(columnNew, ",");
 
     }
@@ -214,6 +211,26 @@ public class SqlUtils implements StringPool {
         }
         //TODO 判断该column 是否已经被转义
         return String.format(placeholder, column);
+    }
+
+    /**
+     * placeholder
+     *
+     * @param columns     需要转义的字段
+     * @param placeholder 转义符
+     * @return
+     */
+    public static String[] columnEscape(String[] columns, String placeholder) {
+        if (StringUtils.isEmpty(placeholder)) {
+            return columns;
+        }
+        String[] columnNew = new String[columns.length];
+        if (StringUtils.isNotEmpty(placeholder)) {
+            for (int i = 0; i < columns.length; i++) {
+                columnNew[i] = columnEscape(columns[i], placeholder);
+            }
+        }
+        return columnNew;
     }
 
 

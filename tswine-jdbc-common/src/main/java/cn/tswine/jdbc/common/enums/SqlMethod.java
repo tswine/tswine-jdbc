@@ -11,7 +11,7 @@ package cn.tswine.jdbc.common.enums;
 public enum SqlMethod {
 
     INSERT("insert", "插入", "INSERT INTO %s ( %s ) VALUES ( %s )"),
-    DELETE("delete", "删除", "DELETE FROM %s WHERE %s"),
+    DELETE("delete", "删除", "DELETE FROM %s %s"),
     UPDATE("update", "更新", "UPDATE %s SET %s WHERE %s"),
     SELECT("select", "查找", "SELECT %s FROM %s %s");
 

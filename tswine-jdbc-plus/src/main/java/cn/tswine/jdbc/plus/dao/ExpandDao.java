@@ -185,10 +185,10 @@ public interface ExpandDao<T> {
     /**
      * 删除
      *
-     * @param wrapper 条件构造器
+     * @param updateWrapper 条件构造器
      * @return 删除的行数
      */
-    int delete(Wrapper wrapper);
+    int delete(Wrapper updateWrapper);
 
     /***********更新***********/
     /**

@@ -143,7 +143,7 @@ public abstract class AbstractDao<T> extends BaseDao implements ExpandDao<T>, IG
     public T selectById(Serializable... ids) {
         Assert.notEmpty(ids, "ids not empty");
         String[] columns = entitySchema.getColumns(null);
-        String whereSql = SqlUtils.getWhere(entitySchema.getIds());
+        String whereSql = SqlUtils.getWhere(entitySchema.getIds(), getDbLabel().getDbType().getPlaceholder());
         List<T> list = selectList(entitySchema.getTableName(), columns, whereSql, ids);
         return list != null ? list.get(0) : null;
     }
@@ -217,49 +217,53 @@ public abstract class AbstractDao<T> extends BaseDao implements ExpandDao<T>, IG
     }
 
     /***DELETE***/
+    @Override
+    public int deleteByWhere(String tableName, String where, Object[] params) {
+        Assert.isNotNull(tableName, "tableName not null");
+        Assert.isNotNull(where, "where not null");
+        Assert.notEmpty(params, "params not null");
+        where = where.trim();
+        if (!where.startsWith(SQLSentenceType.WHERE.getValue())) {
+            where = String.format("%s %s", SQLSentenceType.WHERE.getValue(), where);
+        }
+        tableName = SqlUtils.columnEscape(tableName, getDbLabel().getDbType().getPlaceholder());
+        String sql = SqlUtils.getDeleteSql(tableName, where);
+        return delete(sql, params);
+    }
 
     @Override
     public int deleteById(Serializable... ids) {
-        //TODO
-        return 0;
-//        Assert.notEmpty(ids, "ids not empty");
-//        if (ids.length != entitySchema.getIds().size()) {
-//            throw ExceptionUtils.tse("ids length is not equal key size");
-//        }
-//        String sqlWhere = SqlUtils.getWhere(entitySchema.getIds());
-//        return deleteByWhere(entitySchema.getTableName(), sqlWhere, ids);
+        Assert.notEmpty(ids, "ids not empty");
+        if (ids.length != entitySchema.getIds().length) {
+            throw ExceptionUtils.tse("ids length is not equal key size");
+        }
+        String sqlWhere = SqlUtils.getWhere(entitySchema.getIds(), getDbLabel().getDbType().getPlaceholder());
+        return deleteByWhere(entitySchema.getTableName(), sqlWhere, ids);
     }
 
     @Override
     public int deleteBatchIds(Collection<? extends Serializable> idList) {
-        //TODO
-        return 0;
-//        Assert.notEmpty(idList, "idList not empty");
-//        List<String> ids = entitySchema.getIds();
-//        if (ids.size() != 1) {
-//            throw ExceptionUtils.tse("The primary key only supports one");
-//        }
-//        String sqlIn = SqlUtils.getIn(entitySchema.getIds().get(0), idList.size());
-//        return deleteByWhere(entitySchema.getTableName(), sqlIn, idList.toArray());
+        Assert.notEmpty(idList, "idList not empty");
+        String[] ids = entitySchema.getIds();
+        if (ids.length != 1) {
+            throw ExceptionUtils.tse("The primary key only supports one");
+        }
+        String sqlIn = SqlUtils.getIn(ids[0], idList.size());
+        return deleteByWhere(entitySchema.getTableName(), sqlIn, idList.toArray());
     }
 
     @Override
     public int deleteByMap(Map<String, Object> columnMap) {
-        //TODO
-        return 0;
-//        Assert.notEmpty(columnMap, "columnMap not empty");
-//        Set<String> columns = columnMap.keySet();
-//        String sqlWhere = SqlUtils.getWhere(columns);
-//        return deleteByWhere(entitySchema.getTableName(), sqlWhere, columnMap.values().toArray());
+        Assert.notEmpty(columnMap, "columnMap not empty");
+        String[] columns = CollectionUtils.asArray(columnMap.keySet(), String.class);
+        String whereSql = SqlUtils.getWhere(columns,getDbLabel().getDbType().getPlaceholder());
+        return deleteByWhere(entitySchema.getTableName(), whereSql, columnMap.values().toArray());
     }
 
     @Override
     public int delete(Wrapper wrapper) {
-        if (wrapper == null) {
-            throw ExceptionUtils.tse("wrapper is not null");
-        }
-        //TODO 逻辑实现
-        return 0;
+        Assert.isNotNull(wrapper, "wrapper is not null");
+        return deleteByWhere(entitySchema.getTableName(), wrapper.getSqlSegment(), wrapper.getParams());
     }
 
     @Override
@@ -300,18 +304,6 @@ public abstract class AbstractDao<T> extends BaseDao implements ExpandDao<T>, IG
 //        return update(sql, params.toArray());
     }
 
-    @Override
-    public int deleteByWhere(String tableName, String where, Object[] params) {
-        //TODO
-        return 0;
-//        Assert.isNotNull(tableName, "tableName not null");
-//        Assert.isNotNull(where, "where not null");
-//        Assert.notEmpty(params, "params not null");
-//        String sql = SqlUtils.getDeleteSql(entitySchema.getTableName(), where);
-//        return delete(sql, params);
-    }
-
-
     /**
      * 暴露数据库操作对象
      *
@@ -320,32 +312,6 @@ public abstract class AbstractDao<T> extends BaseDao implements ExpandDao<T>, IG
     protected Transaction transaction() {
         return JdbcTransactionFactory.getInstance().newTransaction(dbLabel);
     }
-
-
-    private String getSelectSql(Wrapper wrapper) {
-        Assert.isNotNull(wrapper, "wrapper is null");
-        if (!(wrapper instanceof QueryWrapper)) {
-            throw ExceptionUtils.tse("wrapper type must QueryWrapper");
-        }
-        QueryWrapper queryWrapper = (QueryWrapper) wrapper;
-        wrapper.setEntitySchema(entitySchema);
-        String whereSql = queryWrapper.getSqlSegment();
-        return getSelectSql(entitySchema.getTableName(),
-                queryWrapper.getColumnSql(getDbLabel().getDbType().getPlaceholder()), whereSql);
-
-    }
-
-    private String getSelectSql(String tableName, String[] columns, String whereSql) {
-        tableName = SqlUtils.columnEscape(tableName, getDbLabel().getDbType().getPlaceholder());
-        String columnSql = SqlUtils.getColumnSql(columns, getDbLabel().getDbType().getPlaceholder());
-        return SqlUtils.getSelectSql(tableName, columnSql, whereSql);
-    }
-
-    private String getSelectSql(String tableName, String columnSql, String whereSql) {
-        tableName = SqlUtils.columnEscape(tableName, getDbLabel().getDbType().getPlaceholder());
-        return SqlUtils.getSelectSql(tableName, columnSql, whereSql);
-    }
-
 
     /**
      * 集合Map转换为集合Object对象
@@ -395,4 +361,30 @@ public abstract class AbstractDao<T> extends BaseDao implements ExpandDao<T>, IG
         });
         return values;
     }
+
+    private String getSelectSql(Wrapper wrapper) {
+        Assert.isNotNull(wrapper, "wrapper is null");
+        if (!(wrapper instanceof QueryWrapper)) {
+            throw ExceptionUtils.tse("wrapper type must QueryWrapper");
+        }
+        QueryWrapper queryWrapper = (QueryWrapper) wrapper;
+        wrapper.setEntitySchema(entitySchema);
+        String whereSql = queryWrapper.getSqlSegment();
+        return getSelectSql(entitySchema.getTableName(),
+                queryWrapper.getColumnSql(getDbLabel().getDbType().getPlaceholder()), whereSql);
+
+    }
+
+    private String getSelectSql(String tableName, String[] columns, String whereSql) {
+        tableName = SqlUtils.columnEscape(tableName, getDbLabel().getDbType().getPlaceholder());
+        String columnSql = SqlUtils.getColumnSql(columns, getDbLabel().getDbType().getPlaceholder());
+        return SqlUtils.getSelectSql(tableName, columnSql, whereSql);
+    }
+
+    private String getSelectSql(String tableName, String columnSql, String whereSql) {
+        tableName = SqlUtils.columnEscape(tableName, getDbLabel().getDbType().getPlaceholder());
+        return SqlUtils.getSelectSql(tableName, columnSql, whereSql);
+    }
+
+
 }
