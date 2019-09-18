@@ -97,7 +97,7 @@ Assert.assertNotNull(user);
 ```
 ***
 
-### List<T> selectBatchIds(Collection<? extends Serializable> idList)
+### List\<T> selectBatchIds(Collection<? extends Serializable> idList)
 > 根据主键集合
 #### 请求参数
 |参数|类型|描述 |
@@ -106,7 +106,7 @@ Assert.assertNotNull(user);
 #### 返回参数
 |类型|描述| 
 | :---:|:---:|
-|List<T>| 查询到的数据 | 
+|List\<T>| 查询到的数据 | 
 #### 样例
 ```java
 List<String> ids = new ArrayList<>();
@@ -118,7 +118,7 @@ Assert.assertEquals(list.size(), 3);
 ```
 ***
 
-### List<T> select(Wrapper wrapper)
+### List\<T> select(Wrapper wrapper)
 > 根据主键集合
 #### 请求参数
 |参数|类型|描述 |
@@ -127,7 +127,7 @@ Assert.assertEquals(list.size(), 3);
 #### 返回参数
 |类型|描述| 
 | :---:|:---:|
-|List<T>| 查询到的数据 | 
+|List\<T>| 查询到的数据 | 
 #### 样例
 ```java
 QueryWrapper wrapper = new QueryWrapper();
