@@ -61,7 +61,7 @@ public class UpdateTest extends BaseTest {
         Assert.assertEquals(1, update);
     }
 
-    //    int update(String tableName, Map<String, Object> update, Map<String, Object> where)
+    //    int update(String tableName, Map<String, Object> update, Map<String, Object> where);
     @Test
     public void test5() {
         Map<String, Object> set = new HashMap<>();
