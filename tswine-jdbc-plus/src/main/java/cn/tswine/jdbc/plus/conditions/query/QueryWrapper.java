@@ -5,6 +5,7 @@ import cn.tswine.jdbc.common.enums.SQLSentenceType;
 import cn.tswine.jdbc.common.toolkit.ArrayUtils;
 import cn.tswine.jdbc.common.toolkit.StringPool;
 import cn.tswine.jdbc.common.toolkit.StringUtils;
+import cn.tswine.jdbc.common.toolkit.sql.SqlUtils;
 import cn.tswine.jdbc.plus.conditions.AbstractWrapper;
 import cn.tswine.jdbc.plus.conditions.OrderBy;
 
@@ -34,7 +35,6 @@ public class QueryWrapper extends AbstractWrapper<QueryWrapper> implements Query
     @Override
     public QueryWrapper distinct(boolean distinct) {
         this.distinct = distinct;
-        //TODO 待实现逻辑
         return this;
     }
 
@@ -83,8 +83,23 @@ public class QueryWrapper extends AbstractWrapper<QueryWrapper> implements Query
         } else {
             return columns;
         }
-
     }
+
+    /**
+     * 获取列sql
+     *
+     * @param placeholder 占位符
+     * @return
+     */
+    public String getColumnSql(String placeholder) {
+        String[] columns = getColumns();
+        String columnSql = SqlUtils.getColumnSql(columns, placeholder);
+        if (distinct) {
+            columnSql = String.format(" DISTINCT %s ", columnSql);
+        }
+        return columnSql;
+    }
+
 
     @Override
     public String getSqlSegment() {

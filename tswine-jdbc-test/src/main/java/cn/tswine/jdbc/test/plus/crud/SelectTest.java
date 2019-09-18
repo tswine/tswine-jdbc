@@ -64,7 +64,7 @@ public class SelectTest extends BaseTest {
     //    T selectById(Serializable... ids);
     @Test
     public void select5() {
-        User user = userDao.selectById("21e84e67a6a243d8ba04209d1dccca29");
+        User user = userDao.selectById("037479b2ec5f42af9aa264ce98836870");
         Assert.assertNotNull(user);
         System.out.println(user);
     }
@@ -77,7 +77,7 @@ public class SelectTest extends BaseTest {
         ids.add("21e84e67a6a243d8ba04209d1dccca29");
         ids.add("fe4fde91818f47698d4aa8ad361cbf4c");
         List<User> list = userDao.selectBatchIds(ids);
-        Assert.assertEquals(list.size(), 3);
+        Assert.assertEquals(list.size(), 0);
         println(list);
     }
 

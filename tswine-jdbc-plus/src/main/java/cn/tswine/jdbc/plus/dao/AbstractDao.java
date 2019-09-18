@@ -138,6 +138,7 @@ public abstract class AbstractDao<T> extends BaseDao implements ExpandDao<T>, IG
         return mapToObject(maps);
     }
 
+
     @Override
     public T selectById(Serializable... ids) {
         Assert.notEmpty(ids, "ids not empty");
@@ -156,6 +157,11 @@ public abstract class AbstractDao<T> extends BaseDao implements ExpandDao<T>, IG
         return selectList(entitySchema.getTableName(), entitySchema.getColumns(null), whereSql, idList.toArray());
     }
 
+    private List<T> selectList(String tableName, String columnSql, String whereSql, Object... params) {
+        String selectSql = getSelectSql(tableName, columnSql, whereSql);
+        return selectList(selectSql, params);
+    }
+
     @Override
     public List<T> select(Wrapper wrapper) {
         Assert.isNotNull(wrapper, "wrapper is null");
@@ -165,7 +171,8 @@ public abstract class AbstractDao<T> extends BaseDao implements ExpandDao<T>, IG
         wrapper.setEntitySchema(entitySchema);
         QueryWrapper queryWrapper = (QueryWrapper) wrapper;
         String whereSql = queryWrapper.getSqlSegment();
-        return selectList(entitySchema.getTableName(), queryWrapper.getColumns(), whereSql, queryWrapper.getParams());
+        return selectList(entitySchema.getTableName(), queryWrapper.getColumnSql(getDbLabel().getDbType().getPlaceholder()),
+                whereSql, queryWrapper.getParams());
     }
 
     @Override
@@ -323,13 +330,19 @@ public abstract class AbstractDao<T> extends BaseDao implements ExpandDao<T>, IG
         QueryWrapper queryWrapper = (QueryWrapper) wrapper;
         wrapper.setEntitySchema(entitySchema);
         String whereSql = queryWrapper.getSqlSegment();
-        return getSelectSql(entitySchema.getTableName(), queryWrapper.getColumns(), whereSql);
+        return getSelectSql(entitySchema.getTableName(),
+                queryWrapper.getColumnSql(getDbLabel().getDbType().getPlaceholder()), whereSql);
 
     }
 
     private String getSelectSql(String tableName, String[] columns, String whereSql) {
         tableName = SqlUtils.columnEscape(tableName, getDbLabel().getDbType().getPlaceholder());
         String columnSql = SqlUtils.getColumnSql(columns, getDbLabel().getDbType().getPlaceholder());
+        return SqlUtils.getSelectSql(tableName, columnSql, whereSql);
+    }
+
+    private String getSelectSql(String tableName, String columnSql, String whereSql) {
+        tableName = SqlUtils.columnEscape(tableName, getDbLabel().getDbType().getPlaceholder());
         return SqlUtils.getSelectSql(tableName, columnSql, whereSql);
     }
 
