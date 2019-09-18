@@ -166,7 +166,6 @@ public abstract class AbstractDao<T> extends BaseDao implements ExpandDao<T>, IG
         QueryWrapper queryWrapper = (QueryWrapper) wrapper;
         String whereSql = queryWrapper.getSqlSegment();
         return selectList(entitySchema.getTableName(), queryWrapper.getColumns(), whereSql, queryWrapper.getParams());
-
     }
 
     @Override
@@ -187,15 +186,26 @@ public abstract class AbstractDao<T> extends BaseDao implements ExpandDao<T>, IG
         page.setCurrent(1);
         page.setSize(1);
         page = selectPage(page, wrapper);
-        if (page.getRecords() != null && page.getRecords() .size() > 0) {
-            return page.getRecords() .get(0);
+        if (page.getRecords() != null && page.getRecords().size() > 0) {
+            return page.getRecords().get(0);
         }
         return null;
     }
 
     @Override
     public int selectCount(Wrapper wrapper) {
-        //TODO 未实现业务逻辑
+        Assert.isNotNull(wrapper, "wrapper is null");
+        if (!(wrapper instanceof QueryWrapper)) {
+            throw ExceptionUtils.tse("wrapper type must QueryWrapper");
+        }
+        String tableName = SqlUtils.columnEscape(entitySchema.getTableName(), getDbLabel().getDbType().getPlaceholder());
+        String whereSql = wrapper.getSqlSegment();
+        String sql = String.format("SELECT count(0) as count FROM %s %s", tableName, whereSql);
+        List<Map<String, Object>> list = select(sql, wrapper.getParams());
+        if (list != null && list.size() > 0) {
+            Map<String, Object> map = list.get(0);
+            return Integer.parseInt(String.valueOf(map.get("count")));
+        }
         return 0;
     }
 

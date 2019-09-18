@@ -116,13 +116,17 @@ public class SelectTest extends BaseTest {
         QueryWrapper wrapper = new QueryWrapper();
         wrapper.orderBy(false, User.FIELD_SORT);
         User user = userDao.selectOne(wrapper);
+        Assert.assertNotNull(user);
         System.out.println(user.toString());
     }
 
     //    Integer selectCount(Wrapper<T> wrapper);
     @Test
     public void select10() {
-
+        QueryWrapper wrapper = new QueryWrapper();
+        wrapper.eq(User.FIELD_PASS_WORD, "密码18");
+        int count = userDao.selectCount(wrapper);
+        Assert.assertEquals(1, count);
     }
 
 

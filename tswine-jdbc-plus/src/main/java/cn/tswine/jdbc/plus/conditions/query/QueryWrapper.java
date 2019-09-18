@@ -20,6 +20,11 @@ public class QueryWrapper extends AbstractWrapper<QueryWrapper> implements Query
      */
     String[] columns = null;
 
+    /**
+     * 是否返回唯一不同的值
+     */
+    boolean distinct = false;
+
     @Override
     public QueryWrapper select(String... columns) {
         this.columns = columns;
@@ -28,7 +33,8 @@ public class QueryWrapper extends AbstractWrapper<QueryWrapper> implements Query
 
     @Override
     public QueryWrapper distinct(boolean distinct) {
-        //TODO 实现逻辑
+        this.distinct = distinct;
+        //TODO 待实现逻辑
         return this;
     }
 

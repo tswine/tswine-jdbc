@@ -159,7 +159,6 @@ public class AbstractWrapper<Children extends AbstractWrapper<Children>>
         return addLogicConnector(LogicType.BRACKET_RIGHT);
     }
 
-
     /**
      * 添加条件连接器
      *
