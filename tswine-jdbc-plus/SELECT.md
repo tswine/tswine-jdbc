@@ -145,3 +145,22 @@ SELECT `id`,`user_name`,`sex` FROM `user` WHERE ( create_time <= ? OR user_name 
 ```
 ***
 
+### T selectOne(Wrapper wrapper)
+> 根据主键集合
+#### 请求参数
+|参数|类型|描述 |
+| :---:|:---:|:---:|
+|wrapper|QueryWraaper|查询条件构造器|
+#### 返回参数
+|类型|描述| 
+| :---:|:---:|
+|T| 查询到的数据 | 
+#### 样例
+```java
+QueryWrapper wrapper = new QueryWrapper();
+wrapper.orderBy(false, User.FIELD_SORT);
+User user = userDao.selectOne(wrapper);
+Assert.assertNotNull(user);
+```
+***
+
