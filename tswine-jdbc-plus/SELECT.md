@@ -145,6 +145,28 @@ SELECT `id`,`user_name`,`sex` FROM `user` WHERE ( create_time <= ? OR user_name 
 ```
 ***
 
+### IPage\<T> selectPage(IPage<T> page, Wrapper wrapper)
+> 根据主键集合
+#### 请求参数
+|参数|类型|描述 |
+| :---:|:---:|:---:|
+|page|IPage<T>|分页条件构造器|
+|wrapper|QueryWraaper|查询条件构造器|
+#### 返回参数
+|类型|描述| 
+| :---:|:---:|
+|IPage\<T>| 分页数据 | 
+#### 样例
+```java
+QueryWrapper wrapper = new QueryWrapper();
+wrapper.orderBy(true, User.FIELD_SORT);
+IPage<User> page = new Page<>();
+page.setSize(20).setCurrent(3);
+page = userDao.selectPage(page, wrapper);
+Assert.assertNotNull(page);
+```
+***
+
 ### T selectOne(Wrapper wrapper)
 > 根据主键集合
 #### 请求参数
