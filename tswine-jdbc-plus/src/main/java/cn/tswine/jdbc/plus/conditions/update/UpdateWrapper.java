@@ -8,5 +8,21 @@ import cn.tswine.jdbc.plus.conditions.AbstractWrapper;
  * @Version 1.0
  * @Desc
  */
-public class UpdateWrapper extends AbstractWrapper<UpdateWrapper> implements Update {
+public class UpdateWrapper extends AbstractWrapper<UpdateWrapper> implements Update<UpdateWrapper> {
+    String[] excludeColumns;
+
+    @Override
+    public UpdateWrapper exclude(String... excludeColumns) {
+        this.excludeColumns = excludeColumns;
+        return this;
+    }
+
+    /**
+     * 获取查询的列数据
+     *
+     * @return
+     */
+    public String[] getExcludeColumns() {
+        return excludeColumns;
+    }
 }

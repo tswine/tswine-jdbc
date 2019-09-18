@@ -209,7 +209,7 @@ public class AbstractWrapper<Children extends AbstractWrapper<Children>>
                         //获取列的?占位符: ?,?,?
                         int paramSize = whereConnector.getParams().length;
                         String questionMark = SqlUtils.getQuestionMark(paramSize);
-                        columns = ArrayUtils.add(columns, new String[]{questionMark});
+                        columns = ArrayUtils.add(columns, new String[]{questionMark}, String.class);
                     } else if (whereType.getType().equalsIgnoreCase(StringPool.LIKE)) {
                         //处理like
                         //{0} NOT LIKE '%{1}'
@@ -218,7 +218,7 @@ public class AbstractWrapper<Children extends AbstractWrapper<Children>>
                             throw new TswineJdbcException("like条件语句参数不能为空");
                         }
                         String param = String.valueOf(params[0]);
-                        columns = ArrayUtils.add(columns, new String[]{param});
+                        columns = ArrayUtils.add(columns, new String[]{param}, String.class);
                         whereConnector.setParams(null);
                     }
                     String where = StringUtils.formatBrackets(whereType.getSqlSegment(), columns);

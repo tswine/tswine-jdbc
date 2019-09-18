@@ -1,5 +1,6 @@
 package cn.tswine.jdbc.common.toolkit;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Arrays;
 
@@ -48,19 +49,20 @@ public class ArrayUtils {
         }
         return new ArrayList<>(Arrays.asList(array));
     }
-
     /**
-     * 数组添加元素
+     * 将target数组添加到source中
      *
-     * @param source
-     * @param target
+     * @param source 源
+     * @param target 目标
+     * @param tClass
+     * @param <T>
      * @return
      */
-    public static String[] add(String[] source, String[] target) {
+    public static <T> T[] add(T[] source, T[] target, Class<T> tClass) {
         if (isEmpty(source) || isEmpty(target)) {
             return source;
         }
-        String[] newArr = new String[source.length + target.length];
+        T[] newArr = (T[]) Array.newInstance(tClass, source.length + target.length);
         System.arraycopy(source, 0, newArr, 0, source.length);
         for (int i = 0; i < target.length; i++) {
             newArr[source.length + i] = target[i];

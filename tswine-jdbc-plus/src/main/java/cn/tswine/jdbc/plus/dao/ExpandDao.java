@@ -191,12 +191,35 @@ public interface ExpandDao<T> {
     int delete(Wrapper updateWrapper);
 
     /***********更新***********/
+
+    /**
+     * 更新（指定列和条件更新）
+     *
+     * @param tableName   表名
+     * @param update      更新数据
+     * @param whereSql    where SQL语句
+     * @param whereParams where 语句参数
+     * @return
+     */
+    int updateByWhere(String tableName, Map<String, Object> update, String whereSql, Object[] whereParams);
+
     /**
      * 更新（根据ID）
      *
      * @param entity 实体对象
      */
-    int updateById(T entity);
+    default int updateById(T entity) {
+        return updateById(entity, null);
+    }
+
+    /**
+     * 更新（根据ID）
+     *
+     * @param entity         实体对象
+     * @param excludeColumns 排除列
+     * @return
+     */
+    int updateById(T entity, String[] excludeColumns);
 
     /**
      * 更新（指定列和条件更新）
@@ -207,4 +230,13 @@ public interface ExpandDao<T> {
      * @return
      */
     int update(String tableName, Map<String, Object> update, Map<String, Object> where);
+
+    /**
+     * 更新
+     *
+     * @param entity        更新实体对象
+     * @param updateWrapper 更新条件
+     * @return
+     */
+    int update(T entity, Wrapper updateWrapper);
 }

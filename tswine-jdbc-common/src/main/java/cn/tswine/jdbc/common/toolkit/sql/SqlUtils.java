@@ -232,6 +232,4 @@ public class SqlUtils implements StringPool {
         }
         return columnNew;
     }
-
-
 }

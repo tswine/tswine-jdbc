@@ -12,7 +12,7 @@ public enum SqlMethod {
 
     INSERT("insert", "插入", "INSERT INTO %s ( %s ) VALUES ( %s )"),
     DELETE("delete", "删除", "DELETE FROM %s %s"),
-    UPDATE("update", "更新", "UPDATE %s SET %s WHERE %s"),
+    UPDATE("update", "更新", "UPDATE %s SET %s %s"),
     SELECT("select", "查找", "SELECT %s FROM %s %s");
 
     /**

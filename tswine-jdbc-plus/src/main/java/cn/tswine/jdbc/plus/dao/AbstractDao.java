@@ -11,6 +11,7 @@ import cn.tswine.jdbc.plus.builder.SchemaBuilder;
 import cn.tswine.jdbc.plus.builder.schema.EntitySchema;
 import cn.tswine.jdbc.plus.conditions.Wrapper;
 import cn.tswine.jdbc.plus.conditions.query.QueryWrapper;
+import cn.tswine.jdbc.plus.conditions.update.UpdateWrapper;
 import cn.tswine.jdbc.plus.injector.IMethod;
 import cn.tswine.jdbc.plus.injector.methods.SelectPage;
 import cn.tswine.jdbc.plus.injector.methods.UpdateBatch;
@@ -22,10 +23,7 @@ import cn.tswine.jdbc.plus.transaction.jdbc.JdbcTransactionFactory;
 
 import java.io.Serializable;
 import java.lang.reflect.Field;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * 抽象dao操作
@@ -38,8 +36,8 @@ import java.util.Map;
 public abstract class AbstractDao<T> extends BaseDao implements ExpandDao<T>, IGeneric<T> {
 
     protected EntitySchema entitySchema;
-
     protected IDBLabel dbLabel;
+    protected String placeholder;
 
     /**
      * 不允许该类通过new创建
@@ -47,8 +45,10 @@ public abstract class AbstractDao<T> extends BaseDao implements ExpandDao<T>, IG
     protected AbstractDao() {
         this.dbLabel = getDbLabel();
         this.entitySchema = SchemaBuilder.buildEntity(clazz());
+        this.placeholder = this.dbLabel.getDbType().getPlaceholder();
     }
 
+    /***INSERT***/
     @Override
     public int insert(String tableName, Map<String, Object> columnValues) {
         String sql = SqlUtils.getInsertSql(getDbLabel().getDbType(), entitySchema.getTableName(),
@@ -119,7 +119,6 @@ public abstract class AbstractDao<T> extends BaseDao implements ExpandDao<T>, IG
     }
 
     /***SELECT***/
-
     @Override
     public List<T> selectList(String sql, Object... params) {
         List<Map<String, Object>> maps = select(sql, params);
@@ -138,12 +137,11 @@ public abstract class AbstractDao<T> extends BaseDao implements ExpandDao<T>, IG
         return mapToObject(maps);
     }
 
-
     @Override
     public T selectById(Serializable... ids) {
         Assert.notEmpty(ids, "ids not empty");
         String[] columns = entitySchema.getColumns(null);
-        String whereSql = SqlUtils.getWhere(entitySchema.getIds(), getDbLabel().getDbType().getPlaceholder());
+        String whereSql = SqlUtils.getWhere(entitySchema.getIds(), placeholder);
         List<T> list = selectList(entitySchema.getTableName(), columns, whereSql, ids);
         return list != null ? list.get(0) : null;
     }
@@ -171,7 +169,7 @@ public abstract class AbstractDao<T> extends BaseDao implements ExpandDao<T>, IG
         wrapper.setEntitySchema(entitySchema);
         QueryWrapper queryWrapper = (QueryWrapper) wrapper;
         String whereSql = queryWrapper.getSqlSegment();
-        return selectList(entitySchema.getTableName(), queryWrapper.getColumnSql(getDbLabel().getDbType().getPlaceholder()),
+        return selectList(entitySchema.getTableName(), queryWrapper.getColumnSql(placeholder),
                 whereSql, queryWrapper.getParams());
     }
 
@@ -205,7 +203,7 @@ public abstract class AbstractDao<T> extends BaseDao implements ExpandDao<T>, IG
         if (!(wrapper instanceof QueryWrapper)) {
             throw ExceptionUtils.tse("wrapper type must QueryWrapper");
         }
-        String tableName = SqlUtils.columnEscape(entitySchema.getTableName(), getDbLabel().getDbType().getPlaceholder());
+        String tableName = SqlUtils.columnEscape(entitySchema.getTableName(), placeholder);
         String whereSql = wrapper.getSqlSegment();
         String sql = String.format("SELECT count(0) as count FROM %s %s", tableName, whereSql);
         List<Map<String, Object>> list = select(sql, wrapper.getParams());
@@ -215,6 +213,7 @@ public abstract class AbstractDao<T> extends BaseDao implements ExpandDao<T>, IG
         }
         return 0;
     }
+
 
     /***DELETE***/
     @Override
@@ -226,7 +225,7 @@ public abstract class AbstractDao<T> extends BaseDao implements ExpandDao<T>, IG
         if (!where.startsWith(SQLSentenceType.WHERE.getValue())) {
             where = String.format("%s %s", SQLSentenceType.WHERE.getValue(), where);
         }
-        tableName = SqlUtils.columnEscape(tableName, getDbLabel().getDbType().getPlaceholder());
+        tableName = SqlUtils.columnEscape(tableName, placeholder);
         String sql = SqlUtils.getDeleteSql(tableName, where);
         return delete(sql, params);
     }
@@ -237,7 +236,7 @@ public abstract class AbstractDao<T> extends BaseDao implements ExpandDao<T>, IG
         if (ids.length != entitySchema.getIds().length) {
             throw ExceptionUtils.tse("ids length is not equal key size");
         }
-        String sqlWhere = SqlUtils.getWhere(entitySchema.getIds(), getDbLabel().getDbType().getPlaceholder());
+        String sqlWhere = SqlUtils.getWhere(entitySchema.getIds(), placeholder);
         return deleteByWhere(entitySchema.getTableName(), sqlWhere, ids);
     }
 
@@ -256,7 +255,7 @@ public abstract class AbstractDao<T> extends BaseDao implements ExpandDao<T>, IG
     public int deleteByMap(Map<String, Object> columnMap) {
         Assert.notEmpty(columnMap, "columnMap not empty");
         String[] columns = CollectionUtils.asArray(columnMap.keySet(), String.class);
-        String whereSql = SqlUtils.getWhere(columns,getDbLabel().getDbType().getPlaceholder());
+        String whereSql = SqlUtils.getWhere(columns, placeholder);
         return deleteByWhere(entitySchema.getTableName(), whereSql, columnMap.values().toArray());
     }
 
@@ -266,43 +265,63 @@ public abstract class AbstractDao<T> extends BaseDao implements ExpandDao<T>, IG
         return deleteByWhere(entitySchema.getTableName(), wrapper.getSqlSegment(), wrapper.getParams());
     }
 
+    /***UPDATE***/
     @Override
-    public int updateById(T entity) {
-        //TODO
-        return 0;
-//        //获取所有字段
-//        Map<String, Field> fields = entitySchema.getFields();
-//        //获取所有字段值
-//        Map<String, Object> methodValue = ReflectionUtils.getAllMethodValue(entity, fields);
-//        if (methodValue == null) {
-//            throw ExceptionUtils.tse("reflection not get entity values");
-//        }
-//        Map<String, Object> whereIds = new HashMap<>();
-//        //排除主键数据
-//        List<String> ids = entitySchema.getIds();
-//        ids.forEach(k -> {
-//            Object o = whereIds.get(ids);
-//            whereIds.put(k, o);
-//            methodValue.remove(k);
-//        });
-//        return update(entitySchema.getTableName(), methodValue, whereIds);
+    public int updateByWhere(String tableName, Map<String, Object> update, String whereSql, Object[] whereParams) {
+        Assert.notEmpty(tableName, "tableName not empty");
+        Assert.notEmpty(update, "update not empty");
+        Assert.notEmpty(whereSql, "whereSql not empty");
+        String[] columns = CollectionUtils.asArray(update.keySet(), String.class);
+        String setSql = SqlUtils.getSet(SqlUtils.columnEscape(columns, placeholder));
+        whereSql = StringUtils.formatStart(whereSql, SQLSentenceType.WHERE.getValue());
+        tableName = SqlUtils.columnEscape(tableName, placeholder);
+        String sql = SqlUtils.getUpdateSql(tableName, setSql, whereSql);
+        //合并参数
+        Object[] params = update.values().toArray();
+        params = ArrayUtils.add(params, whereParams, Object.class);
+        return update(sql, params);
     }
 
     @Override
     public int update(String tableName, Map<String, Object> update, Map<String, Object> where) {
-        //TODO
-        return 0;
-//        Assert.notEmpty(tableName, "tableName not empty");
-//        Assert.notEmpty(update, "update not empty");
-//        Assert.notEmpty(where, "where not empty");
-//        List<Object> params = new ArrayList<>();
-//        String setSql = SqlUtils.getSet(update.keySet());
-//        String whereSql = SqlUtils.getWhere(where.keySet());
-//        params.addAll(update.values());
-//        params.addAll(where.values());
-//        String sql = SqlUtils.getUpdateSql(tableName, setSql, whereSql);
-//        return update(sql, params.toArray());
+        Assert.notEmpty(tableName, "tableName not empty");
+        Assert.notEmpty(update, "update not empty");
+        Assert.notEmpty(where, "where not empty");
+        String whereSql = SqlUtils.getWhere(CollectionUtils.asArray(where.keySet(), String.class)
+                , placeholder);
+        return updateByWhere(tableName, update, whereSql, where.values().toArray());
     }
+
+    @Override
+    public int updateById(T entity, String[] excludeColumns) {
+        //获取所有字段值
+        Map<String, Object> methodValue = ReflectionUtils.getAllMethodValue(entity, entitySchema.getFields(excludeColumns));
+        if (methodValue == null) {
+            throw ExceptionUtils.tse("reflection not get entity values");
+        }
+        Map<String, Object> whereIds = new HashMap<>();
+        //排除主键数据
+        String[] ids = entitySchema.getIds();
+        for (String id : ids) {
+            Object value = methodValue.get(id);
+            if (value != null) {
+                whereIds.put(id, value);
+                methodValue.remove(id);
+            }
+        }
+        return update(entitySchema.getTableName(), methodValue, whereIds);
+    }
+
+    @Override
+    public int update(T entity, Wrapper wrapper) {
+        Assert.isNotNull(wrapper, "wrapper is not null");
+        UpdateWrapper updateWrapper = (UpdateWrapper) wrapper;
+        String[] excludeColumns = updateWrapper.getExcludeColumns();
+        //获取所有字段值
+        Map<String, Object> methodValue = ReflectionUtils.getAllMethodValue(entity, entitySchema.getFields(excludeColumns));
+        return updateByWhere(entitySchema.getTableName(), methodValue, wrapper.getSqlSegment(), wrapper.getParams());
+    }
+
 
     /**
      * 暴露数据库操作对象
@@ -371,20 +390,18 @@ public abstract class AbstractDao<T> extends BaseDao implements ExpandDao<T>, IG
         wrapper.setEntitySchema(entitySchema);
         String whereSql = queryWrapper.getSqlSegment();
         return getSelectSql(entitySchema.getTableName(),
-                queryWrapper.getColumnSql(getDbLabel().getDbType().getPlaceholder()), whereSql);
+                queryWrapper.getColumnSql(placeholder), whereSql);
 
     }
 
     private String getSelectSql(String tableName, String[] columns, String whereSql) {
-        tableName = SqlUtils.columnEscape(tableName, getDbLabel().getDbType().getPlaceholder());
-        String columnSql = SqlUtils.getColumnSql(columns, getDbLabel().getDbType().getPlaceholder());
+        tableName = SqlUtils.columnEscape(tableName, placeholder);
+        String columnSql = SqlUtils.getColumnSql(columns, placeholder);
         return SqlUtils.getSelectSql(tableName, columnSql, whereSql);
     }
 
     private String getSelectSql(String tableName, String columnSql, String whereSql) {
-        tableName = SqlUtils.columnEscape(tableName, getDbLabel().getDbType().getPlaceholder());
+        tableName = SqlUtils.columnEscape(tableName, placeholder);
         return SqlUtils.getSelectSql(tableName, columnSql, whereSql);
     }
-
-
 }

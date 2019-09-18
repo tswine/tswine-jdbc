@@ -107,14 +107,7 @@ public class EntitySchema implements ISchema {
      * @return
      */
     public String[] getColumns(String... excludeColumns) {
-        Map<String, Field> fieldsNew = MapUtils.copy(fields);
-        if (ArrayUtils.isNotEmpty(excludeColumns)) {
-            for (String column : excludeColumns) {
-                if (fieldsNew.containsKey(column)) {
-                    fieldsNew.remove(column);
-                }
-            }
-        }
+        Map<String, Field> fieldsNew = getFields(excludeColumns);
         return CollectionUtils.asArray(fieldsNew.keySet(), String.class);
     }
 
@@ -142,6 +135,19 @@ public class EntitySchema implements ISchema {
 
     public Map<String, Field> getFields() {
         return fields;
+    }
+
+    public Map<String, Field> getFields(String... excludeColumns) {
+        if (ArrayUtils.isEmpty(excludeColumns)) {
+            return fields;
+        }
+        Map<String, Field> fieldsNew = MapUtils.copy(fields);
+        for (String column : excludeColumns) {
+            if (fieldsNew.containsKey(column)) {
+                fieldsNew.remove(column);
+            }
+        }
+        return fieldsNew;
     }
 
 

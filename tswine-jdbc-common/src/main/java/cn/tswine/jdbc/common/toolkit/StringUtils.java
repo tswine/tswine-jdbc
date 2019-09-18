@@ -244,4 +244,21 @@ public class StringUtils implements StringPool {
     }
 
 
+    /**
+     * 格式化字符串以指定字符开头
+     *
+     * @param str   需要格式化的字符串
+     * @param start 开头字符串
+     * @return 被格式化后的字符串
+     */
+    public static String formatStart(String str, String start) {
+        if (isEmpty(str)) {
+            return EMPTY;
+        }
+        str = str.trim();
+        if (!str.startsWith(start)) {
+            str = String.format("%s %s", start, str);
+        }
+        return str;
+    }
 }
