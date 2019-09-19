@@ -25,7 +25,6 @@ Assert.assertEquals(1, update);
 #### 请求参数
 |参数|类型|描述 |
 | :---:|:---:|:---:|
-| :---:|:---:|:---:|
 |tableName| String|表名|
 |update|Map<String, Object>|更新列及值|
 |sqlWhere|String|where语句|
@@ -50,7 +49,6 @@ Assert.assertEquals(1, update);
 #### 请求参数
 |参数|类型|描述 |
 | :---:|:---:|:---:|
-| :---:|:---:|:---:|
 |entity| T|实体对象数据|
 #### 返回参数
 |类型|描述| 
@@ -72,7 +70,6 @@ Assert.assertEquals(1, update);
 > 根据主键id更新数据并排除指定列数据不更新
 #### 请求参数
 |参数|类型|描述 |
-| :---:|:---:|:---:|
 | :---:|:---:|:---:|
 |entity| T|实体对象数据|
 |excludeColumns| String[]|排除列集合|
@@ -97,7 +94,6 @@ Assert.assertEquals(1, update);
 #### 请求参数
 |参数|类型|描述 |
 | :---:|:---:|:---:|
-| :---:|:---:|:---:|
 |tableName| String|表名|
 |update| Map<String, Object>|更新列及值|
 |where|Map<String, Object>|条件列及值|
@@ -121,7 +117,6 @@ Assert.assertEquals(1, update);
 > 根据条件构造器更新数据
 #### 请求参数
 |参数|类型|描述 |
-| :---:|:---:|:---:|
 | :---:|:---:|:---:|
 |entity| T|实体对象数据|
 ||entity| Wrapper|条件构造器|
